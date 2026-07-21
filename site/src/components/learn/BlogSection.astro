@@ -1,0 +1,156 @@
+---
+import type { BlogPost } from '../../util/blog'
+import { pathWithBase } from '../../util/links'
+
+interface Props {
+  posts: BlogPost[]
+}
+
+const { posts } = Astro.props
+
+// Oversized outlined glyphs give each gradient cover a distinct identity
+const glyphs = ['№1', '∞', '§']
+const coverClasses = ['b1', 'b2', 'b3']
+---
+
+{
+  posts.length > 0 && (
+    <section id="blog" class="blog-section">
+      <div class="sec-head">
+        <h2>From the blog</h2>
+        <a class="more" href={pathWithBase('/blog/')}>
+          All posts →
+        </a>
+      </div>
+      <div class="row">
+        {posts.map((post, i) => (
+          <article>
+            <a href={pathWithBase(`/blog/${post.id}/`)}>
+              <div class={`bcover ${coverClasses[i % coverClasses.length]}`} aria-hidden="true">
+                <span class="glyph">{glyphs[i % glyphs.length]}</span>
+              </div>
+              <span class="kicker">{post.data.tags[0] ?? 'Blog'}</span>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .blog-section {
+    padding: 4.25rem 0;
+    border-top: 1px solid #262626;
+  }
+
+  .sec-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.625rem;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .more {
+    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-size: 0.875rem;
+    color: #00cc5f;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.25rem;
+    margin-top: 2.5rem;
+  }
+
+  article a {
+    text-decoration: none;
+    display: block;
+  }
+
+  .bcover {
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #232323;
+  }
+
+  .bcover.b1 {
+    background: radial-gradient(ellipse 80% 100% at 30% 0%, #1d5c39 0%, #0d1810 70%);
+  }
+
+  .bcover.b2 {
+    background: conic-gradient(from 220deg at 70% 30%, #0d1810, #16402b, #0d1810);
+  }
+
+  .bcover.b3 {
+    background: linear-gradient(200deg, #142d1e 0%, #101010 80%);
+  }
+
+  .glyph {
+    position: absolute;
+    right: 14px;
+    bottom: 6px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 4rem;
+    color: transparent;
+    -webkit-text-stroke: 1.2px #2f6b48;
+    line-height: 1;
+  }
+
+  .kicker {
+    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #7a7a7a;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    margin: 0.5rem 0 0.375rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  article a:hover h3 {
+    color: #00ff77;
+  }
+
+  article p {
+    color: #8f8f8f;
+    font-size: 0.875rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+</style>
