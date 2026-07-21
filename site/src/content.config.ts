@@ -85,6 +85,44 @@ const blogSchema = z.object({
   readingTime: z.string().optional(),
 })
 
+export const courseSchema = z.object({
+  title: z.string(),
+  // Position in the course catalog; drives ordering and the "Course № N" kicker
+  number: z.number().int().positive(),
+  status: z.enum(['available', 'in-development', 'proposed']),
+  description: z.string(),
+  // Entry URL for the course (first lesson or course index)
+  href: z.string(),
+  syllabusHref: z.string().optional(),
+  // Human-readable total, e.g. "~6 hours"
+  duration: z.string().optional(),
+  languages: z.array(z.string()).optional(),
+  lessons: z
+    .array(
+      z.object({
+        number: z.number().int().positive(),
+        title: z.string(),
+        href: z.string(),
+        duration: z.string().optional(),
+      })
+    )
+    .optional(),
+})
+export type Course = z.infer<typeof courseSchema>
+
+export const eventSchema = z.object({
+  title: z.string(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
+  location: z.string(),
+  format: z.enum(['in-person', 'virtual']),
+  href: z.string().optional(),
+  description: z.string().optional(),
+  // The events poster headlines the soonest featured upcoming event
+  featured: z.boolean().default(false),
+})
+export type LearnEvent = z.infer<typeof eventSchema>
+
 export const collections = {
   authors: defineCollection({
     loader: file('src/content/authors.yaml'),
@@ -117,6 +155,20 @@ export const collections = {
       link: z.string().url().optional(),
       order: z.number().default(0),
     }),
+  }),
+  courses: defineCollection({
+    loader: glob({
+      base: 'src/content/courses',
+      pattern: '**/*.{yml,yaml}',
+    }),
+    schema: courseSchema,
+  }),
+  events: defineCollection({
+    loader: glob({
+      base: 'src/content/events',
+      pattern: '**/*.{yml,yaml}',
+    }),
+    schema: eventSchema,
   }),
   docs: defineCollection({
     loader: glob({

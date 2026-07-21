@@ -1,0 +1,55 @@
+title: Agent Fundamentals with Strands
+number: 1
+status: available
+description: >-
+  Fourteen lessons, one production agent. Build up from the agent loop through
+  tools, hooks, steering, memory, and multi-agent patterns — then deploy and
+  evaluate it.
+href: /community/learning/lesson1-how-agents-really-work/
+duration: ~6 hours
+languages:
+  - Python
+  - TypeScript
+lessons:
+  - number: 1
+    title: How agents really work
+    href: /community/learning/lesson1-how-agents-really-work/
+  - number: 2
+    title: Switching model providers
+    href: /community/learning/lesson2-switching-model-providers/
+  - number: 3
+    title: Give your agent tools using MCP
+    href: /community/learning/lesson3-give-your-agent-tools-using-mcp/
+  - number: 4
+    title: Adding callbacks & response streaming
+    href: /community/learning/lesson4-adding-callbacks-and-response-streaming/
+  - number: 5
+    title: Control your agent with hooks
+    href: /community/learning/lesson5-control-your-agent-with-hooks/
+  - number: 6
+    title: Agent plugins & skills
+    href: /community/learning/lesson6-agent-plugins-and-skills/
+  - number: 7
+    title: Improve agent reliability with Strands steering
+    href: /community/learning/lesson7-improve-agent-reliability-with-strands-steering/
+  - number: 8
+    title: Context engineering & conversation management
+    href: /community/learning/lesson8-context-engineering-and-conversation-management/
+  - number: 9
+    title: Persistent memory with session managers
+    href: /community/learning/lesson9-persistent-memory-with-session-managers/
+  - number: 10
+    title: 'Multi-agent patterns: agents as tools'
+    href: /community/learning/lesson10-multi-agent-patterns-agents-as-tools/
+  - number: 11
+    title: 'Multi-agent patterns: graph workflows'
+    href: /community/learning/lesson11-multi-agent-patterns-graph-workflows/
+  - number: 12
+    title: 'Multi-agent patterns: agent swarms'
+    href: /community/learning/lesson12-multi-agent-patterns-agent-swarms/
+  - number: 13
+    title: Evaluating agents
+    href: /community/learning/lesson13-evaluating-agents/
+  - number: 14
+    title: Deploying agents to the cloud
+    href: /community/learning/lesson14-deploying-agents-to-the-cloud/
