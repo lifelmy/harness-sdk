@@ -1,0 +1,152 @@
+---
+/**
+ * Hero for the /learn/ hub. The masthead belongs to the page, not to any
+ * course — courses are one section among several. Animated strand curves
+ * echo the homepage motif and pause under prefers-reduced-motion.
+ */
+---
+
+<header class="learn-hero">
+  <svg class="strands" viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
+    <path class="s1" d="M-50,320 C200,280 350,120 600,150 S1000,320 1250,220"></path>
+    <path class="s2" d="M-50,360 C250,330 400,170 650,190 S1050,340 1250,260"></path>
+    <path class="s3" d="M-50,280 C180,250 340,80 620,110 S980,290 1250,180"></path>
+  </svg>
+  <div class="hero-inner">
+    <span class="kicker">Strands Academy</span>
+    <h1>Learn<span class="dot">.</span></h1>
+    <p class="dek">
+      Courses, deep dives, and events from the team building the SDK — everything you need to go from your first
+      agent loop to production.
+    </p>
+    <nav class="paths" aria-label="Page sections">
+      <a href="#courses">↓ Courses</a>
+      <a href="#deep-dives">↓ Deep dives</a>
+      <a href="#events">↓ Events</a>
+      <a href="#blog">↓ From the blog</a>
+    </nav>
+  </div>
+  <slot name="ticker" />
+</header>
+
+<style>
+  .learn-hero {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse 90% 130% at 70% -20%, #143324 0%, #0f2015 40%, var(--sl-color-black, #0e0e0e) 75%);
+  }
+
+  .strands {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  .strands path {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .strands .s1 {
+    stroke: #00cc5f;
+    stroke-opacity: 0.55;
+    stroke-dasharray: 8 14;
+    animation: strand-flow 22s linear infinite;
+  }
+
+  .strands .s2 {
+    stroke: #00ff77;
+    stroke-opacity: 0.25;
+    stroke-dasharray: 3 18;
+    animation: strand-flow 30s linear infinite reverse;
+  }
+
+  .strands .s3 {
+    stroke: #2a7a52;
+    stroke-opacity: 0.5;
+    stroke-dasharray: 14 10;
+    animation: strand-flow 26s linear infinite;
+  }
+
+  @keyframes strand-flow {
+    to {
+      stroke-dashoffset: -600;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .strands .s1,
+    .strands .s2,
+    .strands .s3 {
+      animation: none;
+    }
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5.5rem 3rem 4.5rem;
+    position: relative;
+  }
+
+  .kicker {
+    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #00cc5f;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(3.25rem, 8vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .dot {
+    color: #00cc5f;
+  }
+
+  .dek {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.375rem;
+    color: #b9c4bd;
+    max-width: 40rem;
+    margin: 1.25rem 0 0;
+  }
+
+  .paths {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin-top: 2.25rem;
+    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-size: 0.875rem;
+  }
+
+  .paths a {
+    color: #9db5a7;
+    text-decoration: none;
+    border-bottom: 1px solid #2c5940;
+    padding-bottom: 3px;
+  }
+
+  .paths a:hover {
+    color: #00ff77;
+    border-color: #00ff77;
+  }
+
+  @media (max-width: 900px) {
+    .hero-inner {
+      padding: 3.5rem 1.5rem 3rem;
+    }
+  }
+</style>

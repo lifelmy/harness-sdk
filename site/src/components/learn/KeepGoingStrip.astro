@@ -1,0 +1,41 @@
+---
+import { pathWithBase } from '../../util/links'
+---
+
+<div class="keep-going">
+  <span class="kicker">Keep going</span>
+  <a href={pathWithBase('/docs/examples/')}>Examples gallery →</a>
+  <a href={pathWithBase('/docs/labs/')}>Labs projects →</a>
+  <a href={pathWithBase('/docs/api/typescript/')}>API reference →</a>
+  <a href="https://discord.gg/strands">Join Discord →</a>
+</div>
+
+<style>
+  .keep-going {
+    border-top: 1px solid #262626;
+    padding: 2.25rem 0 4.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: baseline;
+    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-size: 0.9375rem;
+  }
+
+  .kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #7a7a7a;
+    font-weight: 700;
+  }
+
+  a {
+    color: #bbb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #00ff77;
+  }
+</style>
