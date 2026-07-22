@@ -49,7 +49,11 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
 
       <section id="deep-dives" class="spread">
         <DeepDivesSection dives={deepDives} suggestTopicHref={suggestTopicHref} />
-        <EventsPoster headliner={headliner} others={otherEvents.slice(0, 3)} />
+        <div id="events" class="events-col">
+          <h2 class="events-heading">Events</h2>
+          <p class="events-dek">Where to find the team.</p>
+          <EventsPoster headliner={headliner} others={otherEvents.slice(0, 3)} />
+        </div>
       </section>
 
       <BlogSection posts={posts} />
@@ -68,7 +72,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
 <style>
   .learn-page {
     width: 100%;
-    background: var(--sl-color-black, #0e0e0e);
+    background: #0e0e0e;
   }
 
   .wrap {
@@ -98,6 +102,27 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     margin: 0 auto;
   }
 
+  .events-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .events-heading {
+    font-family: 'Figtree', sans-serif;
+    font-size: 2.625rem;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .events-dek {
+    font-family: 'Figtree', sans-serif;
+    font-size: 0.9375rem;
+    color: #8f8f8f;
+    margin: 0.375rem 0 1.5rem;
+  }
+
   @media (max-width: 900px) {
     .wrap {
       padding: 0 1.5rem;
@@ -106,6 +131,10 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     .spread {
       grid-template-columns: 1fr;
       gap: 2.5rem;
+    }
+
+    .events-heading {
+      font-size: 2rem;
     }
   }
 </style>

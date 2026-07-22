@@ -39,12 +39,6 @@ const statusLabel: Record<Course['status'], string> = {
               </a>
             )}
           </div>
-          <div class="meta">
-            {featured.duration && <span>⏱ {featured.duration}</span>}
-            <span>🛠 Code-along</span>
-            {featured.languages && <span>{featured.languages.join(' & ')}</span>}
-            <span>Free</span>
-          </div>
         </div>
 
         <div class="cover" aria-hidden="true">
@@ -123,7 +117,7 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .sec-head h2 {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 2.625rem;
     letter-spacing: -0.02em;
     font-weight: 600;
@@ -132,13 +126,13 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .sec-dek {
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     color: #8f8f8f;
     font-size: 0.9375rem;
   }
 
   .kicker {
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -159,7 +153,7 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .main h3 {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 2.625rem;
     letter-spacing: -0.02em;
     line-height: 1.08;
@@ -169,7 +163,7 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .main .dek {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Figtree', sans-serif;
     color: #b0b0b0;
     font-size: 1.0625rem;
     max-width: 30rem;
@@ -184,7 +178,7 @@ agent(<span class="s">"What can you do?"</span>)
 
   .btn {
     display: inline-block;
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     background: #00cc5f;
     color: #0a1f14;
     font-weight: 700;
@@ -204,16 +198,6 @@ agent(<span class="s">"What can you do?"</span>)
     background: transparent;
     color: #ececec;
     border: 1px solid #3a3a3a;
-  }
-
-  .meta {
-    font-family: var(--sl-font-system, system-ui), sans-serif;
-    font-size: 0.8125rem;
-    color: #7fa891;
-    margin-top: 1.25rem;
-    display: flex;
-    gap: 1.375rem;
-    flex-wrap: wrap;
   }
 
   /* Cover art: mock terminal over gradient mesh */
@@ -242,7 +226,7 @@ agent(<span class="s">"What can you do?"</span>)
     position: absolute;
     top: 7%;
     right: 6%;
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     background: #00cc5f;
     color: #0a1f14;
     font-weight: 800;
@@ -251,6 +235,7 @@ agent(<span class="s">"What can you do?"</span>)
     padding: 6px 14px;
     letter-spacing: 0.06em;
     box-shadow: 0 8px 24px #00cc5f44;
+    z-index: 2;
   }
 
   .term {
@@ -259,6 +244,7 @@ agent(<span class="s">"What can you do?"</span>)
     right: 7%;
     top: 12%;
     bottom: -6%;
+    z-index: 1;
     background: #0b0f0cee;
     border: 1px solid #2a4a37;
     border-radius: 12px 12px 0 0;
@@ -330,7 +316,7 @@ agent(<span class="s">"What can you do?"</span>)
   /* Syllabus strip */
   .syllabus {
     margin-top: 3rem;
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
   }
 
   .syllabus .rows {
@@ -392,14 +378,15 @@ agent(<span class="s">"What can you do?"</span>)
     bottom: -14px;
     font-size: 6rem;
     font-style: italic;
+    font-weight: 800;
     color: transparent;
     -webkit-text-stroke: 1.2px #234534;
-    font-family: Georgia, serif;
+    font-family: 'Figtree', sans-serif;
     line-height: 1;
   }
 
   .slot .tag {
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.65625rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -407,7 +394,7 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .slot h4 {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 1.4375rem;
     font-weight: 600;
     color: #a8a8a8;
@@ -419,7 +406,7 @@ agent(<span class="s">"What can you do?"</span>)
   .slot p {
     color: #6f6f6f;
     font-size: 0.875rem;
-    font-family: var(--sl-font-system, system-ui), sans-serif;
+    font-family: 'Figtree', sans-serif;
     position: relative;
     max-width: 75%;
     margin: 0;
