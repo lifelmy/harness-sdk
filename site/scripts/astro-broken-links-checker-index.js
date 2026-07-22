@@ -63,6 +63,19 @@ export default function astroBrokenLinksChecker(options = {}) {
         });
 
         await Promise.all(checkHtmlPromises);
+
+        // Remove links whose URL starts with any of the excluded prefixes.
+        // Excluded links are intentionally forward-looking (e.g. pages that ship
+        // in a separate PR) and should not fail the build.
+        const excludePrefixes = options.excludeLinks || [];
+        if (excludePrefixes.length > 0) {
+          for (const link of brokenLinksMap.keys()) {
+            if (excludePrefixes.some((prefix) => link.startsWith(prefix))) {
+              brokenLinksMap.delete(link);
+            }
+          }
+        }
+
         logBrokenLinks(brokenLinksMap, logFilePath, logger);
 
         // end time
