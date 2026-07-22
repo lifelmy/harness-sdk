@@ -1,18 +1,12 @@
 ---
 /**
  * Hero for the /learn/ hub. The masthead belongs to the page, not to any
- * course — courses are one section among several. Animated strand curves
- * echo the homepage motif and pause under prefers-reduced-motion.
+ * course — courses are one section among several. The radial gradient sits
+ * as a translucent layer over the page-level fixed curve background.
  */
-import curvePrimary from '../../assets/curve-primary.svg'
-import curveSecondary from '../../assets/curve-secondary.svg'
 ---
 
 <header class="learn-hero">
-  <div class="curves-container" aria-hidden="true">
-    <div class="curve-secondary" style={`background-image: url(${curveSecondary.src})`}></div>
-    <div class="curve-primary" style={`background-image: url(${curvePrimary.src})`}></div>
-  </div>
   <div class="hero-inner">
     <span class="kicker">Strands Academy</span>
     <h1>Learn<span class="dot">.</span></h1>
@@ -33,59 +27,7 @@ import curveSecondary from '../../assets/curve-secondary.svg'
 <style>
   .learn-hero {
     position: relative;
-    overflow: hidden;
-    background: radial-gradient(ellipse 90% 130% at 70% -20%, #143324 0%, #0f2015 40%, #0e0e0e 75%);
-  }
-
-  .curves-container {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    filter: blur(12px);
-    opacity: 0.2;
-    overflow: hidden;
-  }
-
-  .curve-secondary {
-    background-repeat: repeat-y;
-    height: 200%;
-    width: 291px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(110deg) scale(2);
-    animation: hero-scroll-secondary 90s linear infinite;
-    z-index: -1;
-  }
-
-  .curve-primary {
-    background-repeat: repeat-y;
-    height: 200%;
-    width: 290px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(110deg) scale(1.5);
-    animation: hero-scroll-primary 36s linear infinite;
-  }
-
-  @keyframes hero-scroll-primary {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 -344px; }
-  }
-
-  @keyframes hero-scroll-secondary {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 -344px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .curve-primary,
-    .curve-secondary {
-      animation: none;
-    }
+    background: radial-gradient(ellipse 90% 130% at 70% -20%, #143324 0%, #0f2015 40%, transparent 75%);
   }
 
   .hero-inner {

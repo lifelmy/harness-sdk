@@ -22,6 +22,8 @@ import KeepGoingStrip from '../components/learn/KeepGoingStrip.astro'
 import { deepDives, suggestTopicHref } from '../config/learn'
 import { getPublishedPosts } from '../util/blog'
 import { featuredCourse, shelfCourses, posterEvent, tickerEvents, upcomingEvents } from '../util/learn'
+import curvePrimary from '../assets/curve-primary.svg'
+import curveSecondary from '../assets/curve-secondary.svg'
 
 const courses = (await getCollection('courses')).map((entry) => entry.data)
 const events = (await getCollection('events')).map((entry) => entry.data)
@@ -39,7 +41,13 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
   title="Learn — Strands Agents"
   description="Courses, deep dives, and events from the team building the Strands Agents SDK."
 >
-  <div class="learn-page">
+  <!-- Animated Curves Background (fixed, full-viewport, identical to homepage) -->
+  <div class="strands-curves-container" aria-hidden="true">
+    <div class="strands-curve-secondary" style={`background-image: url(${curveSecondary.src})`}></div>
+    <div class="strands-curve-primary" style={`background-image: url(${curvePrimary.src})`}></div>
+  </div>
+
+  <div class="learn-page learn-body">
     <LearnHero>
       <EventsTicker slot="ticker" events={ticker} />
     </LearnHero>
@@ -67,12 +75,116 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
       <Copyright />
     </div>
   </footer>
+
+  <script>
+    // Scroll-responsive strands background animation (mirrors homepage)
+    const primary = document.querySelector<HTMLElement>('.strands-curve-primary')
+    const secondary = document.querySelector<HTMLElement>('.strands-curve-secondary')
+
+    if (primary && secondary && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let ticking = false
+
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            requestAnimationFrame(() => {
+              const scrollY = window.scrollY
+              primary.style.setProperty('--scroll-offset', `${-(scrollY * 0.3) % 344}px`)
+              secondary.style.setProperty('--scroll-offset', `${-(scrollY * 0.15) % 344}px`)
+              ticking = false
+            })
+            ticking = true
+          }
+        },
+        { passive: true },
+      )
+    }
+  </script>
 </LandingLayout>
 
+<style is:global>
+  body:has(.learn-body) {
+    background-color: #0e0e0e;
+  }
+</style>
+
 <style>
+  /* ========== Animated Curves Background ========== */
+  .strands-curves-container {
+    position: fixed;
+    top: var(--sl-nav-height);
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    filter: blur(12px);
+    opacity: 0.2;
+    overflow: hidden;
+  }
+
+  :global([data-theme='light']) .strands-curves-container {
+    filter: blur(20px);
+    opacity: 0.2;
+  }
+
+  .strands-curve-secondary {
+    background-repeat: repeat-y;
+    height: 200vw;
+    width: 291px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(110deg) scale(2);
+    animation: learn-scroll-secondary 90s linear infinite;
+    z-index: -1;
+  }
+
+  .strands-curve-primary {
+    background-repeat: repeat-y;
+    height: 200vw;
+    width: 290px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(110deg) scale(1.5);
+    animation: learn-scroll-primary 36s linear infinite;
+  }
+
+  .strands-curve-primary,
+  .strands-curve-secondary {
+    --scroll-offset: 0px;
+  }
+
+  @keyframes learn-scroll-primary {
+    0% {
+      background-position: 0 calc(0px + var(--scroll-offset));
+    }
+    100% {
+      background-position: 0 calc(-344px + var(--scroll-offset));
+    }
+  }
+
+  @keyframes learn-scroll-secondary {
+    0% {
+      background-position: 0 calc(0px + var(--scroll-offset));
+    }
+    100% {
+      background-position: 0 calc(-344px + var(--scroll-offset));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .strands-curve-primary,
+    .strands-curve-secondary {
+      animation: none;
+    }
+  }
+
   .learn-page {
     width: 100%;
-    background: #0e0e0e;
+    background: transparent;
   }
 
   .wrap {
