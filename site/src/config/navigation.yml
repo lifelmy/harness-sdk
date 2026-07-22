@@ -25,6 +25,9 @@ navbar:
       - /docs/community/
       - /docs/labs/
       - /docs/contribute/
+  - label: Learn
+    href: /learn/
+    basePath: /learn/
   - label: API Reference
     href: /docs/api/typescript/
     basePath: /docs/api/

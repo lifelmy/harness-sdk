@@ -1,0 +1,111 @@
+---
+/**
+ * /learn/ — editorial hub for learning content: courses, deep dives,
+ * events, and featured blog posts.
+ *
+ * Sections: Hero (+ events ticker) → Courses → Deep dives + Events poster →
+ *           From the blog → Keep going → Footer
+ *
+ * Data flows top-down: this page loads collections and passes plain props;
+ * section components never query collections themselves.
+ */
+import { getCollection } from 'astro:content'
+import LandingLayout from '../layouts/LandingLayout.astro'
+import Copyright from '../components/Copyright.astro'
+import LearnHero from '../components/learn/LearnHero.astro'
+import EventsTicker from '../components/learn/EventsTicker.astro'
+import CoursesSection from '../components/learn/CoursesSection.astro'
+import DeepDivesSection from '../components/learn/DeepDivesSection.astro'
+import EventsPoster from '../components/learn/EventsPoster.astro'
+import BlogSection from '../components/learn/BlogSection.astro'
+import KeepGoingStrip from '../components/learn/KeepGoingStrip.astro'
+import { deepDives, suggestTopicHref } from '../config/learn'
+import { getPublishedPosts } from '../util/blog'
+import { featuredCourse, shelfCourses, posterEvent, tickerEvents, upcomingEvents } from '../util/learn'
+
+const courses = (await getCollection('courses')).map((entry) => entry.data)
+const events = (await getCollection('events')).map((entry) => entry.data)
+const posts = (await getPublishedPosts()).slice(0, 3)
+
+const today = new Date()
+const featured = featuredCourse(courses)
+const shelf = shelfCourses(courses)
+const ticker = tickerEvents(events, today)
+const headliner = posterEvent(events, today)
+const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
+---
+
+<LandingLayout
+  title="Learn — Strands Agents"
+  description="Courses, deep dives, and events from the team building the Strands Agents SDK."
+>
+  <div class="learn-page">
+    <LearnHero>
+      <EventsTicker slot="ticker" events={ticker} />
+    </LearnHero>
+
+    <div class="wrap">
+      <CoursesSection featured={featured} shelf={shelf} />
+
+      <section id="deep-dives" class="spread">
+        <DeepDivesSection dives={deepDives} suggestTopicHref={suggestTopicHref} />
+        <EventsPoster headliner={headliner} others={otherEvents.slice(0, 3)} />
+      </section>
+
+      <BlogSection posts={posts} />
+
+      <KeepGoingStrip />
+    </div>
+  </div>
+
+  <footer class="learn-footer">
+    <div class="learn-footer-inner">
+      <Copyright />
+    </div>
+  </footer>
+</LandingLayout>
+
+<style>
+  .learn-page {
+    width: 100%;
+    background: var(--sl-color-black, #0e0e0e);
+  }
+
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 3rem;
+  }
+
+  .spread {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding: 4.25rem 0;
+    border-top: 1px solid #262626;
+  }
+
+  .learn-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: var(--sl-color-bg-nav);
+  }
+
+  .learn-footer-inner {
+    max-width: 1200px;
+    text-align: left;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    .wrap {
+      padding: 0 1.5rem;
+    }
+
+    .spread {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>
