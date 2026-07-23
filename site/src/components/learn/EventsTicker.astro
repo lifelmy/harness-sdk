@@ -54,6 +54,11 @@ const { events } = Astro.props
     align-items: baseline;
     white-space: nowrap;
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .inner::-webkit-scrollbar {
+    display: none;
   }
 
   .lbl {
