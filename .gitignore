@@ -75,3 +75,4 @@ bin/
 .vitest*
 .local/
 
+.superpowers/
