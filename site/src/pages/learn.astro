@@ -127,14 +127,13 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     height: 100%;
     z-index: -1;
     pointer-events: none;
-    filter: blur(12px);
-    opacity: 0.2;
+    filter: blur(28px);
+    opacity: 0.1;
     overflow: hidden;
-  }
-
-  :global([data-theme='light']) .strands-curves-container {
-    filter: blur(20px);
-    opacity: 0.2;
+    /* Fade the strands out toward the top so they emerge gradually below the
+       hero instead of appearing at full strength where its gradient ends */
+    mask-image: linear-gradient(to bottom, transparent 0%, black 45%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 45%);
   }
 
   .strands-curve-secondary {
