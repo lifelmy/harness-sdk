@@ -307,6 +307,22 @@ sidebar:
               - docs/contribute/contributing/documentation
               - docs/contribute/contributing/feature-proposals
               - docs/contribute/contributing/extensions
+      - label: Learning
+        items:
+          - docs/community/learning/lesson1-how-agents-really-work
+          - docs/community/learning/lesson2-switching-model-providers
+          - docs/community/learning/lesson3-give-your-agent-tools-using-mcp
+          - docs/community/learning/lesson4-adding-callbacks-and-response-streaming
+          - docs/community/learning/lesson5-control-your-agent-with-hooks
+          - docs/community/learning/lesson6-agent-plugins-and-skills
+          - docs/community/learning/lesson7-improve-agent-reliability-with-strands-steering
+          - docs/community/learning/lesson8-context-engineering-and-conversation-management
+          - docs/community/learning/lesson9-persistent-memory-with-session-managers
+          - docs/community/learning/lesson10-multi-agent-patterns-agents-as-tools
+          - docs/community/learning/lesson11-multi-agent-patterns-graph-workflows
+          - docs/community/learning/lesson12-multi-agent-patterns-agent-swarms
+          - docs/community/learning/lesson13-evaluating-agents
+          - docs/community/learning/lesson14-deploying-agents-to-the-cloud
       - label: Labs
         items:
           - docs/labs
