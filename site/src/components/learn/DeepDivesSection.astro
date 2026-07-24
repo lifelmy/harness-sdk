@@ -15,7 +15,7 @@ const { dives, suggestTopicHref } = Astro.props
   <p class="sec-dek">Long-form explorations beyond the courses.</p>
 
   {
-    dives.map((dive, i) => (
+    dives.map((dive) => (
       <a class="dive" href={pathWithBase(dive.href)}>
         <div class="thumb" aria-hidden="true">
           {dive.thumbnail === 'loop' && (

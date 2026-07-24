@@ -110,17 +110,22 @@ export const courseSchema = z.object({
 })
 export type Course = z.infer<typeof courseSchema>
 
-export const eventSchema = z.object({
-  title: z.string(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
-  location: z.string(),
-  format: z.enum(['in-person', 'virtual']),
-  href: z.string().optional(),
-  description: z.string().optional(),
-  // The events poster headlines the soonest featured upcoming event
-  featured: z.boolean().default(false),
-})
+export const eventSchema = z
+  .object({
+    title: z.string(),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date().optional(),
+    location: z.string(),
+    format: z.enum(['in-person', 'virtual']),
+    href: z.string().optional(),
+    description: z.string().optional(),
+    // The events poster headlines the soonest featured upcoming event
+    featured: z.boolean().default(false),
+  })
+  .refine((d) => d.endDate === undefined || d.endDate >= d.startDate, {
+    message: 'endDate must not be before startDate',
+    path: ['endDate'],
+  })
 export type LearnEvent = z.infer<typeof eventSchema>
 
 export const collections = {

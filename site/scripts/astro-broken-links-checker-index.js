@@ -67,10 +67,19 @@ export default function astroBrokenLinksChecker(options = {}) {
         // Remove links whose URL starts with any of the excluded prefixes.
         // Excluded links are intentionally forward-looking (e.g. pages that ship
         // in a separate PR) and should not fail the build.
+        //
+        // Preview deploys build with a base path (ASTRO_BASE_PATH), so link keys
+        // look like `/<s3-path>/community/learning/...`. Strip the base prefix
+        // before matching so exclusions work correctly in preview environments.
+        // Guard against empty-string prefixes, which would match every link.
         const excludePrefixes = options.excludeLinks || [];
         if (excludePrefixes.length > 0) {
           for (const link of brokenLinksMap.keys()) {
-            if (excludePrefixes.some((prefix) => link.startsWith(prefix))) {
+            const linkNoBase =
+              options.basePath && link.startsWith(options.basePath)
+                ? link.slice(options.basePath.length)
+                : link;
+            if (excludePrefixes.some((prefix) => prefix && linkNoBase.startsWith(prefix))) {
               brokenLinksMap.delete(link);
             }
           }
