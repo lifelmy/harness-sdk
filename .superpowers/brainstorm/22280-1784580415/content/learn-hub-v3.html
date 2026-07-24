@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Learn — Strands Agents (visual-rich, full-page mockup)</title>
+<style>
+  :root {
+    --green: #00cc5f;
+    --green-bright: #00ff77;
+    --paper: #0e0e0e;
+    --text: #ececec;
+    --muted: #8f8f8f;
+    --rule: #262626;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--paper); color: var(--text); font-family: Georgia, 'Times New Roman', serif; line-height: 1.5; overflow-x:hidden; }
+  .sans { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  a { color: inherit; text-decoration: none; cursor: pointer; }
+  .green { color: var(--green); }
+
+  .site-nav { display:flex; align-items:center; gap:28px; padding:16px 48px; border-bottom:1px solid var(--rule); font-family:system-ui,sans-serif; font-size:14px; color:#aaa; position:sticky; top:0; background:rgba(14,14,14,.92); backdrop-filter:blur(8px); z-index:10; }
+  .site-nav .logo { color:#fff; font-weight:700; font-size:16px; }
+  .site-nav .active { color:var(--green); font-weight:600; }
+  .site-nav .right { margin-left:auto; display:flex; gap:20px; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+  .kicker { font-family:system-ui,sans-serif; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--green); font-weight:700; }
+  .kicker.dim { color:#7a7a7a; }
+  .btn { display:inline-block; font-family:system-ui,sans-serif; background:var(--green); color:#0a1f14; font-weight:700; border-radius:999px; padding:12px 28px; font-size:15px; transition:transform .15s ease; }
+  .btn:hover { transform:translateY(-1px); background:var(--green-bright); }
+  .btn.ghost { background:transparent; color:var(--text); border:1px solid #3a3a3a; }
+  .btn.sm { padding:9px 20px; font-size:13.5px; }
+  h2.sec { font-size:42px; letter-spacing:-.02em; font-weight:600; }
+  .sec-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .sec-head .more { font-family:system-ui,sans-serif; font-size:14px; color:var(--green); font-weight:600; }
+  .sec-dek { font-family:system-ui,sans-serif; color:var(--muted); font-size:15px; }
+  section { padding: 68px 0; }
+  .rule-top { border-top:1px solid var(--rule); }
+
+  /* ===== HERO with animated strand curves ===== */
+  .hero { position:relative; overflow:hidden; background: radial-gradient(ellipse 90% 130% at 70% -20%, #143324 0%, #0f2015 40%, var(--paper) 75%); }
+  .hero svg.strands { position:absolute; inset:0; width:100%; height:100%; opacity:.5; }
+  .hero svg.strands path { fill:none; stroke-width:1.5; stroke-linecap:round; }
+  .hero svg .s1 { stroke:#00cc5f; stroke-opacity:.55; stroke-dasharray: 8 14; animation: flow 22s linear infinite; }
+  .hero svg .s2 { stroke:#00ff77; stroke-opacity:.25; stroke-dasharray: 3 18; animation: flow 30s linear infinite reverse; }
+  .hero svg .s3 { stroke:#2a7a52; stroke-opacity:.5; stroke-dasharray: 14 10; animation: flow 26s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -600; } }
+  @media (prefers-reduced-motion: reduce) { .hero svg .s1,.hero svg .s2,.hero svg .s3 { animation:none; } }
+  .hero-inner { max-width:1200px; margin:0 auto; padding:88px 48px 72px; position:relative; }
+  .hero h1 { font-size:88px; line-height:1; letter-spacing:-.03em; font-weight:600; }
+  .hero h1 .dot { color:var(--green); }
+  .hero .dek { font-size:22px; color:#b9c4bd; max-width:640px; margin:20px 0 0; }
+  .hero .paths { display:flex; gap:28px; margin-top:36px; font-family:system-ui,sans-serif; font-size:14px; color:#9db5a7; }
+  .hero .paths a { border-bottom:1px solid #2c5940; padding-bottom:3px; }
+  .hero .paths a:hover { color:var(--green-bright); border-color:var(--green-bright); }
+
+  .ticker { border-top:1px solid #1d3527; background:#0c1a11; font-family:system-ui,sans-serif; font-size:13.5px; color:#a9c4b3; position:relative; }
+  .ticker .inner { max-width:1200px; margin:0 auto; padding:12px 48px; display:flex; gap:28px; align-items:baseline; white-space:nowrap; overflow-x:auto; }
+  .ticker b.lbl { color:var(--green); letter-spacing:.15em; font-size:11px; }
+  .ticker .date { color:#d8b25e; font-weight:700; }
+
+  /* ===== COURSE feature with COVER ART ===== */
+  .course-feature { display:grid; grid-template-columns:1fr 1.05fr; gap:56px; align-items:center; margin-top:36px; }
+  .course-main h3 { font-size:42px; letter-spacing:-.02em; line-height:1.08; font-weight:600; margin:14px 0 12px; }
+  .course-main h3 em { color:var(--green); font-weight:400; }
+  .course-main .dek { color:#b0b0b0; font-size:17px; max-width:480px; margin-bottom:26px; }
+  .course-main .meta { font-family:system-ui,sans-serif; font-size:13px; color:#7fa891; margin-top:20px; display:flex; gap:22px; flex-wrap:wrap; }
+
+  /* cover art: fake terminal building an agent, over gradient mesh */
+  .cover { position:relative; border-radius:20px; overflow:hidden; aspect-ratio: 16/10.5; background:
+      radial-gradient(ellipse 60% 50% at 20% 15%, #1d5c39cc 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 80%, #0b3d2455 0%, transparent 65%),
+      linear-gradient(160deg, #12281b 0%, #0d1810 100%);
+    border:1px solid #234534; box-shadow: 0 30px 80px -20px #00cc5f22; }
+  .cover svg.mini-strands { position:absolute; inset:0; width:100%; height:100%; opacity:.6; }
+  .cover svg.mini-strands path { fill:none; stroke-width:1.2; }
+  .cover .term { position:absolute; left:7%; right:7%; top:12%; bottom:-6%; background:#0b0f0cee; border:1px solid #2a4a37; border-radius:12px 12px 0 0; backdrop-filter: blur(4px); font-family:'SF Mono',Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; padding:0; overflow:hidden; }
+  .cover .term .bar { display:flex; gap:6px; padding:10px 14px; border-bottom:1px solid #1e3527; }
+  .cover .term .bar i { width:10px; height:10px; border-radius:99px; background:#28422f; }
+  .cover .term .bar i:first-child { background:#00cc5f; }
+  .cover .term pre { padding:14px 18px; color:#9fd8b4; margin:0; }
+  .cover .term .c { color:#587a63; } .cover .term .k { color:#00ff77; } .cover .term .s { color:#d8b25e; }
+  .cover .term .cursor { display:inline-block; width:7px; height:14px; background:#00ff77; vertical-align:-2px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  .cover .lesson-chip { position:absolute; top:7%; right:6%; font-family:system-ui,sans-serif; background:#00cc5f; color:#0a1f14; font-weight:800; font-size:12px; border-radius:99px; padding:6px 14px; letter-spacing:.06em; box-shadow:0 8px 24px #00cc5f44; }
+
+  .syllabus-strip { margin-top:48px; font-family:system-ui,sans-serif; }
+  .syllabus-strip .rows { display:grid; grid-template-columns:repeat(2, 1fr); column-gap:64px; margin-top:14px; }
+  .syl-row { display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #1d1d1d; color:#cfcfcf; font-size:14.5px; align-items:baseline; }
+  .syl-row:hover { color:var(--green-bright); }
+  .syl-row .n { color:var(--green); font-weight:700; font-variant-numeric:tabular-nums; min-width:24px; }
+  .syl-row .len { margin-left:auto; color:#5a5a5a; font-size:12px; }
+
+  /* course shelf w/ visual slots */
+  .course-shelf { display:grid; grid-template-columns:repeat(2,1fr); gap:32px; margin-top:52px; }
+  .shelf-card { position:relative; border-radius:16px; padding:26px 28px; min-height:150px; overflow:hidden; border:1px dashed #2e2e2e; }
+  .shelf-card .art { position:absolute; inset:0; opacity:.5; }
+  .shelf-card.dev .art { background: radial-gradient(ellipse 70% 90% at 90% 10%, #14301f 0%, transparent 60%); }
+  .shelf-card.vote .art { background: radial-gradient(ellipse 70% 90% at 10% 90%, #1a1a2e00 0%, transparent 40%), radial-gradient(ellipse 50% 70% at 85% 85%, #14301f 0%, transparent 55%); }
+  .shelf-card .idx { position:absolute; right:18px; bottom:-14px; font-size:96px; font-style:italic; color:transparent; -webkit-text-stroke:1.2px #234534; font-family:Georgia,serif; line-height:1; }
+  .shelf-card .tag { font-family:system-ui,sans-serif; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5c7a68; }
+  .shelf-card h4 { font-size:23px; font-weight:600; color:#a8a8a8; letter-spacing:-.01em; margin:8px 0 6px; position:relative; }
+  .shelf-card p { color:#6f6f6f; font-size:14px; font-family:system-ui,sans-serif; position:relative; max-width:75%; }
+
+  /* ===== DEEP DIVES with art thumbnails ===== */
+  .spread { display:grid; grid-template-columns:1.3fr 1fr; gap:64px; align-items:start; }
+  .dive { display:grid; grid-template-columns:150px 1fr; gap:26px; align-items:center; padding:24px 0; border-bottom:1px solid var(--rule); }
+  .dive:last-child { border-bottom:none; }
+  .dive .thumb { aspect-ratio:4/3; border-radius:12px; position:relative; overflow:hidden; border:1px solid #223; }
+  .dive .thumb svg { position:absolute; inset:0; width:100%; height:100%; }
+  .thumb.t1 { background: linear-gradient(145deg,#0f2b1c,#0b1210); }
+  .thumb.t2 { background: linear-gradient(145deg,#102217,#131309); }
+  .thumb.t3 { background: #131313; }
+  .dive h3 { font-size:24px; letter-spacing:-.01em; font-weight:600; margin-bottom:5px; }
+  .dive h3:hover { color:var(--green-bright); }
+  .dive p { color:var(--muted); font-size:14.5px; }
+  .dive .tag { font-family:system-ui,sans-serif; font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:#6a6a6a; }
+
+  /* events poster w/ topo texture */
+  .poster { background: var(--green); color:#0a1f14; border-radius:18px; padding:34px 34px 26px; position:sticky; top:96px; overflow:hidden; }
+  .poster svg.topo { position:absolute; inset:0; width:100%; height:100%; opacity:.18; }
+  .poster svg.topo path { fill:none; stroke:#053018; stroke-width:1.4; }
+  .poster > * { position:relative; }
+  .poster .kicker { color:#0a1f14; }
+  .poster h3 { font-size:30px; letter-spacing:-.02em; margin:12px 0 4px; }
+  .poster .sub { font-size:15px; color:#10432a; }
+  .poster .list { font-family:system-ui,sans-serif; margin-top:24px; border-top:1px solid #0f3322; font-size:14px; }
+  .poster .list .row { display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid #0f33224d; }
+  .poster .list b { min-width:60px; }
+  .poster .cal { display:inline-block; margin-top:16px; font-family:system-ui,sans-serif; font-weight:700; font-size:14px; border-bottom:2px solid #0a1f14; }
+
+  /* ===== BLOG with gradient covers ===== */
+  .blogrow { display:grid; grid-template-columns:repeat(3,1fr); gap:36px; margin-top:40px; }
+  .blogrow article .bcover { aspect-ratio:16/9; border-radius:12px; margin-bottom:16px; position:relative; overflow:hidden; border:1px solid #232323; }
+  .bcover.b1 { background: radial-gradient(ellipse 80% 100% at 30% 0%, #1d5c39 0%, #0d1810 70%); }
+  .bcover.b2 { background: conic-gradient(from 220deg at 70% 30%, #0d1810, #16402b, #0d1810); }
+  .bcover.b3 { background: linear-gradient(200deg, #142d1e 0%, #101010 80%); }
+  .bcover .glyph { position:absolute; right:14px; bottom:6px; font-family:Georgia,serif; font-style:italic; font-size:64px; color:transparent; -webkit-text-stroke:1.2px #2f6b48; line-height:1; }
+  .blogrow h3 { font-size:20px; letter-spacing:-.01em; margin:8px 0 6px; font-weight:600; }
+  .blogrow h3:hover { color:var(--green-bright); }
+  .blogrow p { color:var(--muted); font-size:14px; }
+
+  .keep-going { border-top:1px solid var(--rule); padding:36px 0 72px; display:flex; gap:40px; align-items:baseline; font-family:system-ui,sans-serif; font-size:15px; color:#bbb; }
+  .keep-going a:hover { color:var(--green-bright); }
+
+  @media (max-width: 900px) {
+    .wrap, .hero-inner { padding-left:24px; padding-right:24px; }
+    .hero h1 { font-size:52px; }
+    .course-feature, .spread, .course-shelf, .blogrow { grid-template-columns:1fr; gap:36px; }
+    .syllabus-strip .rows { grid-template-columns:1fr; }
+    .poster { position:static; }
+    .dive { grid-template-columns:110px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="logo">Strands</span>
+  <a>Docs</a><a>Examples</a><a>Community</a><a>API Reference</a>
+  <a class="active">Learn</a><a>Blog</a>
+  <span class="right"><a>Labs ↗</a><a>GitHub ↗</a><a>Discord ↗</a></span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <svg class="strands" viewBox="0 0 1200 420" preserveAspectRatio="none">
+    <path class="s1" d="M-50,320 C200,280 350,120 600,150 S1000,320 1250,220"/>
+    <path class="s2" d="M-50,360 C250,330 400,170 650,190 S1050,340 1250,260"/>
+    <path class="s3" d="M-50,280 C180,250 340,80 620,110 S980,290 1250,180"/>
+  </svg>
+  <div class="hero-inner">
+    <span class="kicker">Strands Academy</span>
+    <h1>Learn<span class="dot">.</span></h1>
+    <p class="dek">Courses, deep dives, and events from the team building the SDK — everything you need to go from your first agent loop to production.</p>
+    <div class="paths">
+      <a>↓ Courses</a><a>↓ Deep dives</a><a>↓ Events</a><a>↓ From the blog</a>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="inner">
+      <b class="lbl">UPCOMING</b>
+      <a><span class="date">Dec 1–5</span> &nbsp;re:Invent workshop · Las Vegas</a>
+      <a><span class="date">Jan 20</span> &nbsp;Community call · Discord</a>
+      <a><span class="date">Feb 10</span> &nbsp;AI Eng Summit talk · NYC</a>
+      <a class="green" style="margin-left:auto;">Full calendar →</a>
+    </div>
+  </div>
+</header>
+
+<!-- COURSES -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec">Courses</h2>
+      <span class="sec-dek">Structured, hands-on paths. More on the way.</span>
+    </div>
+
+    <div class="course-feature">
+      <div class="course-main">
+        <span class="kicker">Course № 1 · Available now</span>
+        <h3>Agent Fundamentals <em>with Strands</em></h3>
+        <p class="dek">Fourteen lessons, one production agent. Build up from the agent loop through tools, hooks, steering, memory, and multi-agent patterns — then deploy and evaluate it.</p>
+        <a class="btn">Start the course →</a>
+        <a class="btn ghost sm" style="margin-left:10px;">Syllabus</a>
+        <div class="meta sans">
+          <span>⏱ ~6 hours</span><span>🛠 Code-along</span><span>🐍 Python &amp; TypeScript</span><span>💸 Free</span>
+        </div>
+      </div>
+
+      <!-- COVER ART: terminal building an agent -->
+      <div class="cover">
+        <svg class="mini-strands" viewBox="0 0 400 260" preserveAspectRatio="none">
+          <path d="M-10,60 C80,30 180,110 410,50" stroke="#2a7a52" stroke-opacity=".6"/>
+          <path d="M-10,40 C100,10 220,90 410,30" stroke="#00cc5f" stroke-opacity=".35"/>
+        </svg>
+        <span class="lesson-chip">LESSON 01</span>
+        <div class="term">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <pre><span class="c"># your first agent — lesson 1</span>
+<span class="k">from</span> strands <span class="k">import</span> Agent
+
+agent = Agent()
+agent(<span class="s">"What can you do?"</span>)
+<span class="c">▸ running the agent loop…</span>
+<span class="c">▸ model → tools → response</span>
+<span class="cursor"></span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- syllabus strip -->
+    <div class="syllabus-strip">
+      <span class="kicker dim">In this course</span>
+      <div class="rows">
+        <div class="syl-row"><span class="n">01</span> How agents really work <span class="len">18 min</span></div>
+        <div class="syl-row"><span class="n">02</span> Switching model providers <span class="len">12 min</span></div>
+        <div class="syl-row"><span class="n">03</span> Give your agent tools using MCP <span class="len">22 min</span></div>
+        <div class="syl-row"><span class="n">04</span> Callbacks &amp; response streaming <span class="len">15 min</span></div>
+        <div class="syl-row"><span class="n">05</span> Control your agent with hooks <span class="len">20 min</span></div>
+        <div class="syl-row"><span class="n">06</span> Agent plugins &amp; skills <span class="len">17 min</span></div>
+        <div class="syl-row"><span class="n">07</span> Reliability with Strands steering <span class="len">25 min</span></div>
+        <div class="syl-row"><span class="n">08</span> Context engineering &amp; conversations <span class="len">28 min</span></div>
+        <div class="syl-row"><span class="n">09</span> Persistent memory &amp; sessions <span class="len">21 min</span></div>
+        <div class="syl-row"><span class="n">10</span> Multi-agent: agents as tools <span class="len">19 min</span></div>
+        <div class="syl-row"><span class="n">11</span> Multi-agent: graph workflows <span class="len">24 min</span></div>
+        <div class="syl-row"><span class="n">12</span> Multi-agent: agent swarms <span class="len">23 min</span></div>
+        <div class="syl-row"><span class="n">13</span> Evaluating agents <span class="len">26 min</span></div>
+        <div class="syl-row"><span class="n">14</span> Deploying agents to the cloud <span class="len">30 min</span></div>
+      </div>
+    </div>
+
+    <!-- shelf: future courses -->
+    <div class="course-shelf">
+      <div class="shelf-card dev">
+        <div class="art"></div>
+        <div class="idx">2</div>
+        <span class="tag">In development</span>
+        <h4>Advanced Multi-Agent Systems</h4>
+        <p>Graphs, swarms, and orchestration patterns for real workloads.</p>
+      </div>
+      <div class="shelf-card vote">
+        <div class="art"></div>
+        <div class="idx">3</div>
+        <span class="tag">Proposed — vote on Discord</span>
+        <h4>Evals in Practice</h4>
+        <p>Measure, regress, and improve agent quality with strands-evals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVES + EVENTS -->
+<section class="rule-top">
+  <div class="wrap">
+    <div class="spread">
+      <div>
+        <h2 class="sec">Deep dives</h2>
+        <p class="sec-dek" style="margin-top:6px;">Long-form explorations beyond the courses.</p>
+
+        <div class="dive">
+          <div class="thumb t1">
+            <svg viewBox="0 0 150 112">
+              <!-- self-improving: spiral arrows -->
+              <circle cx="75" cy="56" r="30" fill="none" stroke="#00cc5f" stroke-width="1.5" stroke-dasharray="140 60" opacity=".8"/>
+              <circle cx="75" cy="56" r="42" fill="none" stroke="#2a7a52" stroke-width="1.2" stroke-dasharray="180 90" opacity=".6"/>
+              <path d="M105 50 l6 8 l-10 2 z" fill="#00ff77"/>
+              <circle cx="75" cy="56" r="8" fill="#00cc5f"/>
+            </svg>
+          </div>
+          <div>
+            <span class="tag">Advanced · 25 min read</span>
+            <h3>Building self-improving agents</h3>
+            <p>Agents that write their own tools at runtime, rewrite their own prompts, and orchestrate sub-agents.</p>
+          </div>
+        </div>
+
+        <div class="dive">
+          <div class="thumb t2">
+            <svg viewBox="0 0 150 112">
+              <!-- steering: path corrected to target -->
+              <path d="M15 90 C50 85, 60 40, 95 35" fill="none" stroke="#5a5a3a" stroke-width="1.5" stroke-dasharray="4 5"/>
+              <path d="M15 90 C55 80, 80 60, 118 30" fill="none" stroke="#00cc5f" stroke-width="2"/>
+              <circle cx="118" cy="30" r="9" fill="none" stroke="#00ff77" stroke-width="1.5"/>
+              <circle cx="118" cy="30" r="3.5" fill="#00ff77"/>
+            </svg>
+          </div>
+          <div>
+            <span class="tag">Case study · 15 min read</span>
+            <h3>How steering hooks hit 100% agent accuracy</h3>
+            <p>A production case study in constraining agent behavior — and the numbers behind the headline.</p>
+          </div>
+        </div>
+
+        <div class="dive">
+          <div class="thumb t3">
+            <svg viewBox="0 0 150 112">
+              <text x="75" y="72" text-anchor="middle" font-family="Georgia" font-style="italic" font-size="52" fill="none" stroke="#2f6b48" stroke-width="1.2">?</text>
+            </svg>
+          </div>
+          <div>
+            <span class="tag">Suggest the next one</span>
+            <h3 style="color:#777;">What should we cover next?</h3>
+            <p>Tell us on Discord or open a discussion on GitHub.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="poster">
+          <svg class="topo" viewBox="0 0 300 380" preserveAspectRatio="none">
+            <path d="M-10,40 C60,20 140,60 310,30"/>
+            <path d="M-10,80 C70,55 150,100 310,70"/>
+            <path d="M-10,120 C80,90 160,140 310,110"/>
+            <path d="M-10,160 C90,125 170,180 310,150"/>
+            <path d="M-10,200 C100,160 180,220 310,190"/>
+            <path d="M-10,240 C110,195 190,260 310,230"/>
+            <path d="M-10,280 C120,230 200,300 310,270"/>
+            <path d="M-10,320 C130,265 210,340 310,310"/>
+          </svg>
+          <span class="kicker">Meet us in person</span>
+          <h3>re:Invent 2026</h3>
+          <p class="sub">Agent workshop + booth · Dec 1–5 · Las Vegas</p>
+          <div class="list">
+            <div class="row"><b>Jan 20</b><span>Community call · Discord stage</span></div>
+            <div class="row"><b>Feb 10</b><span>AI Engineering Summit talk · NYC</span></div>
+            <div class="row"><b>Mar 03</b><span>Strands workshop · Seattle</span></div>
+          </div>
+          <a class="cal">Full events calendar →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- FROM THE BLOG -->
+<section class="rule-top">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec">From the blog</h2>
+      <a class="more">All posts →</a>
+    </div>
+    <div class="blogrow">
+      <article>
+        <div class="bcover b1"><span class="glyph">1yr</span></div>
+        <span class="kicker dim">Featured</span>
+        <h3>One year of production agents: what we learned</h3>
+        <p>Shipping agents at scale taught us more about context, evals, and failure modes than any benchmark.</p>
+      </article>
+      <article>
+        <div class="bcover b2"><span class="glyph">∞</span></div>
+        <span class="kicker dim">Engineering</span>
+        <h3>Inside the Strands agent loop</h3>
+        <p>A guided tour of the event loop that powers every Strands agent.</p>
+      </article>
+      <article>
+        <div class="bcover b3"><span class="glyph">☂</span></div>
+        <span class="kicker dim">Community</span>
+        <h3>Strands community packages, curated</h3>
+        <p>Model providers, tools, and session managers built by the community.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="keep-going">
+    <span class="kicker dim">Keep going</span>
+    <a>Examples gallery →</a>
+    <a>Labs projects →</a>
+    <a>API reference →</a>
+    <a>Join Discord →</a>
+  </div>
+</div>
+
+</body>
+</html>

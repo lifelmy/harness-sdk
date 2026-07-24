@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Learn — Strands Agents (hub IA, full-page mockup)</title>
+<style>
+  :root {
+    --green: #00cc5f;
+    --green-bright: #00ff77;
+    --paper: #0e0e0e;
+    --text: #ececec;
+    --muted: #8f8f8f;
+    --rule: #262626;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--paper); color: var(--text); font-family: Georgia, 'Times New Roman', serif; line-height: 1.5; }
+  .sans { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  a { color: inherit; text-decoration: none; cursor: pointer; }
+  .green { color: var(--green); }
+
+  .site-nav { display:flex; align-items:center; gap:28px; padding:16px 48px; border-bottom:1px solid var(--rule); font-family:system-ui,sans-serif; font-size:14px; color:#aaa; position:sticky; top:0; background:rgba(14,14,14,.92); backdrop-filter:blur(8px); z-index:10; }
+  .site-nav .logo { color:#fff; font-weight:700; font-size:16px; }
+  .site-nav .active { color:var(--green); font-weight:600; }
+  .site-nav .right { margin-left:auto; display:flex; gap:20px; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+  .kicker { font-family:system-ui,sans-serif; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--green); font-weight:700; }
+  .kicker.dim { color:#7a7a7a; }
+
+  .btn { display:inline-block; font-family:system-ui,sans-serif; background:var(--green); color:#0a1f14; font-weight:700; border-radius:999px; padding:12px 28px; font-size:15px; transition:transform .15s ease; }
+  .btn:hover { transform:translateY(-1px); background:var(--green-bright); }
+  .btn.ghost { background:transparent; color:var(--text); border:1px solid #3a3a3a; }
+  .btn.sm { padding:9px 20px; font-size:13.5px; }
+
+  h2.sec { font-size:42px; letter-spacing:-.02em; font-weight:600; }
+  .sec-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .sec-head .more { font-family:system-ui,sans-serif; font-size:14px; color:var(--green); font-weight:600; }
+  .sec-dek { font-family:system-ui,sans-serif; color:var(--muted); font-size:15px; }
+  section { padding: 68px 0; }
+  .rule-top { border-top:1px solid var(--rule); }
+
+  /* ===== PAGE HERO — belongs to "Learn", not to a course ===== */
+  .hero { position:relative; overflow:hidden; background: radial-gradient(ellipse 90% 130% at 70% -20%, #143324 0%, #0f2015 40%, var(--paper) 75%); }
+  .hero-inner { max-width:1200px; margin:0 auto; padding:88px 48px 72px; }
+  .hero h1 { font-size:88px; line-height:1; letter-spacing:-.03em; font-weight:600; }
+  .hero h1 .dot { color:var(--green); }
+  .hero .dek { font-size:22px; color:#b9c4bd; max-width:640px; margin:20px 0 0; }
+  .hero .paths { display:flex; gap:28px; margin-top:36px; font-family:system-ui,sans-serif; font-size:14px; color:#9db5a7; }
+  .hero .paths a { border-bottom:1px solid #2c5940; padding-bottom:3px; }
+  .hero .paths a:hover { color:var(--green-bright); border-color:var(--green-bright); }
+
+  /* events ticker under hero */
+  .ticker { border-top:1px solid #1d3527; background:#0c1a11; font-family:system-ui,sans-serif; font-size:13.5px; color:#a9c4b3; }
+  .ticker .inner { max-width:1200px; margin:0 auto; padding:12px 48px; display:flex; gap:28px; align-items:baseline; white-space:nowrap; overflow-x:auto; }
+  .ticker b { color:var(--green); letter-spacing:.15em; font-size:11px; }
+  .ticker a:hover { color:var(--green-bright); }
+
+  /* ===== COURSES section: featured course + upcoming shelf ===== */
+  .course-feature { display:grid; grid-template-columns:1.35fr 1fr; gap:64px; align-items:start; margin-top:36px; }
+  .course-feature .meganum { position:absolute; right:-20px; top:-40px; font-size:230px; font-style:italic; font-family:Georgia,serif; color:transparent; -webkit-text-stroke:1.5px #1e4a32; line-height:.8; pointer-events:none; }
+  .course-main { position:relative; }
+  .course-main h3 { font-size:44px; letter-spacing:-.02em; line-height:1.08; font-weight:600; margin:14px 0 12px; max-width:520px; }
+  .course-main h3 em { color:var(--green); font-weight:400; }
+  .course-main .dek { color:#b0b0b0; font-size:17px; max-width:480px; margin-bottom:26px; }
+  .course-main .meta { font-family:system-ui,sans-serif; font-size:13px; color:#7fa891; margin-top:20px; display:flex; gap:22px; flex-wrap:wrap; }
+
+  .syllabus { font-family:system-ui,sans-serif; font-size:14.5px; border-left:1px solid var(--rule); padding-left:40px; }
+  .syllabus .row { display:flex; gap:14px; padding:8.5px 0; border-bottom:1px solid #1d1d1d; color:#cfcfcf; }
+  .syllabus .row:hover { color:var(--green-bright); }
+  .syllabus .n { color:var(--green); font-weight:700; font-variant-numeric:tabular-nums; min-width:24px; }
+  .syllabus .more-row { color:var(--muted); padding-top:12px; font-size:13px; }
+
+  .course-shelf { display:grid; grid-template-columns:repeat(2,1fr); gap:48px; margin-top:56px; padding-top:36px; border-top:1px solid var(--rule); }
+  .course-shelf .slot { display:flex; gap:20px; align-items:baseline; }
+  .course-shelf .idx { font-size:56px; font-style:italic; color:#1c3a29; font-family:Georgia,serif; line-height:.8; }
+  .course-shelf h4 { font-size:22px; font-weight:600; color:#9a9a9a; letter-spacing:-.01em; }
+  .course-shelf p { color:#6f6f6f; font-size:14px; font-family:system-ui,sans-serif; margin-top:4px; }
+  .course-shelf .tag { font-family:system-ui,sans-serif; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5c7a68; }
+
+  /* ===== DEEP DIVES + EVENTS ===== */
+  .spread { display:grid; grid-template-columns:1.25fr 1fr; gap:72px; align-items:start; }
+  .dive { display:flex; gap:28px; align-items:baseline; padding:26px 0; border-bottom:1px solid var(--rule); }
+  .dive:last-child { border-bottom:none; }
+  .dive .idx { font-size:72px; font-style:italic; color:#204932; line-height:.75; min-width:60px; font-family:Georgia,serif; }
+  .dive h3 { font-size:25px; letter-spacing:-.01em; font-weight:600; margin-bottom:6px; }
+  .dive h3:hover { color:var(--green-bright); }
+  .dive p { color:var(--muted); font-size:15px; }
+  .dive .tag { font-family:system-ui,sans-serif; font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:#6a6a6a; }
+
+  .poster { background:var(--green); color:#0a1f14; border-radius:18px; padding:34px 34px 26px; position:sticky; top:96px; }
+  .poster .kicker { color:#0a1f14; }
+  .poster h3 { font-size:30px; letter-spacing:-.02em; margin:12px 0 4px; }
+  .poster .sub { font-size:15px; color:#10432a; }
+  .poster .list { font-family:system-ui,sans-serif; margin-top:24px; border-top:1px solid #0f3322; font-size:14px; }
+  .poster .list .row { display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid #0f33224d; }
+  .poster .list b { min-width:60px; }
+  .poster .cal { display:inline-block; margin-top:16px; font-family:system-ui,sans-serif; font-weight:700; font-size:14px; border-bottom:2px solid #0a1f14; }
+
+  /* ===== BLOG ===== */
+  .blogrow { display:grid; grid-template-columns:repeat(3,1fr); gap:48px; margin-top:40px; }
+  .blogrow article { border-top:2px solid #333; padding-top:20px; }
+  .blogrow article:first-child { border-top-color:var(--green); }
+  .blogrow h3 { font-size:21px; letter-spacing:-.01em; margin:10px 0 8px; font-weight:600; }
+  .blogrow h3:hover { color:var(--green-bright); }
+  .blogrow p { color:var(--muted); font-size:14.5px; }
+
+  .keep-going { border-top:1px solid var(--rule); padding:36px 0 72px; display:flex; gap:40px; align-items:baseline; font-family:system-ui,sans-serif; font-size:15px; color:#bbb; }
+  .keep-going a:hover { color:var(--green-bright); }
+
+  @media (max-width: 900px) {
+    .wrap, .hero-inner { padding-left:24px; padding-right:24px; }
+    .hero h1 { font-size:52px; }
+    .course-feature, .spread, .course-shelf, .blogrow { grid-template-columns:1fr; gap:36px; }
+    .syllabus { border-left:none; padding-left:0; }
+    .poster { position:static; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="logo">Strands</span>
+  <a>Docs</a><a>Examples</a><a>Community</a><a>API Reference</a>
+  <a class="active">Learn</a><a>Blog</a>
+  <span class="right"><a>Labs ↗</a><a>GitHub ↗</a><a>Discord ↗</a></span>
+</nav>
+
+<!-- PAGE HERO — the hub's identity -->
+<header class="hero">
+  <div class="hero-inner">
+    <span class="kicker">Strands Academy</span>
+    <h1>Learn<span class="dot">.</span></h1>
+    <p class="dek">Courses, deep dives, and events from the team building the SDK — everything you need to go from your first agent loop to production.</p>
+    <div class="paths">
+      <a>↓ Courses</a>
+      <a>↓ Deep dives</a>
+      <a>↓ Events</a>
+      <a>↓ From the blog</a>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="inner">
+      <b>UPCOMING</b>
+      <a><b style="color:#d8b25e; letter-spacing:0;">Dec 1–5</b> &nbsp;re:Invent workshop · Las Vegas</a>
+      <a><b style="color:#d8b25e; letter-spacing:0;">Jan 20</b> &nbsp;Community call · Discord</a>
+      <a><b style="color:#d8b25e; letter-spacing:0;">Feb 10</b> &nbsp;AI Eng Summit talk · NYC</a>
+      <a class="green" style="margin-left:auto;">Full calendar →</a>
+    </div>
+  </div>
+</header>
+
+<!-- COURSES -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec">Courses</h2>
+      <span class="sec-dek">Structured, hands-on paths. More on the way.</span>
+    </div>
+
+    <div class="course-feature">
+      <div class="course-main">
+        <div class="meganum">14</div>
+        <span class="kicker">Course № 1 · Available now</span>
+        <h3>Agent Fundamentals <em>with Strands</em></h3>
+        <p class="dek">Fourteen lessons, one production agent. Build up from the agent loop through tools, hooks, steering, memory, and multi-agent patterns — then deploy and evaluate it.</p>
+        <a class="btn">Start the course →</a>
+        <a class="btn ghost sm" style="margin-left:10px;">Syllabus</a>
+        <div class="meta sans">
+          <span>⏱ ~6 hours</span><span>🛠 Code-along</span><span>🐍 Python &amp; TypeScript</span><span>💸 Free</span>
+        </div>
+      </div>
+
+      <div class="syllabus">
+        <div class="row"><span class="n">01</span> How agents really work</div>
+        <div class="row"><span class="n">02</span> Switching model providers</div>
+        <div class="row"><span class="n">03</span> Give your agent tools using MCP</div>
+        <div class="row"><span class="n">04</span> Callbacks &amp; response streaming</div>
+        <div class="row"><span class="n">05</span> Control your agent with hooks</div>
+        <div class="row"><span class="n">06</span> Agent plugins &amp; skills</div>
+        <div class="row"><span class="n">07</span> Reliability with Strands steering</div>
+        <div class="row"><span class="n">08</span> Context engineering</div>
+        <div class="row-more more-row sans">＋ six more lessons — full syllabus →</div>
+      </div>
+    </div>
+
+    <div class="course-shelf">
+      <div class="slot">
+        <div class="idx">2</div>
+        <div>
+          <span class="tag">In development</span>
+          <h4>Advanced Multi-Agent Systems</h4>
+          <p>Graphs, swarms, and orchestration patterns for real workloads.</p>
+        </div>
+      </div>
+      <div class="slot">
+        <div class="idx">3</div>
+        <div>
+          <span class="tag">Proposed — vote on Discord</span>
+          <h4>Evals in Practice</h4>
+          <p>Measure, regress, and improve agent quality with strands-evals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVES + EVENTS -->
+<section class="rule-top">
+  <div class="wrap">
+    <div class="spread">
+      <div>
+        <div class="sec-head" style="margin-bottom:0;">
+          <h2 class="sec">Deep dives</h2>
+        </div>
+        <p class="sec-dek" style="margin-top:6px;">Long-form explorations beyond the courses.</p>
+
+        <div class="dive">
+          <div class="idx">1</div>
+          <div>
+            <span class="tag">Advanced · 25 min read</span>
+            <h3>Building self-improving agents</h3>
+            <p>Agents that write their own tools at runtime, rewrite their own prompts, and orchestrate sub-agents.</p>
+          </div>
+        </div>
+        <div class="dive">
+          <div class="idx">2</div>
+          <div>
+            <span class="tag">Case study · 15 min read</span>
+            <h3>How steering hooks hit 100% agent accuracy</h3>
+            <p>A production case study in constraining agent behavior — and the numbers behind the headline.</p>
+          </div>
+        </div>
+        <div class="dive">
+          <div class="idx">3</div>
+          <div>
+            <span class="tag">Suggest the next one</span>
+            <h3 style="color:#777;">What should we cover next?</h3>
+            <p>Tell us on Discord or open a discussion on GitHub.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="poster">
+          <span class="kicker">Meet us in person</span>
+          <h3>re:Invent 2026</h3>
+          <p class="sub">Agent workshop + booth · Dec 1–5 · Las Vegas</p>
+          <div class="list">
+            <div class="row"><b>Jan 20</b><span>Community call · Discord stage</span></div>
+            <div class="row"><b>Feb 10</b><span>AI Engineering Summit talk · NYC</span></div>
+            <div class="row"><b>Mar 03</b><span>Strands workshop · Seattle</span></div>
+          </div>
+          <a class="cal">Full events calendar →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- FROM THE BLOG -->
+<section class="rule-top">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec">From the blog</h2>
+      <a class="more">All posts →</a>
+    </div>
+    <div class="blogrow">
+      <article>
+        <span class="kicker dim">Featured</span>
+        <h3>One year of production agents: what we learned</h3>
+        <p>Shipping agents at scale taught us more about context, evals, and failure modes than any benchmark.</p>
+      </article>
+      <article>
+        <span class="kicker dim">Engineering</span>
+        <h3>Inside the Strands agent loop</h3>
+        <p>A guided tour of the event loop that powers every Strands agent.</p>
+      </article>
+      <article>
+        <span class="kicker dim">Community</span>
+        <h3>Strands community packages, curated</h3>
+        <p>Model providers, tools, and session managers built by the community.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="keep-going">
+    <span class="kicker dim">Keep going</span>
+    <a>Examples gallery →</a>
+    <a>Labs projects →</a>
+    <a>API reference →</a>
+    <a>Join Discord →</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -17,18 +17,10 @@ export interface DeepDive {
 
 export const deepDives: DeepDive[] = [
   {
-    title: 'Building self-improving agents',
-    tag: 'Advanced',
-    description:
-      'Agents that write their own tools at runtime, rewrite their own prompts, and orchestrate sub-agents.',
-    href: '/community/learning/deep-dive-building-self-improving-agents/',
-    thumbnail: 'loop',
-  },
-  {
     title: 'How steering hooks hit 100% agent accuracy',
-    tag: 'Case study',
+    tag: 'Case study · Blog',
     description: 'A production case study in constraining agent behavior — and the numbers behind the headline.',
-    href: '/community/learning/strands-steering-hooks/',
+    href: '/blog/steering-accuracy-beats-prompts-workflows/',
     thumbnail: 'target',
   },
 ]

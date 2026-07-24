@@ -94,9 +94,6 @@ export default defineConfig({
       cacheExternalLinks: false,      // Optional: cache verified external links to disk (default: true)
       throwError: true,               // Optional: fail the build if broken links are found (default: false)
       linkCheckerDir: '.link-checker', // Optional: directory for cache and log files (default: '.link-checker')
-      // Course lesson pages under /community/learning/ ship in a separate PR;
-      // exclude them from broken-link failures until those pages land.
-      excludeLinks: ['/community/learning/'],
     }),
    AutoImport({
       imports: [

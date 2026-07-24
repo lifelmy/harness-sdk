@@ -1,0 +1,115 @@
+<h2>Which overall layout direction for /learn/?</h2>
+<p class="subtitle">All three use the site's dark theme + Strands green. Focus on structure, not polish — colors/spacing get refined later. Click one to select.</p>
+
+<style>
+  .lp { background:#0e0e0e; color:#eee; border-radius:8px; padding:0; overflow:hidden; font-family:system-ui,sans-serif; font-size:11px; line-height:1.35; }
+  .lp * { box-sizing:border-box; }
+  .lp .nav { display:flex; gap:10px; padding:8px 14px; border-bottom:1px solid #2a2a2a; color:#999; font-size:10px; }
+  .lp .nav b { color:#fff; }
+  .lp .green { color:#00cc5f; }
+  .lp .pill { display:inline-block; border:1px solid #00cc5f55; color:#00cc5f; border-radius:99px; padding:1px 8px; font-size:9px; }
+  .lp .btn { display:inline-block; background:#00cc5f; color:#0e0e0e; font-weight:700; border-radius:6px; padding:5px 12px; font-size:10px; }
+  .lp .btn.ghost { background:transparent; color:#eee; border:1px solid #444; }
+  .lp .card { background:#171717; border:1px solid #2a2a2a; border-radius:8px; padding:10px; }
+  .lp .muted { color:#888; }
+  .lp h1,.lp h2,.lp h3,.lp h4 { margin:0 0 4px; color:#fff; }
+</style>
+
+<div class="cards" style="grid-template-columns:1fr;">
+
+  <div class="card" data-choice="A-featured-course-hero" onclick="toggleSelect(this)">
+    <div class="card-body"><h3>A — Featured Course Hero</h3>
+    <p>Hero IS the flagship course: big title, meta (14 lessons · hands-on · free), "Start Lesson 1" CTA, and an inline syllabus preview. Below: deep dives row, then "more coming" catalog grid.</p></div>
+    <div class="card-image" style="padding:12px;">
+      <div class="lp">
+        <div class="nav"><b>Strands</b> Docs · Examples · Community · <b class="green">Learn</b> · Blog</div>
+        <div style="display:flex; gap:16px; padding:20px 18px; align-items:flex-start;">
+          <div style="flex:1.3;">
+            <span class="pill">FLAGSHIP COURSE</span>
+            <h1 style="font-size:22px; margin-top:8px;">Agent Fundamentals<br/>with Strands</h1>
+            <p class="muted">Go from your first agent loop to production deployment in 14 hands-on lessons.</p>
+            <p class="muted" style="font-size:9px;">⏱ ~6 hrs · 🛠 code-along · 🐍 Python & TS</p>
+            <div style="margin-top:8px;"><span class="btn">Start Lesson 1 →</span> <span class="btn ghost">View syllabus</span></div>
+          </div>
+          <div style="flex:1;" class="card">
+            <h4 style="font-size:10px;" class="muted">SYLLABUS</h4>
+            <div style="border-bottom:1px solid #2a2a2a; padding:4px 0;"><b class="green">01</b> How Agents Really Work</div>
+            <div style="border-bottom:1px solid #2a2a2a; padding:4px 0;"><b class="green">02</b> Switching Model Providers</div>
+            <div style="border-bottom:1px solid #2a2a2a; padding:4px 0;"><b class="green">03</b> Give Your Agent Tools w/ MCP</div>
+            <div style="padding:4px 0;" class="muted">… 11 more lessons</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 16px;">
+          <h4 style="font-size:11px;">Deep dives</h4>
+          <div style="display:flex; gap:8px;">
+            <div class="card" style="flex:1;"><b>Self-improving Agents</b><br/><span class="muted">Agents that write their own tools</span></div>
+            <div class="card" style="flex:1;"><b>100% Accuracy w/ Steering</b><br/><span class="muted">A steering-hooks case study</span></div>
+            <div class="card" style="flex:1; opacity:.5;"><b>More coming soon</b><br/><span class="muted">Suggest a topic →</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B-editorial-magazine" onclick="toggleSelect(this)">
+    <div class="card-body"><h3>B — Editorial Magazine</h3>
+    <p>Short mission-statement hero ("Learn to build production agents"), then a magazine-style asymmetric grid: one large feature card for the course, medium cards for deep dives, small cards linking labs/examples/blog. Feels like a content hub.</p></div>
+    <div class="card-image" style="padding:12px;">
+      <div class="lp">
+        <div class="nav"><b>Strands</b> Docs · Examples · Community · <b class="green">Learn</b> · Blog</div>
+        <div style="padding:18px 18px 10px; text-align:center;">
+          <h1 style="font-size:20px;">Learn to build <span class="green">production agents</span></h1>
+          <p class="muted">Courses, deep dives, and hands-on material from the Strands team.</p>
+        </div>
+        <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:8px; padding:0 18px 16px;">
+          <div class="card" style="grid-row:span 2; background:linear-gradient(160deg,#12241a,#171717);">
+            <span class="pill">COURSE · 14 LESSONS</span>
+            <h2 style="font-size:16px; margin-top:6px;">Agent Fundamentals with Strands</h2>
+            <p class="muted">First agent loop → tools & MCP → hooks & steering → multi-agent → deploy.</p>
+            <div style="margin-top:6px;"><span class="btn">Start course →</span></div>
+          </div>
+          <div class="card"><span class="pill" style="border-color:#666; color:#aaa;">DEEP DIVE</span><br/><b>Self-improving Agents</b></div>
+          <div class="card"><span class="pill" style="border-color:#666; color:#aaa;">DEEP DIVE</span><br/><b>100% Accuracy with Steering Hooks</b></div>
+        </div>
+        <div style="display:flex; gap:8px; padding:0 18px 16px;">
+          <div class="card" style="flex:1;"><span class="muted">MORE WAYS TO LEARN</span><br/>Examples gallery →</div>
+          <div class="card" style="flex:1;"><span class="muted">&nbsp;</span><br/>Labs projects →</div>
+          <div class="card" style="flex:1;"><span class="muted">&nbsp;</span><br/>Engineering blog →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="C-learning-path" onclick="toggleSelect(this)">
+    <div class="card-body"><h3>C — Learning Path / Journey</h3>
+    <p>Hero frames a journey ("Zero to production in 14 lessons") with a visual numbered path. Lessons grouped into stages (Foundations → Control → Multi-agent → Production) rendered as a vertical track with milestones. Deep dives branch off the track.</p></div>
+    <div class="card-image" style="padding:12px;">
+      <div class="lp">
+        <div class="nav"><b>Strands</b> Docs · Examples · Community · <b class="green">Learn</b> · Blog</div>
+        <div style="padding:18px; text-align:center;">
+          <h1 style="font-size:20px;">Zero to production, <span class="green">one lesson at a time</span></h1>
+          <div style="margin-top:6px;"><span class="btn">Begin the path →</span></div>
+        </div>
+        <div style="display:flex; gap:10px; padding:0 18px 16px;">
+          <div style="width:20px; display:flex; flex-direction:column; align-items:center;">
+            <div style="width:10px;height:10px;border-radius:99px;background:#00cc5f;"></div>
+            <div style="flex:1;width:2px;background:linear-gradient(#00cc5f,#2a2a2a);"></div>
+            <div style="width:10px;height:10px;border-radius:99px;border:2px solid #444;"></div>
+            <div style="flex:1;width:2px;background:#2a2a2a;"></div>
+            <div style="width:10px;height:10px;border-radius:99px;border:2px solid #444;"></div>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+            <div class="card"><b class="green">STAGE 1 · FOUNDATIONS</b><br/>Lessons 1–4: agent loop, providers, MCP tools, streaming</div>
+            <div class="card"><b class="muted">STAGE 2 · CONTROL & CONTEXT</b><br/>Lessons 5–9: hooks, plugins, steering, context, memory</div>
+            <div class="card"><b class="muted">STAGE 3 · MULTI-AGENT & PROD</b><br/>Lessons 10–14: agents-as-tools, graphs, swarms, evals, deploy</div>
+          </div>
+          <div style="flex:.7; display:flex; flex-direction:column; gap:8px;">
+            <div class="card" style="border-style:dashed;"><span class="muted">DEEP DIVE</span><br/>Self-improving Agents</div>
+            <div class="card" style="border-style:dashed;"><span class="muted">DEEP DIVE</span><br/>Steering Hooks Case Study</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
