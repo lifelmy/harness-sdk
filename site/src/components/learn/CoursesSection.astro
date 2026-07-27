@@ -121,13 +121,13 @@ agent(<span class="s">"What can you do?"</span>)
     font-size: 2.625rem;
     letter-spacing: -0.02em;
     font-weight: 600;
-    color: #fff;
+    color: var(--sl-color-white);
     margin: 0;
   }
 
   .sec-dek {
     font-family: 'Figtree', sans-serif;
-    color: #8f8f8f;
+    color: var(--sl-color-gray-3);
     font-size: 0.9375rem;
   }
 
@@ -141,7 +141,7 @@ agent(<span class="s">"What can you do?"</span>)
   }
 
   .kicker.dim {
-    color: #7a7a7a;
+    color: var(--sl-color-gray-4);
   }
 
   .feature {
@@ -158,13 +158,13 @@ agent(<span class="s">"What can you do?"</span>)
     letter-spacing: -0.02em;
     line-height: 1.08;
     font-weight: 600;
-    color: #fff;
+    color: var(--sl-color-white);
     margin: 0.875rem 0 0.75rem;
   }
 
   .main .dek {
     font-family: 'Figtree', sans-serif;
-    color: #b0b0b0;
+    color: var(--sl-color-gray-3);
     font-size: 1.0625rem;
     max-width: 30rem;
     margin: 0 0 1.625rem;
@@ -196,8 +196,13 @@ agent(<span class="s">"What can you do?"</span>)
 
   .btn.ghost {
     background: transparent;
-    color: #ececec;
-    border: 1px solid #3a3a3a;
+    color: var(--sl-color-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  :global([data-theme='light']) .btn.ghost {
+    color: var(--sl-color-gray-1);
+    border-color: rgba(0, 0, 0, 0.15);
   }
 
   /* Cover art: mock terminal over gradient mesh */
@@ -337,6 +342,11 @@ agent(<span class="s">"What can you do?"</span>)
     text-decoration: none;
   }
 
+  :global([data-theme='light']) .syllabus .row {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    color: var(--sl-color-gray-2);
+  }
+
   .syllabus .row:hover {
     color: #00ff77;
   }
@@ -372,6 +382,11 @@ agent(<span class="s">"What can you do?"</span>)
     background: radial-gradient(ellipse 70% 90% at 90% 10%, #14301f 0%, transparent 60%);
   }
 
+  :global([data-theme='light']) .slot {
+    border-color: rgba(0, 0, 0, 0.12);
+    background: radial-gradient(ellipse 70% 90% at 90% 10%, rgba(0, 204, 95, 0.06) 0%, transparent 60%);
+  }
+
   .slot .idx {
     position: absolute;
     right: 18px;
@@ -383,6 +398,10 @@ agent(<span class="s">"What can you do?"</span>)
     -webkit-text-stroke: 1.2px #234534;
     font-family: 'Figtree', sans-serif;
     line-height: 1;
+  }
+
+  :global([data-theme='light']) .slot .idx {
+    -webkit-text-stroke-color: rgba(0, 150, 70, 0.25);
   }
 
   .slot .tag {
@@ -403,6 +422,10 @@ agent(<span class="s">"What can you do?"</span>)
     position: relative;
   }
 
+  :global([data-theme='light']) .slot h4 {
+    color: var(--sl-color-gray-2);
+  }
+
   .slot p {
     color: #6f6f6f;
     font-size: 0.875rem;
@@ -410,6 +433,10 @@ agent(<span class="s">"What can you do?"</span>)
     position: relative;
     max-width: 75%;
     margin: 0;
+  }
+
+  :global([data-theme='light']) .slot p {
+    color: var(--sl-color-gray-3);
   }
 
   @media (max-width: 900px) {

@@ -71,13 +71,13 @@ const { dives, suggestTopicHref } = Astro.props
     font-size: 2.625rem;
     letter-spacing: -0.02em;
     font-weight: 600;
-    color: #fff;
+    color: var(--sl-color-white);
     margin: 0;
   }
 
   .sec-dek {
     font-family: 'Figtree', sans-serif;
-    color: #8f8f8f;
+    color: var(--sl-color-gray-3);
     font-size: 0.9375rem;
     margin: 0.375rem 0 0;
   }
@@ -92,6 +92,10 @@ const { dives, suggestTopicHref } = Astro.props
     text-decoration: none;
   }
 
+  :global([data-theme='light']) .dive {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
   .dive:last-child {
     border-bottom: none;
   }
@@ -103,6 +107,10 @@ const { dives, suggestTopicHref } = Astro.props
     overflow: hidden;
     border: 1px solid #223328;
     background: linear-gradient(145deg, #0f2b1c, #0b1210);
+  }
+
+  :global([data-theme='light']) .thumb {
+    border-color: rgba(0, 0, 0, 0.1);
   }
 
   .thumb svg {
@@ -125,7 +133,7 @@ const { dives, suggestTopicHref } = Astro.props
     font-size: 1.5rem;
     letter-spacing: -0.01em;
     font-weight: 600;
-    color: #fff;
+    color: var(--sl-color-white);
     margin: 0.3125rem 0;
   }
 
@@ -134,11 +142,11 @@ const { dives, suggestTopicHref } = Astro.props
   }
 
   .suggest h3 {
-    color: #777;
+    color: var(--sl-color-gray-4);
   }
 
   .dive p {
-    color: #8f8f8f;
+    color: var(--sl-color-gray-3);
     font-size: 0.90625rem;
     font-family: 'Figtree', sans-serif;
     margin: 0;

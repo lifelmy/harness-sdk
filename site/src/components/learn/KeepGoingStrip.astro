@@ -22,16 +22,20 @@ import { pathWithBase } from '../../util/links'
     font-size: 0.9375rem;
   }
 
+  :global([data-theme='light']) .keep-going {
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
   .kicker {
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #7a7a7a;
+    color: var(--sl-color-gray-4);
     font-weight: 700;
   }
 
   a {
-    color: #bbb;
+    color: var(--sl-color-gray-2);
     text-decoration: none;
   }
 

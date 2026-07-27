@@ -47,6 +47,13 @@ const { events } = Astro.props
     position: relative;
   }
 
+  :global([data-theme='light']) .ticker {
+    border-top-color: rgba(0, 0, 0, 0.08);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--sl-color-gray-2);
+  }
+
   .inner {
     max-width: 1200px;
     margin: 0 auto;
