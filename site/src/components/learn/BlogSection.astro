@@ -20,9 +20,9 @@ const { posts } = Astro.props
         </a>
       </div>
       <div class="row">
-        {posts.map((post, i) => (
-          <article class={i === 0 ? 'lead' : ''}>
-            <a href={pathWithBase(`/blog/${post.id}/`)}>
+        {posts.map((post) => (
+          <article>
+            <a href={pathWithBase(`/blog/${post.id}/`)} class="post-card">
               <span class="kicker">{post.data.tags[0] ?? 'Blog'}</span>
               <h3>{post.data.title}</h3>
               <p>{post.data.description}</p>
@@ -74,32 +74,40 @@ const { posts } = Astro.props
   .row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.25rem;
+    gap: 1.5rem;
     margin-top: 2.5rem;
   }
 
-  /* Typographic cards: category-colored top rule, headline as the visual object.
-     The newest post's rule is green; the rest stay neutral. */
   article {
-    border-top: 2px solid #333;
+    display: flex;
   }
 
-  article.lead {
-    border-top-color: #00cc5f;
-  }
-
-  :global([data-theme='light']) article {
-    border-top-color: rgba(0, 0, 0, 0.15);
-  }
-
-  :global([data-theme='light']) article.lead {
-    border-top-color: #00cc5f;
-  }
-
-  article a {
+  /* Card treatment shared with the homepage Labs/Evals section */
+  .post-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     text-decoration: none;
-    display: block;
-    padding-top: 1.125rem;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+    width: 100%;
+  }
+
+  :global([data-theme='light']) .post-card {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .post-card:hover {
+    border-color: rgba(0, 204, 95, 0.3);
+    box-shadow: 0 0 24px rgba(0, 204, 95, 0.06);
   }
 
   .kicker {
@@ -107,65 +115,48 @@ const { posts } = Astro.props
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #7a7a7a;
-    font-weight: 700;
-  }
-
-  article.lead .kicker {
     color: #00cc5f;
+    font-weight: 700;
   }
 
   h3 {
     font-family: 'Figtree', sans-serif;
-    font-size: 1.4375rem;
-    line-height: 1.25;
+    font-size: 1.25rem;
+    line-height: 1.3;
     letter-spacing: -0.01em;
-    margin: 0.625rem 0 0.5rem;
+    margin: 0;
     font-weight: 600;
     color: var(--sl-color-white);
   }
 
-  article a:hover h3 {
-    color: #00ff77;
-  }
-
-  article p {
+  .post-card p {
     color: var(--sl-color-gray-3);
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
     font-family: 'Figtree', sans-serif;
     margin: 0;
+    flex: 1;
   }
 
   .meta {
-    display: block;
     font-family: 'Figtree', sans-serif;
     font-size: 0.75rem;
-    color: #5a5a5a;
-    margin-top: 0.75rem;
-  }
-
-  :global([data-theme='light']) .meta {
     color: var(--sl-color-gray-3);
   }
 
   @media (max-width: 900px) {
     .row {
       grid-template-columns: 1fr;
-      gap: 1.25rem;
+      gap: 1rem;
       margin-top: 1.75rem;
     }
 
-    /* Compact stacked rows on mobile: tighter type, clamped description
-       so three posts don't dominate the scroll */
-    article a {
-      padding-top: 0.875rem;
+    .post-card {
+      padding: 1.375rem 1.5rem;
     }
 
-    h3 {
-      font-size: 1.1875rem;
-    }
-
-    article p {
+    /* Clamp descriptions on mobile so three stacked cards stay scannable */
+    .post-card p {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
