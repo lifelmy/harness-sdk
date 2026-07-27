@@ -106,7 +106,10 @@ export default defineConfig({
           ],
           './src/components/Syntax.astro': [
             ['default', 'Syntax']
-          ]
+          ],
+          '@astro-community/astro-embed-youtube': [
+            ['YouTube', 'YouTube']
+          ],
         },
       ],
       defaultComponents: {
