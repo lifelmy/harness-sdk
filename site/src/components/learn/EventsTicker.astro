@@ -8,6 +8,8 @@ interface Props {
 }
 
 const { events } = Astro.props
+
+const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
 ---
 
 {
@@ -16,15 +18,16 @@ const { events } = Astro.props
       <div class="inner">
         <b class="lbl">UPCOMING</b>
         {events.map((event) => {
+          const expires = toIsoDate(event.endDate ?? event.startDate)
           const label = (
             <>
               <span class="date">{formatEventDate(event)}</span> {event.title} · {event.location}
             </>
           )
           return event.href ? (
-            <a href={event.href.startsWith('http') ? event.href : pathWithBase(event.href)}>{label}</a>
+            <a href={event.href.startsWith('http') ? event.href : pathWithBase(event.href)} data-expires={expires}>{label}</a>
           ) : (
-            <span>{label}</span>
+            <span data-expires={expires}>{label}</span>
           )
         })}
         <a class="all" href="#events">

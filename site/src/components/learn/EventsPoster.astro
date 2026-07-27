@@ -8,13 +8,15 @@ interface Props {
 }
 
 const { headliner, others } = Astro.props
+
+const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
 ---
 
 <aside class="poster-wrap">
   <div class="poster">
     {
-      headliner ? (
-        <>
+      headliner && (
+        <div id="poster-headliner" data-expires={toIsoDate(headliner.endDate ?? headliner.startDate)}>
           <span class="kicker">Meet us in person</span>
           <h3>{headliner.title}</h3>
           <p class="sub">
@@ -24,7 +26,7 @@ const { headliner, others } = Astro.props
           {others.length > 0 && (
             <div class="list">
               {others.map((event) => (
-                <div class="row">
+                <div class="row" data-expires={toIsoDate(event.endDate ?? event.startDate)}>
                   <b>{formatEventDate(event)}</b>
                   <span>
                     {event.title} · {event.location}
@@ -33,16 +35,15 @@ const { headliner, others } = Astro.props
               ))}
             </div>
           )}
-        </>
-      ) : (
-        <>
-          <span class="kicker">Join the community</span>
-          <h3>Community calls &amp; events</h3>
-          <p class="sub">Event announcements land on Discord first — talks, workshops, and community calls.</p>
-        </>
+        </div>
       )
     }
-    <a class="cal" href="https://discord.gg/strands">
+    <div id="poster-evergreen" hidden={headliner ? true : undefined}>
+      <span class="kicker">Join the community</span>
+      <h3>Community calls &amp; events</h3>
+      <p class="sub">Event announcements land on Discord first — talks, workshops, and community calls.</p>
+    </div>
+    <a class="cal" id="poster-cal" href="https://discord.gg/strands">
       {headliner ? 'Event updates on Discord →' : 'Join the Discord →'}
     </a>
   </div>
