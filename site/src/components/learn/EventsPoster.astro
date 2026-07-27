@@ -59,6 +59,42 @@ const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
     top: calc(var(--sl-nav-height, 4rem) + 2rem);
   }
 
+  /* Light mode: soft green tint block matching the homepage stats section,
+     rather than the solid green slab used on the dark surface */
+  :global([data-theme='light']) .poster {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(0, 204, 95, 0.1) 0%, transparent 70%),
+      rgba(0, 204, 95, 0.03);
+    border: 1px solid rgba(0, 204, 95, 0.15);
+    color: var(--sl-color-gray-1);
+  }
+
+  :global([data-theme='light']) .poster .kicker {
+    color: #008542;
+  }
+
+  :global([data-theme='light']) .poster h3 {
+    color: var(--sl-color-white);
+  }
+
+  :global([data-theme='light']) .poster .sub {
+    color: var(--sl-color-gray-2);
+  }
+
+  :global([data-theme='light']) .poster .list {
+    border-top-color: rgba(0, 133, 66, 0.25);
+  }
+
+  :global([data-theme='light']) .poster .row {
+    border-bottom-color: rgba(0, 133, 66, 0.15);
+  }
+
+  :global([data-theme='light']) .poster .cal,
+  :global([data-theme='light']) .poster .cal:hover {
+    color: #008542;
+    border-color: #008542;
+  }
+
   .kicker {
     font-family: 'Figtree', sans-serif;
     font-size: 0.75rem;
