@@ -1,6 +1,6 @@
 import { defineRouteMiddleware, type StarlightRouteData } from '@astrojs/starlight/route-data'
 import { getCollection } from 'astro:content'
-import { buildPythonApiSidebar, buildTypeScriptApiSidebar, getPrevNextLinks, type DocInfo } from './dynamic-sidebar'
+import { buildPythonApiSidebar, buildTypeScriptApiSidebar, buildCourseSidebar, getPrevNextLinks, type DocInfo } from './dynamic-sidebar'
 import { pathWithBase } from './util/links'
 import { navLinks, type NavLink } from './config/navbar'
 
@@ -142,6 +142,28 @@ export const onRequest = defineRouteMiddleware(async (context) => {
     const titlesByHref = await buildTitlesByHref()
     starlightRoute.sidebar = apiSidebar
     starlightRoute.pagination = getPrevNextLinks(apiSidebar, titlesByHref)
+    return
+  }
+
+  // Check if we're on a lesson page within the learning course
+  if (currentSlug.startsWith('docs/community/learning/')) {
+    const docs = await getCollection('docs')
+    const docInfos: DocInfo[] = docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
+      id: doc.id,
+      title: doc.data.title as string,
+      category: doc.data.category as string | undefined,
+    }))
+
+    const courseSidebar = buildCourseSidebar(docInfos, currentSlug)
+
+    // Compute prev/next from lessons only — the "← All courses" back-link at
+    // position 0 must NOT be part of the lesson prev/next chain.
+    const lessonGroup = courseSidebar[1]
+    const lessonsOnly: SidebarEntry[] = lessonGroup?.type === 'group' ? lessonGroup.entries : []
+    const titlesByHref = await buildTitlesByHref()
+
+    starlightRoute.sidebar = courseSidebar
+    starlightRoute.pagination = getPrevNextLinks(lessonsOnly, titlesByHref)
     return
   }
 

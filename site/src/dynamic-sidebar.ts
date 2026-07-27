@@ -223,6 +223,53 @@ export function buildTypeScriptApiSidebar(docs: DocInfo[], currentSlug: string):
 }
 
 /**
+ * Build a flat sidebar for the "Agent Fundamentals with Strands" course.
+ * Returns a list with an "← All courses" back-link followed by a group
+ * containing the 14 lesson pages sorted in numeric lesson order.
+ *
+ * Pagination must be computed from the lessons-only list (the back-link
+ * must NOT appear in the prev/next chain). Use getPrevNextLinks on the
+ * group's entries directly rather than on the full sidebar returned here.
+ */
+export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): SidebarEntry[] {
+  const lessonDocs = docs
+    .filter((doc) => doc.id.startsWith('docs/community/learning/lesson'))
+    .sort((a, b) => {
+      const numA = parseInt(/lesson(\d+)-/.exec(a.id)?.[1] ?? '0', 10)
+      const numB = parseInt(/lesson(\d+)-/.exec(b.id)?.[1] ?? '0', 10)
+      return numA - numB
+    })
+
+  const lessonLinks: SidebarLink[] = lessonDocs.map((doc) => ({
+    type: 'link',
+    label: doc.title,
+    href: pathWithBase(`/${doc.id}/`),
+    isCurrent: currentSlug === doc.id,
+    badge: undefined,
+    attrs: {},
+  }))
+
+  const group: SidebarGroup = {
+    type: 'group',
+    label: 'Agent Fundamentals with Strands',
+    entries: lessonLinks,
+    collapsed: false,
+    badge: undefined,
+  }
+
+  const backLink: SidebarLink = {
+    type: 'link',
+    label: '← All courses',
+    href: pathWithBase('/learn/'),
+    isCurrent: false,
+    badge: undefined,
+    attrs: {},
+  }
+
+  return [backLink, group]
+}
+
+/**
  * Pagination links for prev/next navigation
  */
 export interface PaginationLinks {

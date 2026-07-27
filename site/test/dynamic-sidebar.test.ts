@@ -2,9 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { getCollection } from 'astro:content'
 import {
   buildPythonApiSidebar,
+  buildCourseSidebar,
   getDisplayName,
   type DocInfo,
   type SidebarEntry,
+  type SidebarGroup,
+  type SidebarLink,
 } from '../src/dynamic-sidebar'
 
 describe('getDisplayName', () => {
@@ -138,6 +141,67 @@ describe('buildPythonApiSidebar with real collection', () => {
 
     // Should have at least some entries
     expect(sidebar.length).toBeGreaterThan(0)
+  })
+})
+
+describe('buildCourseSidebar', () => {
+  function makeLessonDocs(nums: number[]): DocInfo[] {
+    return nums.map((n) => ({
+      id: `docs/community/learning/lesson${n}-some-title`,
+      title: `Lesson ${n}: Some Title`,
+    }))
+  }
+
+  it('returns back-link as first entry followed by a group', () => {
+    const docs = makeLessonDocs([1, 2, 3])
+    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+
+    expect(sidebar).toHaveLength(2)
+    expect(sidebar[0]?.type).toBe('link')
+    expect((sidebar[0] as SidebarLink).label).toBe('← All courses')
+    expect(sidebar[1]?.type).toBe('group')
+  })
+
+  it('sorts lessons numerically so lesson10 follows lesson9, not lesson1', () => {
+    // Provide in filesystem order (lexicographic), expect numeric sort
+    const docs = makeLessonDocs([1, 10, 2, 9, 11])
+    const sidebar = buildCourseSidebar(docs, '')
+
+    const group = sidebar[1] as SidebarGroup
+    const labels = group.entries.map((e) => e.label)
+    expect(labels).toEqual([
+      'Lesson 1: Some Title',
+      'Lesson 2: Some Title',
+      'Lesson 9: Some Title',
+      'Lesson 10: Some Title',
+      'Lesson 11: Some Title',
+    ])
+  })
+
+  it('marks the current lesson as isCurrent', () => {
+    const docs = makeLessonDocs([1, 2, 3])
+    const currentSlug = 'docs/community/learning/lesson2-some-title'
+    const sidebar = buildCourseSidebar(docs, currentSlug)
+
+    const group = sidebar[1] as SidebarGroup
+    const links = group.entries as SidebarLink[]
+    expect(links[0]?.isCurrent).toBe(false)
+    expect(links[1]?.isCurrent).toBe(true)
+    expect(links[2]?.isCurrent).toBe(false)
+  })
+
+  it('back-link is never marked as isCurrent', () => {
+    const docs = makeLessonDocs([1])
+    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+
+    const backLink = sidebar[0] as SidebarLink
+    expect(backLink.isCurrent).toBe(false)
+  })
+
+  it('back-link points to /learn/', () => {
+    const sidebar = buildCourseSidebar([], '')
+    const backLink = sidebar[0] as SidebarLink
+    expect(backLink.href).toMatch(/\/learn\/$/)
   })
 })
 
