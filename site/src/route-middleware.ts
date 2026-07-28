@@ -156,9 +156,9 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 
     const courseSidebar = buildCourseSidebar(docInfos, currentSlug)
 
-    // Compute prev/next from lessons only — the "← All courses" back-link at
-    // position 0 must NOT be part of the lesson prev/next chain.
-    const lessonGroup = courseSidebar[1]
+    // Compute prev/next from lessons only — the "← All courses" back-link
+    // must NOT be part of the lesson prev/next chain.
+    const lessonGroup = courseSidebar.find((entry) => entry.type === 'group')
     const lessonsOnly: SidebarEntry[] = lessonGroup?.type === 'group' ? lessonGroup.entries : []
     const titlesByHref = await buildTitlesByHref()
 
