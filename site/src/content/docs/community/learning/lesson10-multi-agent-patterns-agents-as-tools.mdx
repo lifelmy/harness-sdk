@@ -1,6 +1,7 @@
 ---
 title: "Lesson 10: Multi-Agent Patterns: Agents as Tools"
 description: "This is where we cross from single-agent patterns into multi-agent orchestration, and we start with the most intuitive version: an agent that can call other agents the same way it calls any other tool."
+community: true
 ---
 
 <YouTube id="_QcD5KBe3ZQ" title="Lesson 10: Multi-Agent Patterns: Agents as Tools" />
@@ -13,9 +14,13 @@ description: "This is where we cross from single-agent patterns into multi-agent
 
 Multi-agent architectures are useful for many different things:
 
-* **Isolating noisy tools:** You can prevent large, verbose tool results from cluttering your main agent's context.
-* **Specialized expertise:** You can partition tasks that require different kinds of expertise, such as research versus writing versus code generation.
-* **Optimizing cost and capabilities:** You can use different models for different parts of the workflow, utilizing cheaper models for simple tasks and premium models only where specialized reasoning is required.
+* **Isolating noisy tools:** You can prevent large, verbose tool results from cluttering
+  your main agent's context.
+* **Specialized expertise:** You can partition tasks that require different kinds of
+  expertise, such as research versus writing versus code generation.
+* **Optimizing cost and capabilities:** You can use different models for different parts
+  of the workflow, utilizing cheaper models for simple tasks and premium models only where
+  specialized reasoning is required.
 
 Multi-agent architectures let you decompose a complex problem so that each agent does one
 thing well, resulting in a system that performs better and more reliably overall.
@@ -76,9 +81,15 @@ the final result string.
 
 When implementing this pattern, it is important to understand how data is passed:
 
-* **The Interface is a String:** When the orchestrator calls a specialist agent, it sends a string payload. The specialist receives this string as a new user message, runs its own independent agent loop (using its own system prompt and tools), and returns a string response back to the orchestrator.
-* **Strict Context Isolation:** The specialist agent has absolutely no access to the orchestrator's conversation history.
-* **Stateless by Default:** By default, the specialist's context resets between calls. If the orchestrator calls the researcher agent twice during a conversation, the researcher does not remember the first call.
+* **The Interface is a String:** When the orchestrator calls a specialist agent, it sends
+  a string payload. The specialist receives this string as a new user message, runs its
+  own independent agent loop (using its own system prompt and tools), and returns a
+  string response back to the orchestrator.
+* **Strict Context Isolation:** The specialist agent has absolutely no access to the
+  orchestrator's conversation history.
+* **Stateless by Default:** By default, the specialist's context resets between calls. If
+  the orchestrator calls the researcher agent twice during a conversation, the researcher
+  does not remember the first call.
 
 When running this setup, you can see the orchestrator invoke the researcher, which
 silently executes its web search tasks, and then hands the clean, condensed research data
@@ -94,8 +105,10 @@ The **agents as tools** pattern is the right choice when:
 
 However, there are a few limitations to keep in mind:
 
-* **The Orchestrator is a Bottleneck:** Every specialist agent must report back to the central coordinator; specialists cannot communicate directly with one another.
-* **Model-Driven Execution:** Because the coordination is model-driven, you cannot guarantee a strict execution order between specialists.
+* **The Orchestrator is a Bottleneck:** Every specialist agent must report back to the
+  central coordinator; specialists cannot communicate directly with one another.
+* **Model-Driven Execution:** Because the coordination is model-driven, you cannot
+  guarantee a strict execution order between specialists.
 
 If your workflow requires a guaranteed execution order, parallel fan-out, or agents that
 build directly on each other's work without routing through a central coordinator, you

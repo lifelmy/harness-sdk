@@ -1,6 +1,7 @@
 ---
 title: "Lesson 9: Persistent Memory with Session Managers"
 description: "Without persistence, every conversation starts from zero. The agent has no memory of prior interactions, no accumulated knowledge about the user, no awareness of decisions made yesterday. Session managers handle the storage and retrieval of conversation state so continuity works automatically."
+community: true
 ---
 
 <YouTube id="HqGIYRXo6WE" title="Lesson 9: Persistent Memory with Session Managers" />
@@ -49,7 +50,8 @@ you can see that a `sessions` directory was created. If we open this directory u
 see that the agent messages are coming through:
 
 * `message_0.json` contains: *"Help me return my order."*
-* `message_1.json` contains the response: *"I'd happy to... I'd be happy to help you with that return,"* as well as some metadata and other session information.
+* `message_1.json` contains the response: *"I'd happy to... I'd be happy to help you with
+  that return,"* as well as some metadata and other session information.
 
 If I continue chatting and provide the customer ID, more messages are added on the side.
 Other files that get populated include:
@@ -70,7 +72,8 @@ Persistence happens automatically at three distinct points:
 
 1. **Initialization:** The agent loads existing session data when it starts up.
 2. **Message Addition:** When a message is added, it writes back to persistent memory.
-3. **Post-Invocation:** After each invocation, it syncs agent state and conversation manager state.
+3. **Post-Invocation:** After each invocation, it syncs agent state and conversation
+   manager state.
 
 You don't need to manually call "save" or "flush"; Strands handles this for you under the
 hood. Session managers are implemented as hook providers. That means persistence is really

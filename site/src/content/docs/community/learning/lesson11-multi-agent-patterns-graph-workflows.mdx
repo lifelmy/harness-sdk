@@ -1,6 +1,7 @@
 ---
 title: "Lesson 11: Multi-Agent Patterns: Graph Workflows"
 description: "Some workflows have a fixed structure: step A feeds into step B, step B branches based on a condition, both branches converge at step C. You don't want the model deciding whether to run step B. You want it guaranteed."
+community: true
 ---
 
 <YouTube id="jDeV2V5fJUQ" title="Lesson 11: Multi-Agent Patterns: Graph Workflows" />
@@ -72,8 +73,10 @@ getting back a graph result.
 When executing a graph, data flows through the nodes systematically:
 
 * **Entry Points:** Entry point nodes receive the original user task directly.
-* **Downstream Nodes:** Downstream nodes receive the original task *plus* the outputs from their dependency nodes.
-* **Automatic Stitching:** Each dependency result is labeled with its respective node ID and combined into the downstream prompt automatically.
+* **Downstream Nodes:** Downstream nodes receive the original task *plus* the outputs from
+  their dependency nodes.
+* **Automatic Stitching:** Each dependency result is labeled with its respective node ID
+  and combined into the downstream prompt automatically.
 
 In our example, the report writer receives the original task, the analyst's output, and
 the summarizer's output all stitched together into one structured input. You can design
@@ -89,15 +92,23 @@ attached to each agent need, but the model itself doesn't need to read.
 
 There are four common graph patterns you'll see repeatedly in multi-agent systems:
 
-* **Sequential Pipeline:** One agent runs after another in a strict sequence. This is the simplest graph pattern.
-* **Parallel Fan-Out with Aggregation:** One node fans work out to multiple parallel agents, and an aggregator node waits for all of them to finish before combining the results.
-* **Conditional Branching:** Agents can have conditions attached to them so that different branches execute depending on runtime decisions or outputs.
-* **Feedback Loops:** The graph becomes cyclic. For example, a writer agent produces a draft, a reviewer agent evaluates it, and if revisions are needed, the workflow loops back to the writer before eventually continuing to the publisher.
+* **Sequential Pipeline:** One agent runs after another in a strict sequence. This is the
+  simplest graph pattern.
+* **Parallel Fan-Out with Aggregation:** One node fans work out to multiple parallel
+  agents, and an aggregator node waits for all of them to finish before combining the
+  results.
+* **Conditional Branching:** Agents can have conditions attached to them so that different
+  branches execute depending on runtime decisions or outputs.
+* **Feedback Loops:** The graph becomes cyclic. For example, a writer agent produces a
+  draft, a reviewer agent evaluates it, and if revisions are needed, the workflow loops
+  back to the writer before eventually continuing to the publisher.
 
 For cyclic graphs, there are two important safety controls worth knowing about:
 
-1. `set_max_node_executions`: Limits the total number of node runs to prevent infinite loops.
-2. `reset_on_revisit`: Clears a node's conversation history each time it re-enters the cycle so that context doesn't grow uncontrollably across multiple revisions.
+1. `set_max_node_executions`: Limits the total number of node runs to prevent infinite
+   loops.
+2. `reset_on_revisit`: Clears a node's conversation history each time it re-enters the
+   cycle so that context doesn't grow uncontrollably across multiple revisions.
 
 Both of these are important for controlling reliability and cost in iterative or
 long-running workflows.

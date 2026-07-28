@@ -1,6 +1,7 @@
 ---
 title: "Lesson 13: Evaluating Agents"
 description: "Agent evaluation is harder than traditional software testing. The output is non-deterministic."
+community: true
 ---
 
 <YouTube id="rDtcfG4aZV4" title="Lesson 13: Evaluating Agents" />
@@ -78,7 +79,8 @@ language to tell the judge model exactly how to score the response. Strands also
 built-in evaluators that look at core characteristics like:
 
 * **Helpfulness:** Did the agent assist the customer effectively?
-* **Outcome Met:** Did the agent successfully achieve the target objective of the workflow?
+* **Outcome Met:** Did the agent successfully achieve the target objective of the
+  workflow?
 
 #### 4. The Experiment
 
@@ -88,9 +90,12 @@ execute the suite.
 When we run our evaluation suite, the output might reveal something like a 66% pass rate
 across our test cases. The CLI output lets us expand each run to inspect the results:
 
-* **Refund Request (Passed - 83%):** The judge model indicates that the agent successfully checked eligibility and processed the return, providing a clear explanation for its score.
+* **Refund Request (Passed - 83%):** The judge model indicates that the agent successfully
+  checked eligibility and processed the return, providing a clear explanation for its
+  score.
 * **Order Tracking (Failed - 50%):** The agent struggled to follow the expected workflow.
-* **Account Issue (Failed - 0%):** The evaluation highlighted an API or lookup error that caused the turn to fail completely.
+* **Account Issue (Failed - 0%):** The evaluation highlighted an API or lookup error that
+  caused the turn to fail completely.
 
 This telemetry provides concrete data to help you debug whether your agent prompts, tool
 integrations, or even the evaluation test cases themselves need refinement.
@@ -99,8 +104,14 @@ integrations, or even the evaluation test cases themselves need refinement.
 
 As your system matures, you can leverage more advanced evaluation patterns:
 
-* **Experiment Generation (Bootstrapping Coverage):** When you first start, you might not know what test cases you should even run. The Strands Experiment Generator can inspect your agent's tools, workflows, and capabilities to automatically generate candidate evaluation cases. While not a replacement for carefully designed manual test cases, it is great for discovering missing coverage and bootstrapping an initial test suite.
-* **Trajectory Evaluation:** Sometimes, evaluating the final response is not enough. You need to ensure the agent followed a strict protocol. For example, a customer support agent must:
+* **Experiment Generation (Bootstrapping Coverage):** When you first start, you might not
+  know what test cases you should even run. The Strands Experiment Generator can inspect
+  your agent's tools, workflows, and capabilities to automatically generate candidate
+  evaluation cases. While not a replacement for carefully designed manual test cases, it
+  is great for discovering missing coverage and bootstrapping an initial test suite.
+* **Trajectory Evaluation:** Sometimes, evaluating the final response is not enough. You
+  need to ensure the agent followed a strict protocol. For example, a customer support
+  agent must:
 1. Look up the customer.
 2. Retrieve order history.
 3. Validate refund eligibility.
@@ -109,14 +120,22 @@ As your system matures, you can leverage more advanced evaluation patterns:
 
 Trajectory evaluators let you validate whether this specific sequence of actions actually
 occurred by evaluating the step-by-step path the agent took during the execution loop.
-* **Deterministic Evaluators:** Not every evaluation needs to be run through an LLM. You can write fast, inexpensive, deterministic evaluators in pure Python to validate concrete requirements, such as JSON schema correctness, response lengths, or status code presence.
+* **Deterministic Evaluators:** Not every evaluation needs to be run through an LLM. You
+  can write fast, inexpensive, deterministic evaluators in pure Python to validate
+  concrete requirements, such as JSON schema correctness, response lengths, or status
+  code presence.
 
 ### The Role of Evaluations in Production
 
 In a production lifecycle, these tools fit together to secure system quality:
 
-* **CI/CD Integration:** You can wire these evaluation suites directly into your CI/CD pipelines so that code deployments fail automatically if your agent's reliability score falls below an acceptable threshold.
-* **Continuous Evolution:** Your evaluation suite should be a living system. As users interact with the agent in production and expose edge cases you didn't anticipate, you should continuously convert those real-world failure modes into new test cases in your evaluation suite.
+* **CI/CD Integration:** You can wire these evaluation suites directly into your CI/CD
+  pipelines so that code deployments fail automatically if your agent's reliability score
+  falls below an acceptable threshold.
+* **Continuous Evolution:** Your evaluation suite should be a living system. As users
+  interact with the agent in production and expose edge cases you didn't anticipate, you
+  should continuously convert those real-world failure modes into new test cases in your
+  evaluation suite.
 
 #### Evaluating the Trade-offs
 

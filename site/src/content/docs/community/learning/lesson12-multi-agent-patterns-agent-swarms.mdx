@@ -1,6 +1,7 @@
 ---
 title: "Lesson 12: Multi-Agent Patterns: Agent Swarms"
 description: "In a swarm, multiple agents share a workspace or communication channel. Each agent has its own tools, its own prompt, its own specialization."
+community: true
 ---
 
 <YouTube id="yG-5rIJoh_8" title="Lesson 12: Multi-Agent Patterns: Agent Swarms" />
@@ -75,20 +76,27 @@ To prevent this, Strands provides several critical safety boundaries:
 * `max_iterations`: Caps the total number of individual agent executions.
 * `execution_timeout`: Sets a time limit for the entire swarm's execution.
 * `node_timeout`: Limits the execution time of any single agent's turn.
-* **Repetitive Handoff Detection:** You can configure `repetitive_handoff_detection_window` and `repetitive_handoff_min_unique_agents`. If the swarm detects that the same subset of agents is repeatedly passing the task back and forth without involving new agents, it will automatically terminate.
+* **Repetitive Handoff Detection:** You can configure
+  `repetitive_handoff_detection_window` and `repetitive_handoff_min_unique_agents`. If the
+  swarm detects that the same subset of agents is repeatedly passing the task back and
+  forth without involving new agents, it will automatically terminate.
 
 When we run our debugging task—such as investigating why a payment service is returning
-500 errors—the swarm coordinates organically. The triage agent starts, assesses the issue,
-and hands off to the specialists. Multiple tracks run, tools are called, and the optimal
-path emerges dynamically based on real-time findings.
+500 errors—the swarm coordinates organically. The triage agent starts, assesses the
+issue, and hands off to the specialists. Multiple tracks run, tools are called, and the
+optimal path emerges dynamically based on real-time findings.
 
 ### Control Flow and Shared Context
 
 There is a fundamental architectural difference between swarms and the "agents as tools"
 pattern:
 
-* **No Request-Response Bottleneck:** When Agent A hands off to Agent B, Agent A's turn is completely finished. Control is fully transferred over to Agent B. It is not a nested function call where Agent A sits and waits for Agent B to return a value.
-* **Shared Context:** Swarms operate over a single, shared conversation context. Each agent sees the accumulated work of all the agents before it, including prior findings, handoff histories, and shared execution state.
+* **No Request-Response Bottleneck:** When Agent A hands off to Agent B, Agent A's turn is
+  completely finished. Control is fully transferred over to Agent B. It is not a nested
+  function call where Agent A sits and waits for Agent B to return a value.
+* **Shared Context:** Swarms operate over a single, shared conversation context. Each
+  agent sees the accumulated work of all the agents before it, including prior findings,
+  handoff histories, and shared execution state.
 
 By the time the deployment reviewer takes over, it doesn't just see the raw incident
 report. It sees the triage assessment, the log analyst's findings about connection
@@ -109,7 +117,8 @@ Understanding when to apply each pattern is key to designing a robust system:
 
 * If you can easily draw the workflow step-by-step on a whiteboard, **use a graph**.
 * If you have a clear supervisor-to-specialist relationship, **use agents as tools**.
-* If you need a specialized team to collaborate and figure out the problem together, **use a swarm**.
+* If you need a specialized team to collaborate and figure out the problem together,
+  **use a swarm**.
 
 These patterns are also completely composable. You can run a swarm as a single node inside
 a larger graph, or have individual agents within a swarm call sub-agents using the "agents

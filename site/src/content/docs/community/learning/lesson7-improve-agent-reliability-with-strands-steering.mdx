@@ -1,6 +1,7 @@
 ---
 title: "Lesson 7: Improve Agent Reliability with Strands Steering"
 description: "System prompts set the agent's general personality and rules, but they're blunt. You can't easily say 'only for this next tool call, format the output as JSON' or 'when the user mentions billing, always check their account status first' without bloating the prompt with conditionals the model has to parse every single turn."
+community: true
 ---
 
 <YouTube id="5rwTCUFV4Ak" title="Lesson 7: Improve Agent Reliability with Strands Steering" />
@@ -46,7 +47,8 @@ outcomes:
 
 * **Proceed:** Allows execution to continue normally.
 * **Guide:** Injects corrective feedback into the loop so the agent can self-correct.
-* **Interrupt:** Pauses execution entirely and hands control back to your application or a human operator (using the same interrupt system we saw earlier with hooks).
+* **Interrupt:** Pauses execution entirely and hands control back to your application or a
+  human operator (using the same interrupt system we saw earlier with hooks).
 
 Let's add steering to our customer service agent. We will explore two kinds of steering:
 deterministic steering around tool usage, and LLM-based steering for evaluating model
@@ -123,7 +125,8 @@ lesson:
 
 * The **skills plugin** handles workflow instruction loading.
 * The **refund steering handler** enforces deterministic workflow requirements.
-* The **tone steering handler** evaluates communication quality before responses reach the customer.
+* The **tone steering handler** evaluates communication quality before responses reach the
+  customer.
 
 Let's run it and see what happens.
 
@@ -146,8 +149,8 @@ Now this is done, and I'll just type `exit`.
 ### What's Next?
 
 If you step back and look at what we've assembled across these last few lessons—models,
-tools, MCP integrations, hooks, plugins, skills, and now steering—we're gradually building
-out a full agent harness around the model.
+tools, MCP integrations, hooks, plugins, skills, and now steering—we're gradually
+building out a full agent harness around the model.
 
 But there's another problem we still haven't addressed: For long-running tasks or
 conversations, your agent is going to hit the context window limit and throw an error.

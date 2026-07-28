@@ -1,6 +1,7 @@
 ---
 title: "Lesson 8: Context Engineering & Conversation Management"
 description: "Every turn, the model receives the full conversation history plus system prompt plus tool results. That window fills up fast. Once it does, you either hit token limits, start paying significantly more per request, or the model starts missing information buried in the middle."
+community: true
 ---
 
 <YouTube id="6zbbYm902MQ" title="Lesson 8: Context Engineering &amp; Conversation Management" />
@@ -22,10 +23,12 @@ to solve.
 
 There are a few common strategies you'll see repeatedly:
 
-* You can **externalize context** into files, databases, or memory systems instead of keeping everything in the prompt.
+* You can **externalize context** into files, databases, or memory systems instead of
+  keeping everything in the prompt.
 * You can **dynamically select relevant information** for the current task using tools.
 * You can **compress context** through summarization or compaction.
-* You can **isolate context** between agents so each one only sees what's relevant to its role.
+* You can **isolate context** between agents so each one only sees what's relevant to its
+  role.
 
 Strands ships with a few different out-of-the-box components that make context engineering
 a lot easier to implement so you can save tokens. We will explore the basics first, and
@@ -56,8 +59,8 @@ get compacted automatically:
 * Large image blocks can be replaced with lightweight placeholders.
 
 This helps control context growth from especially large tool responses. The sliding window
-approach is simple, fast, and predictable—and honestly, it's where most people start. But
-it's also naive because eventually, you lose older information entirely, which might
+approach is simple, fast, and predictable—and honestly, it's where most people start.
+But it's also naive because eventually, you lose older information entirely, which might
 actually be desired depending on your use case. But for a lot of longer-running workflows,
 losing important context from the beginning of the conversation can become a problem.
 
@@ -74,8 +77,10 @@ summary message, and retries the request with the reduced context.
 
 There are a few important configurations here:
 
-* **Summary Ratio:** Controls how much of the older conversation gets summarized during compaction.
-* **Preserve Recent Messages:** Ensures the most recent messages remain untouched so the active work in context stays intact.
+* **Summary Ratio:** Controls how much of the older conversation gets summarized during
+  compaction.
+* **Preserve Recent Messages:** Ensures the most recent messages remain untouched so the
+  active work in context stays intact.
 
 You can also customize how summarization happens. For example, for a customer support
 agent, you might provide a summarization prompt that tells the summarizer to focus on
@@ -92,8 +97,10 @@ cycles. In long-running agent systems, you might need more sophisticated strateg
 depending on your use case, such as:
 
 * Extracting structured state as a list of facts instead of summarizing.
-* Retrieving information dynamically from external memory stores like short-term and long-term memory.
-* Splitting workflows across multiple isolated agents with different contexts to work on different parts of the problem, each having its own conversation management strategy.
+* Retrieving information dynamically from external memory stores like short-term and
+  long-term memory.
+* Splitting workflows across multiple isolated agents with different contexts to work on
+  different parts of the problem, each having its own conversation management strategy.
 
 ### Proactive vs. Reactive Compression
 
@@ -149,7 +156,8 @@ context_manager="auto"
 
 This gives you the default behavior:
 
-* Large tool results are offloaded to external storage and replaced with a truncated preview.
+* Large tool results are offloaded to external storage and replaced with a truncated
+  preview.
 * Old messages are automatically compressed into structured summaries rather than dropped.
 * Proactive compression fires at 85% context usage to stay ahead of overflow.
 
@@ -159,8 +167,9 @@ better results.
 
 There is also `context_manager="agentic"` for when the model is better positioned to
 decide what stays in context. The model gets tools to summarize, truncate, or pin
-messages—it trades tokens for judgment. We recommend you start with `auto` by default, and
-use `agentic` when your agent needs to protect specific context across long conversations.
+messages—it trades tokens for judgment. We recommend you start with `auto` by default,
+and use `agentic` when your agent needs to protect specific context across long
+conversations.
 
 ### What's Next?
 

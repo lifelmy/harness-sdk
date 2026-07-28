@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import {
   buildPythonApiSidebar,
   buildCourseSidebar,
+  getPrevNextLinks,
   getDisplayName,
   type DocInfo,
   type SidebarEntry,
@@ -202,6 +203,39 @@ describe('buildCourseSidebar', () => {
     const sidebar = buildCourseSidebar([], '')
     const backLink = sidebar[0] as SidebarLink
     expect(backLink.href).toMatch(/\/learn\/$/)
+  })
+})
+
+describe('getPrevNextLinks over buildCourseSidebar lessons', () => {
+  function makeLessonDocs(nums: number[]): DocInfo[] {
+    return nums.map((n) => ({
+      id: `docs/community/learning/lesson${n}-some-title`,
+      title: `Lesson ${n}: Some Title`,
+    }))
+  }
+
+  it('lesson1 has no prev and next is lesson2', () => {
+    const docs = makeLessonDocs([1, 2, 3])
+    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+
+    // Pagination must be computed from lessons-only (the group's entries),
+    // not the full sidebar which includes the "← All courses" back-link.
+    const group = sidebar[1] as SidebarGroup
+    const { prev, next } = getPrevNextLinks(group.entries)
+
+    expect(prev).toBeUndefined()
+    expect(next?.label).toBe('Lesson 2: Some Title')
+  })
+
+  it('lesson2 has prev lesson1 and next lesson3', () => {
+    const docs = makeLessonDocs([1, 2, 3])
+    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson2-some-title')
+
+    const group = sidebar[1] as SidebarGroup
+    const { prev, next } = getPrevNextLinks(group.entries)
+
+    expect(prev?.label).toBe('Lesson 1: Some Title')
+    expect(next?.label).toBe('Lesson 3: Some Title')
   })
 })
 

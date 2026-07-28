@@ -7,6 +7,7 @@ import {
   featuredCourse,
   shelfCourses,
   formatEventDate,
+  toIsoDate,
 } from '../src/util/learn'
 import type { Course, LearnEvent } from '../src/content.config'
 
@@ -46,6 +47,12 @@ describe('upcomingEvents', () => {
     expect(upcomingEvents([today], TODAY)).toHaveLength(1)
   })
 
+  it('includes a same-day event when today is mid-day UTC', () => {
+    const midDay = new Date('2026-07-21T15:30:00Z')
+    const sameDay = makeEvent({ title: 'SameDay', startDate: new Date('2026-07-21T00:00:00Z') })
+    expect(upcomingEvents([sameDay], midDay)).toHaveLength(1)
+  })
+
   it('includes a multi-day event still in progress', () => {
     const inProgress = makeEvent({
       title: 'InProgress',
@@ -69,6 +76,20 @@ describe('posterEvent', () => {
       featured: true,
     })
     expect(posterEvent([soon, featured], TODAY)?.title).toBe('Featured')
+  })
+
+  it('picks the soonest featured event when two are featured', () => {
+    const nearFeatured = makeEvent({
+      title: 'NearFeatured',
+      startDate: new Date('2026-08-01T00:00:00Z'),
+      featured: true,
+    })
+    const farFeatured = makeEvent({
+      title: 'FarFeatured',
+      startDate: new Date('2026-12-01T00:00:00Z'),
+      featured: true,
+    })
+    expect(posterEvent([farFeatured, nearFeatured], TODAY)?.title).toBe('NearFeatured')
   })
 
   it('falls back to the soonest upcoming event when none are featured', () => {
@@ -99,6 +120,13 @@ describe('tickerEvents', () => {
     )
     expect(tickerEvents(events, TODAY).map((e) => e.title)).toEqual(['E8', 'E9', 'E10'])
   })
+
+  it('respects a custom limit', () => {
+    const events = [8, 9, 10, 11].map((m) =>
+      makeEvent({ title: `E${m}`, startDate: new Date(`2026-${String(m).padStart(2, '0')}-01T00:00:00Z`) })
+    )
+    expect(tickerEvents(events, TODAY, 2).map((e) => e.title)).toEqual(['E8', 'E9'])
+  })
 })
 
 describe('course selection', () => {
@@ -127,9 +155,23 @@ describe('course selection', () => {
   })
 })
 
+describe('toIsoDate', () => {
+  it('returns YYYY-MM-DD for a UTC midnight date', () => {
+    expect(toIsoDate(new Date('2026-12-01T00:00:00Z'))).toBe('2026-12-01')
+  })
+})
+
 describe('formatEventDate', () => {
   it('formats a single-day event', () => {
     expect(formatEventDate(makeEvent({ startDate: new Date('2027-01-20T00:00:00Z') }))).toBe('Jan 20')
+  })
+
+  it('formats as single-day when endDate equals startDate', () => {
+    const e = makeEvent({
+      startDate: new Date('2027-01-20T00:00:00Z'),
+      endDate: new Date('2027-01-20T00:00:00Z'),
+    })
+    expect(formatEventDate(e)).toBe('Jan 20')
   })
 
   it('formats a same-month range with an en dash', () => {

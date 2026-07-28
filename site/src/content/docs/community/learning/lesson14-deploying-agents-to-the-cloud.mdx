@@ -1,6 +1,7 @@
 ---
 title: "Lesson 14: Deploying Agents to the Cloud"
 description: "We'll deploy an agent to AWS using Amazon Bedrock AgentCore. AgentCore is a collection of components for building, deploying and operating agents in production. The main components we will focus on in this video is AgentCore Runtime and AgentCore Memory."
+community: true
 ---
 
 <YouTube id="S_ZRZFDJ6wE" title="Lesson 14: Deploying Agents to the Cloud" />
@@ -26,8 +27,11 @@ independently.
 
 For cloud deployment, we focus on three main pieces:
 
-1. **Agentcore Runtime:** The hosting environment for your agent code. It runs agents inside isolated microVMs so that long-running and multi-agent workflows can maintain isolated state across requests.
-2. **Agentcore Memory:** A managed persistent storage and long-term memory retrieval layer.
+1. **Agentcore Runtime:** The hosting environment for your agent code. It runs agents
+   inside isolated microVMs so that long-running and multi-agent workflows can maintain
+   isolated state across requests.
+2. **Agentcore Memory:** A managed persistent storage and long-term memory retrieval
+   layer.
 3. **Agentcore Observability:** Automated tracing and logging of agent execution.
 
 ### Preparing Your Code for Cloud Deployment
@@ -127,7 +131,8 @@ infrastructure files:
 
 * **Project Name:** `customer-service-agent`
 * **Agent Option:** Yes, add an agent (e.g., `my-agent`).
-* **Source:** Select *"bring my own code"* and accept the defaults pointing to your local files.
+* **Source:** Select *"bring my own code"* and accept the defaults pointing to your
+  local files.
 * **Build Type:** Select *direct code deploy*.
 * **Model Provider:** Select *Bedrock*.
 
@@ -200,9 +205,14 @@ access the Gen AI Observability dashboard. This view allows you to inspect execu
 details:
 
 * **Session View:** Select any session ID to view the list of execution traces.
-* **Trajectory Mapping:** Opening a specific trace displays a visual graph of the execution path. You can trace when the agent started, when the loop executed, when it called various tools, and when it called the model.
-* **Detailed Context:** On the right-hand panel, you can inspect the exact prompts sent, the system instructions injected by your plugins (such as dynamically loaded skills), and the model's exact responses.
-* **Timeline View:** You can drill down into the exact duration metrics for each component span to identify bottlenecks.
+* **Trajectory Mapping:** Opening a specific trace displays a visual graph of the
+  execution path. You can trace when the agent started, when the loop executed, when it
+  called various tools, and when it called the model.
+* **Detailed Context:** On the right-hand panel, you can inspect the exact prompts sent,
+  the system instructions injected by your plugins (such as dynamically loaded skills),
+  and the model's exact responses.
+* **Timeline View:** You can drill down into the exact duration metrics for each component
+  span to identify bottlenecks.
 
 ### Production Considerations
 
