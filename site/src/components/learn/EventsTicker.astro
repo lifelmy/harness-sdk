@@ -80,6 +80,10 @@ const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
     flex-shrink: 0;
   }
 
+  :global([data-theme='light']) .lbl {
+    color: #008542;
+  }
+
   .date {
     color: #d8b25e;
     font-weight: 700;
@@ -99,6 +103,10 @@ const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
     color: #00cc5f;
     font-weight: 600;
     flex-shrink: 0;
+  }
+
+  :global([data-theme='light']) .all {
+    color: #008542;
   }
 
   /* At desktop widths truncate long event titles instead of overflowing */

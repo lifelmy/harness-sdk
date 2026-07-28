@@ -71,6 +71,10 @@ const { posts } = Astro.props
     text-decoration: none;
   }
 
+  :global([data-theme='light']) .more {
+    color: #008542;
+  }
+
   .row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -117,6 +121,10 @@ const { posts } = Astro.props
     text-transform: uppercase;
     color: #00cc5f;
     font-weight: 700;
+  }
+
+  :global([data-theme='light']) .kicker {
+    color: #008542;
   }
 
   h3 {

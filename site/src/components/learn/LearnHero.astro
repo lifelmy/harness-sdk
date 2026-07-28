@@ -62,6 +62,10 @@
     font-weight: 700;
   }
 
+  :global([data-theme='light']) .kicker {
+    color: #008542;
+  }
+
   h1 {
     font-family: 'Figtree', sans-serif;
     font-size: clamp(3.25rem, 8vw, 5.5rem);
@@ -74,6 +78,10 @@
 
   .dot {
     color: #00cc5f;
+  }
+
+  :global([data-theme='light']) .dot {
+    color: #008542;
   }
 
   .dek {
@@ -112,6 +120,11 @@
   .paths a:hover {
     color: #00ff77;
     border-color: #00ff77;
+  }
+
+  :global([data-theme='light']) .paths a:hover {
+    color: #008542;
+    border-color: #008542;
   }
 
   @media (max-width: 900px) {

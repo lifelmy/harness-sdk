@@ -141,6 +141,10 @@ const { dives, suggestTopicHref } = Astro.props
     color: #00ff77;
   }
 
+  :global([data-theme='light']) .dive:hover h3 {
+    color: #008542;
+  }
+
   .suggest h3 {
     color: var(--sl-color-gray-4);
   }

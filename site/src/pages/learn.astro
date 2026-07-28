@@ -215,6 +215,15 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     background: transparent;
   }
 
+  .learn-page :global(:focus-visible) {
+    outline: 2px solid var(--strands-green, #00cc5f);
+    outline-offset: 2px;
+  }
+
+  :global([data-theme='light']) .learn-page :global(:focus-visible) {
+    outline-color: #008542;
+  }
+
   .wrap {
     max-width: 1200px;
     margin: 0 auto;

@@ -140,6 +140,10 @@ agent(<span class="s">"What can you do?"</span>)
     font-weight: 700;
   }
 
+  :global([data-theme='light']) .kicker:not(.dim) {
+    color: #008542;
+  }
+
   .kicker.dim {
     color: var(--sl-color-gray-4);
   }
@@ -356,6 +360,10 @@ agent(<span class="s">"What can you do?"</span>)
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     min-width: 24px;
+  }
+
+  :global([data-theme='light']) .syllabus .n {
+    color: #008542;
   }
 
   .syllabus .len {
