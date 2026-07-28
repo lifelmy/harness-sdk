@@ -17,7 +17,6 @@ function makeEvent(overrides: Partial<LearnEvent>): LearnEvent {
     title: 'Event',
     startDate: new Date('2026-12-01T00:00:00Z'),
     location: 'Somewhere',
-    format: 'in-person',
     featured: false,
     ...overrides,
   }

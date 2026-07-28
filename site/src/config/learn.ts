@@ -12,7 +12,7 @@ export interface DeepDive {
   description: string
   href: string
   // Selects an SVG art motif rendered by DeepDivesSection
-  thumbnail: 'loop' | 'target' | 'question'
+  thumbnail: 'target' | 'question'
 }
 
 export const deepDives: DeepDive[] = [

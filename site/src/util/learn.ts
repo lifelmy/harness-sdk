@@ -31,6 +31,7 @@ export function tickerEvents(events: LearnEvent[], today: Date, limit = 3): Lear
   return upcomingEvents(events, today).slice(0, limit)
 }
 
+/** Sort courses by their catalog number ascending. */
 export function sortCourses(courses: Course[]): Course[] {
   return [...courses].sort((a, b) => a.number - b.number)
 }
@@ -43,6 +44,11 @@ export function featuredCourse(courses: Course[]): Course | undefined {
 /** Future courses shown as shelf slots below the featured course. */
 export function shelfCourses(courses: Course[]): Course[] {
   return sortCourses(courses).filter((c) => c.status !== 'available')
+}
+
+/** Format a Date as an ISO-8601 date string (YYYY-MM-DD, UTC). */
+export function toIsoDate(d: Date): string {
+  return d.toISOString().slice(0, 10)
 }
 
 const MONTH = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' })

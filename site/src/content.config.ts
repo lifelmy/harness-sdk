@@ -94,9 +94,6 @@ export const courseSchema = z.object({
   // Entry URL for the course (first lesson or course index)
   href: z.string(),
   syllabusHref: z.string().optional(),
-  // Human-readable total, e.g. "~6 hours"
-  duration: z.string().optional(),
-  languages: z.array(z.string()).optional(),
   lessons: z
     .array(
       z.object({
@@ -116,7 +113,6 @@ export const eventSchema = z
     startDate: z.coerce.date(),
     endDate: z.coerce.date().optional(),
     location: z.string(),
-    format: z.enum(['in-person', 'virtual']),
     href: z.string().optional(),
     description: z.string().optional(),
     // The events poster headlines the soonest featured upcoming event

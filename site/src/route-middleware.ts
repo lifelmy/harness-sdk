@@ -84,14 +84,6 @@ export function applyCollapse(items: SidebarEntry[], depth: number = 0): Sidebar
 }
 
 /**
- * Route middleware that filters the sidebar to only show items
- * matching the current nav section based on URL path.
- *
- * Uses the navbar config's basePath to determine which section
- * the current page belongs to, then filters sidebar to only show
- * items whose href starts with that basePath.
- */
-/**
  * Build a map of href -> page title from the docs collection.
  * Used to override sidebar labels with actual page titles in prev/next navigation.
  */
@@ -106,6 +98,14 @@ async function buildTitlesByHref(): Promise<Map<string, string>> {
   return map
 }
 
+/**
+ * Route middleware that filters the sidebar to only show items
+ * matching the current nav section based on URL path.
+ *
+ * Uses the navbar config's basePath to determine which section
+ * the current page belongs to, then filters sidebar to only show
+ * items whose href starts with that basePath.
+ */
 export const onRequest = defineRouteMiddleware(async (context) => {
   const { starlightRoute } = context.locals
   const { sidebar } = starlightRoute

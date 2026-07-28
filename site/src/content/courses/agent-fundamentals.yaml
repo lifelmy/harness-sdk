@@ -6,10 +6,6 @@ description: >-
   tools, hooks, steering, memory, and multi-agent patterns — then deploy and
   evaluate it.
 href: /docs/community/learning/lesson1-how-agents-really-work/
-duration: ~6 hours
-languages:
-  - Python
-  - TypeScript
 lessons:
   - number: 1
     title: How agents really work

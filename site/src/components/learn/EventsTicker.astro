@@ -1,6 +1,6 @@
 ---
 import type { LearnEvent } from '../../content.config'
-import { formatEventDate } from '../../util/learn'
+import { formatEventDate, toIsoDate } from '../../util/learn'
 import { pathWithBase } from '../../util/links'
 
 interface Props {
@@ -8,8 +8,6 @@ interface Props {
 }
 
 const { events } = Astro.props
-
-const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
 ---
 
 {

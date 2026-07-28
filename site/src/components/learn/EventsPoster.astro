@@ -1,6 +1,6 @@
 ---
 import type { LearnEvent } from '../../content.config'
-import { formatEventDate } from '../../util/learn'
+import { formatEventDate, toIsoDate } from '../../util/learn'
 
 interface Props {
   headliner: LearnEvent | undefined
@@ -8,11 +8,9 @@ interface Props {
 }
 
 const { headliner, others } = Astro.props
-
-const toIsoDate = (d: Date) => d.toISOString().slice(0, 10)
 ---
 
-<aside class="poster-wrap">
+<aside>
   <div class="poster">
     {
       headliner && (
