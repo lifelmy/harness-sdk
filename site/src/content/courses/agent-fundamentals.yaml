@@ -5,47 +5,47 @@ description: >-
   Fourteen lessons, one production agent. Build up from the agent loop through
   tools, hooks, steering, memory, and multi-agent patterns — then deploy and
   evaluate it.
-href: /docs/community/learning/lesson1-how-agents-really-work/
+href: /docs/learning/lesson1-how-agents-really-work/
 lessons:
   - number: 1
     title: How agents really work
-    href: /docs/community/learning/lesson1-how-agents-really-work/
+    href: /docs/learning/lesson1-how-agents-really-work/
   - number: 2
     title: Switching model providers
-    href: /docs/community/learning/lesson2-switching-model-providers/
+    href: /docs/learning/lesson2-switching-model-providers/
   - number: 3
     title: Give your agent tools using MCP
-    href: /docs/community/learning/lesson3-give-your-agent-tools-using-mcp/
+    href: /docs/learning/lesson3-give-your-agent-tools-using-mcp/
   - number: 4
     title: Adding callbacks & response streaming
-    href: /docs/community/learning/lesson4-adding-callbacks-and-response-streaming/
+    href: /docs/learning/lesson4-adding-callbacks-and-response-streaming/
   - number: 5
     title: Control your agent with hooks
-    href: /docs/community/learning/lesson5-control-your-agent-with-hooks/
+    href: /docs/learning/lesson5-control-your-agent-with-hooks/
   - number: 6
     title: Agent plugins & skills
-    href: /docs/community/learning/lesson6-agent-plugins-and-skills/
+    href: /docs/learning/lesson6-agent-plugins-and-skills/
   - number: 7
     title: Improve agent reliability with Strands steering
-    href: /docs/community/learning/lesson7-improve-agent-reliability-with-strands-steering/
+    href: /docs/learning/lesson7-improve-agent-reliability-with-strands-steering/
   - number: 8
     title: Context engineering & conversation management
-    href: /docs/community/learning/lesson8-context-engineering-and-conversation-management/
+    href: /docs/learning/lesson8-context-engineering-and-conversation-management/
   - number: 9
     title: Persistent memory with session managers
-    href: /docs/community/learning/lesson9-persistent-memory-with-session-managers/
+    href: /docs/learning/lesson9-persistent-memory-with-session-managers/
   - number: 10
     title: 'Multi-agent patterns: agents as tools'
-    href: /docs/community/learning/lesson10-multi-agent-patterns-agents-as-tools/
+    href: /docs/learning/lesson10-multi-agent-patterns-agents-as-tools/
   - number: 11
     title: 'Multi-agent patterns: graph workflows'
-    href: /docs/community/learning/lesson11-multi-agent-patterns-graph-workflows/
+    href: /docs/learning/lesson11-multi-agent-patterns-graph-workflows/
   - number: 12
     title: 'Multi-agent patterns: agent swarms'
-    href: /docs/community/learning/lesson12-multi-agent-patterns-agent-swarms/
+    href: /docs/learning/lesson12-multi-agent-patterns-agent-swarms/
   - number: 13
     title: Evaluating agents
-    href: /docs/community/learning/lesson13-evaluating-agents/
+    href: /docs/learning/lesson13-evaluating-agents/
   - number: 14
     title: Deploying agents to the cloud
-    href: /docs/community/learning/lesson14-deploying-agents-to-the-cloud/
+    href: /docs/learning/lesson14-deploying-agents-to-the-cloud/

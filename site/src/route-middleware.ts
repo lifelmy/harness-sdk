@@ -159,7 +159,7 @@ export const onRequest = defineRouteMiddleware(async (context) => {
   }
 
   // Check if we're on a lesson page within the learning course
-  if (currentSlug.startsWith('docs/community/learning/')) {
+  if (currentSlug.startsWith('docs/learning/')) {
     const docs = await getCollection('docs')
     const docInfos: DocInfo[] = docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
       id: doc.id,

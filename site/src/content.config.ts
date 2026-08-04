@@ -261,6 +261,7 @@ export const collections = {
         "404.mdx",
 
         "docs/user-guide/**/*.mdx",
+        "docs/learning/**/*.mdx",
         "docs/integrations/**/*.mdx",
         "docs/contribute/**/*.mdx",
         "docs/examples/**/[!index]*.mdx",

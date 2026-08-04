@@ -233,7 +233,7 @@ export function buildTypeScriptApiSidebar(docs: DocInfo[], currentSlug: string):
  */
 export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): SidebarEntry[] {
   const lessonDocs = docs
-    .filter((doc) => doc.id.startsWith('docs/community/learning/lesson'))
+    .filter((doc) => doc.id.startsWith('docs/learning/lesson'))
     .sort((a, b) => {
       const numA = parseInt(/lesson(\d+)-/.exec(a.id)?.[1] ?? '0', 10)
       const numB = parseInt(/lesson(\d+)-/.exec(b.id)?.[1] ?? '0', 10)
@@ -260,7 +260,7 @@ export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): Sideba
   const backLink: SidebarLink = {
     type: 'link',
     label: '← All courses',
-    href: pathWithBase('/learn/'),
+    href: pathWithBase('/community/'),
     isCurrent: false,
     badge: undefined,
     attrs: {},

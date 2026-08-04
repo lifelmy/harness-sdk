@@ -148,14 +148,14 @@ describe('buildPythonApiSidebar with real collection', () => {
 describe('buildCourseSidebar', () => {
   function makeLessonDocs(nums: number[]): DocInfo[] {
     return nums.map((n) => ({
-      id: `docs/community/learning/lesson${n}-some-title`,
+      id: `docs/learning/lesson${n}-some-title`,
       title: `Lesson ${n}: Some Title`,
     }))
   }
 
   it('returns back-link as first entry followed by a group', () => {
     const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
 
     expect(sidebar).toHaveLength(2)
     expect(sidebar[0]?.type).toBe('link')
@@ -181,7 +181,7 @@ describe('buildCourseSidebar', () => {
 
   it('marks the current lesson as isCurrent', () => {
     const docs = makeLessonDocs([1, 2, 3])
-    const currentSlug = 'docs/community/learning/lesson2-some-title'
+    const currentSlug = 'docs/learning/lesson2-some-title'
     const sidebar = buildCourseSidebar(docs, currentSlug)
 
     const group = sidebar[1] as SidebarGroup
@@ -193,30 +193,30 @@ describe('buildCourseSidebar', () => {
 
   it('back-link is never marked as isCurrent', () => {
     const docs = makeLessonDocs([1])
-    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
 
     const backLink = sidebar[0] as SidebarLink
     expect(backLink.isCurrent).toBe(false)
   })
 
-  it('back-link points to /learn/', () => {
+  it('back-link points to /community/', () => {
     const sidebar = buildCourseSidebar([], '')
     const backLink = sidebar[0] as SidebarLink
-    expect(backLink.href).toMatch(/\/learn\/$/)
+    expect(backLink.href).toMatch(/\/community\/$/)
   })
 })
 
 describe('getPrevNextLinks over buildCourseSidebar lessons', () => {
   function makeLessonDocs(nums: number[]): DocInfo[] {
     return nums.map((n) => ({
-      id: `docs/community/learning/lesson${n}-some-title`,
+      id: `docs/learning/lesson${n}-some-title`,
       title: `Lesson ${n}: Some Title`,
     }))
   }
 
   it('lesson1 has no prev and next is lesson2', () => {
     const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson1-some-title')
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
 
     // Pagination must be computed from lessons-only (the group's entries),
     // not the full sidebar which includes the "← All courses" back-link.
@@ -229,7 +229,7 @@ describe('getPrevNextLinks over buildCourseSidebar lessons', () => {
 
   it('lesson2 has prev lesson1 and next lesson3', () => {
     const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/community/learning/lesson2-some-title')
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson2-some-title')
 
     const group = sidebar[1] as SidebarGroup
     const { prev, next } = getPrevNextLinks(group.entries)

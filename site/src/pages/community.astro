@@ -1,6 +1,6 @@
 ---
 /**
- * /learn/ — editorial hub for learning content: courses, deep dives,
+ * /community/ — editorial hub for learning content: courses, deep dives,
  * events, and featured blog posts.
  *
  * Sections: Hero (+ events ticker) → Courses → Deep dives + Events poster →
@@ -12,13 +12,13 @@
 import { getCollection } from 'astro:content'
 import LandingLayout from '../layouts/LandingLayout.astro'
 import Copyright from '../components/Copyright.astro'
-import LearnHero from '../components/learn/LearnHero.astro'
-import EventsTicker from '../components/learn/EventsTicker.astro'
-import CoursesSection from '../components/learn/CoursesSection.astro'
-import DeepDivesSection from '../components/learn/DeepDivesSection.astro'
-import EventsPoster from '../components/learn/EventsPoster.astro'
-import BlogSection from '../components/learn/BlogSection.astro'
-import KeepGoingStrip from '../components/learn/KeepGoingStrip.astro'
+import CommunityHero from '../components/community/CommunityHero.astro'
+import EventsTicker from '../components/community/EventsTicker.astro'
+import CoursesSection from '../components/community/CoursesSection.astro'
+import DeepDivesSection from '../components/community/DeepDivesSection.astro'
+import EventsPoster from '../components/community/EventsPoster.astro'
+import BlogSection from '../components/community/BlogSection.astro'
+import KeepGoingStrip from '../components/community/KeepGoingStrip.astro'
 import { deepDives, suggestTopicHref } from '../config/learn'
 import { getPublishedPosts } from '../util/blog'
 import { featuredCourse, shelfCourses, posterEvent, tickerEvents, upcomingEvents } from '../util/learn'
@@ -38,7 +38,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
 ---
 
 <LandingLayout
-  title="Learn — Strands Agents"
+  title="Community — Strands Agents"
   description="Courses, deep dives, and events from the team building the Strands Agents SDK."
 >
   <!-- Animated Curves Background (fixed, full-viewport, identical to homepage) -->
@@ -47,10 +47,10 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     <div class="strands-curve-primary" style={`background-image: url(${curvePrimary.src})`}></div>
   </div>
 
-  <div class="learn-page">
-    <LearnHero>
+  <div class="community-page">
+    <CommunityHero>
       <EventsTicker slot="ticker" events={ticker} />
-    </LearnHero>
+    </CommunityHero>
 
     <div class="wrap">
       <CoursesSection featured={featured} shelf={shelf} />
@@ -70,8 +70,8 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     </div>
   </div>
 
-  <footer class="learn-footer">
-    <div class="learn-footer-inner">
+  <footer class="community-footer">
+    <div class="community-footer-inner">
       <Copyright />
     </div>
   </footer>
@@ -165,7 +165,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(110deg) scale(2);
-    animation: learn-scroll-secondary 90s linear infinite;
+    animation: community-scroll-secondary 90s linear infinite;
     z-index: -1;
   }
 
@@ -177,7 +177,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(110deg) scale(1.5);
-    animation: learn-scroll-primary 36s linear infinite;
+    animation: community-scroll-primary 36s linear infinite;
   }
 
   .strands-curve-primary,
@@ -185,7 +185,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     --scroll-offset: 0px;
   }
 
-  @keyframes learn-scroll-primary {
+  @keyframes community-scroll-primary {
     0% {
       background-position: 0 calc(0px + var(--scroll-offset));
     }
@@ -194,7 +194,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     }
   }
 
-  @keyframes learn-scroll-secondary {
+  @keyframes community-scroll-secondary {
     0% {
       background-position: 0 calc(0px + var(--scroll-offset));
     }
@@ -210,17 +210,17 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     }
   }
 
-  .learn-page {
+  .community-page {
     width: 100%;
     background: transparent;
   }
 
-  .learn-page :global(:focus-visible) {
+  .community-page :global(:focus-visible) {
     outline: 2px solid var(--strands-green, #00cc5f);
     outline-offset: 2px;
   }
 
-  :global([data-theme='light']) .learn-page :global(:focus-visible) {
+  :global([data-theme='light']) .community-page :global(:focus-visible) {
     outline-color: #008542;
   }
 
@@ -243,13 +243,13 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     border-top-color: rgba(0, 0, 0, 0.1);
   }
 
-  .learn-footer {
+  .community-footer {
     padding: 1.5rem 2rem;
     border-top: 1px solid var(--sl-color-hairline-shade);
     background-color: var(--sl-color-bg-nav);
   }
 
-  .learn-footer-inner {
+  .community-footer-inner {
     max-width: 1200px;
     text-align: left;
     margin: 0 auto;

@@ -42,6 +42,22 @@ describe('resolveRedirect', () => {
       'docs/integrations/tools/some-future-tool'
     )
   })
+
+  it('redirects /learn vanity URL to community', () => {
+    expect(resolveRedirect('learn')).toBe('community')
+  })
+
+  it('redirects docs/community/learning/lesson1 to docs/learning/lesson1', () => {
+    expect(resolveRedirect('docs/community/learning/lesson1-how-agents-really-work')).toBe(
+      'docs/learning/lesson1-how-agents-really-work'
+    )
+  })
+
+  it('redirects docs/community/learning/lesson14 to docs/learning/lesson14', () => {
+    expect(resolveRedirect('docs/community/learning/lesson14-deploying-agents-to-the-cloud')).toBe(
+      'docs/learning/lesson14-deploying-agents-to-the-cloud'
+    )
+  })
 })
 
 describe('resolveRedirect with redirectFromMap', () => {
