@@ -41,9 +41,9 @@ export function featuredCourse(courses: Course[]): Course | undefined {
   return sortCourses(courses).find((c) => c.status === 'available')
 }
 
-/** Future courses shown as shelf slots below the featured course. */
-export function shelfCourses(courses: Course[]): Course[] {
-  return sortCourses(courses).filter((c) => c.status !== 'available')
+/** Courses shown as shelf slots below the featured course — everything except the featured course itself. */
+export function shelfCourses(courses: Course[], featured: Course | undefined): Course[] {
+  return sortCourses(courses).filter((c) => c !== featured)
 }
 
 /** Format a Date as an ISO-8601 date string (YYYY-MM-DD, UTC). */
@@ -56,7 +56,7 @@ const MONTH = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC'
 /** "Jan 20", "Dec 1–5" (same month), or "Nov 30 – Dec 2" (cross-month). */
 export function formatEventDate(event: LearnEvent): string {
   const start = `${MONTH.format(event.startDate)} ${event.startDate.getUTCDate()}`
-  if (!event.endDate || event.endDate.getTime() === event.startDate.getTime()) {
+  if (!event.endDate || toIsoDate(event.endDate) === toIsoDate(event.startDate)) {
     return start
   }
   const sameMonth =

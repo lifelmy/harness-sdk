@@ -158,6 +158,9 @@ const blogSchema = z.object({
   readingTime: z.string().optional(),
 })
 
+// Course links are always site-internal, so a full external URL is a schema error.
+const internalHref = z.string().startsWith('/', 'course hrefs must be site-relative (start with /)')
+
 export const courseSchema = z.object({
   title: z.string(),
   // Position in the course catalog; drives ordering and the "Course № N" kicker
@@ -165,14 +168,14 @@ export const courseSchema = z.object({
   status: z.enum(['available', 'in-development', 'proposed']),
   description: z.string(),
   // Entry URL for the course (first lesson or course index)
-  href: z.string(),
-  syllabusHref: z.string().optional(),
+  href: internalHref,
+  syllabusHref: internalHref.optional(),
   lessons: z
     .array(
       z.object({
         number: z.number().int().positive(),
         title: z.string(),
-        href: z.string(),
+        href: internalHref,
         duration: z.string().optional(),
       })
     )
@@ -180,11 +183,17 @@ export const courseSchema = z.object({
 })
 export type Course = z.infer<typeof courseSchema>
 
+// Event dates arrive as Date objects (unquoted YAML dates) or ISO strings
+// (quoted YAML). Restricting the input to those two forms rejects YAML
+// numbers, which bare z.coerce.date() would accept as epoch milliseconds;
+// malformed strings still fail the Date validity check after coercion.
+const eventDate = z.union([z.date(), z.string()]).pipe(z.coerce.date())
+
 export const eventSchema = z
   .object({
     title: z.string(),
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date().optional(),
+    startDate: eventDate,
+    endDate: eventDate.optional(),
     location: z.string(),
     href: z.string().optional(),
     description: z.string().optional(),

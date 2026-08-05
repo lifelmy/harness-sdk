@@ -9,6 +9,7 @@ import {
   formatEventDate,
   toIsoDate,
 } from '../src/util/learn'
+import { eventSchema } from '../src/content.config'
 import type { Course, LearnEvent } from '../src/content.config'
 
 const TODAY = new Date('2026-07-21T00:00:00Z')
@@ -147,11 +148,20 @@ describe('course selection', () => {
     expect(featuredCourse([dev])).toBeUndefined()
   })
 
-  it('shelfCourses returns non-available courses in order', () => {
+  it('shelfCourses excludes the featured course and keeps the rest in order', () => {
     const avail = makeCourse({ title: 'Avail', number: 1, status: 'available' })
     const proposed = makeCourse({ title: 'Proposed', number: 3, status: 'proposed' })
     const dev = makeCourse({ title: 'Dev', number: 2, status: 'in-development' })
-    expect(shelfCourses([avail, proposed, dev]).map((c) => c.title)).toEqual(['Dev', 'Proposed'])
+    const featured = featuredCourse([avail, proposed, dev])
+    expect(shelfCourses([avail, proposed, dev], featured).map((c) => c.title)).toEqual(['Dev', 'Proposed'])
+  })
+
+  it('shelfCourses keeps a second available course when the first is featured', () => {
+    const first = makeCourse({ title: 'First', number: 1, status: 'available' })
+    const second = makeCourse({ title: 'Second', number: 2, status: 'available' })
+    const featured = featuredCourse([first, second])
+    expect(featured?.title).toBe('First')
+    expect(shelfCourses([first, second], featured).map((c) => c.title)).toEqual(['Second'])
   })
 })
 
@@ -174,6 +184,14 @@ describe('formatEventDate', () => {
     expect(formatEventDate(e)).toBe('Jan 20')
   })
 
+  it('formats as single-day when endDate has a time component on the same UTC day', () => {
+    const e = makeEvent({
+      startDate: new Date('2027-01-20T00:00:00Z'),
+      endDate: new Date('2027-01-20T18:30:00Z'),
+    })
+    expect(formatEventDate(e)).toBe('Jan 20')
+  })
+
   it('formats a same-month range with an en dash', () => {
     const e = makeEvent({
       startDate: new Date('2026-12-01T00:00:00Z'),
@@ -188,5 +206,24 @@ describe('formatEventDate', () => {
       endDate: new Date('2026-12-02T00:00:00Z'),
     })
     expect(formatEventDate(e)).toBe('Nov 30 – Dec 2')
+  })
+})
+
+describe('eventSchema date validation', () => {
+  const base = { title: 'Event', location: 'Somewhere' }
+
+  it('accepts a valid date range', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '2026-12-01', endDate: '2026-12-05' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects an endDate before startDate', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '2026-12-05', endDate: '2026-12-01' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a numeric startDate', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: 20261201 })
+    expect(result.success).toBe(false)
   })
 })

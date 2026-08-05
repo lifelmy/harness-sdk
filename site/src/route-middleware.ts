@@ -1,6 +1,6 @@
 import { defineRouteMiddleware, type StarlightRouteData } from '@astrojs/starlight/route-data'
 import { getCollection } from 'astro:content'
-import { buildPythonApiSidebar, buildTypeScriptApiSidebar, buildCourseSidebar, getPrevNextLinks, type DocInfo } from './dynamic-sidebar'
+import { buildPythonApiSidebar, buildTypeScriptApiSidebar, buildCourseSidebar, getPrevNextLinks, LESSON_ID_PATTERN, type DocInfo } from './dynamic-sidebar'
 import { pathWithBase } from './util/links'
 import { navLinks, type NavLink } from './config/navbar'
 
@@ -158,8 +158,10 @@ export const onRequest = defineRouteMiddleware(async (context) => {
     return
   }
 
-  // Check if we're on a lesson page within the learning course
-  if (currentSlug.startsWith('docs/learning/')) {
+  // Check if we're on a lesson page within the learning course. Only lesson
+  // pages get the course sidebar — other pages under docs/learning/ (e.g. a
+  // future course index) fall through to the normal community-section sidebar.
+  if (LESSON_ID_PATTERN.test(currentSlug)) {
     const docs = await getCollection('docs')
     const docInfos: DocInfo[] = docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
       id: doc.id,

@@ -31,7 +31,7 @@ const posts = (await getPublishedPosts()).slice(0, 3)
 
 const today = new Date()
 const featured = featuredCourse(courses)
-const shelf = shelfCourses(courses)
+const shelf = shelfCourses(courses, featured)
 const ticker = tickerEvents(events, today)
 const headliner = posterEvent(events, today)
 const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
@@ -86,13 +86,20 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     // If the ticker has no event entries left, hide it entirely.
     const ticker = document.querySelector<HTMLElement>('.ticker')
     if (ticker && !ticker.querySelector('[data-expires]')) ticker.hidden = true
-    // If the poster headliner was removed, show the evergreen fallback.
-    const headliner = document.getElementById('poster-headliner')
-    if (!headliner) {
-      const evergreen = document.getElementById('poster-evergreen')
-      if (evergreen) evergreen.removeAttribute('hidden')
-      const cal = document.getElementById('poster-cal')
-      if (cal) cal.textContent = 'Join the Discord →'
+    // Poster: drop the other-events list when all its rows expired (avoids a
+    // stray border-top rule), and fall back to evergreen only when nothing
+    // dated is left in the poster — an expired headliner alone must not hide
+    // still-upcoming rows.
+    const poster = document.querySelector<HTMLElement>('.poster')
+    if (poster) {
+      const list = poster.querySelector<HTMLElement>('.list')
+      if (list && !list.querySelector('[data-expires]')) list.remove()
+      if (!poster.querySelector('[data-expires]')) {
+        const evergreen = document.getElementById('poster-evergreen')
+        if (evergreen) evergreen.removeAttribute('hidden')
+        const cal = document.getElementById('poster-cal')
+        if (cal) cal.textContent = 'Join the Discord →'
+      }
     }
   </script>
 

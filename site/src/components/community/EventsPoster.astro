@@ -1,6 +1,7 @@
 ---
 import type { LearnEvent } from '../../content.config'
 import { formatEventDate, toIsoDate } from '../../util/learn'
+import { pathWithBase } from '../../util/links'
 
 interface Props {
   headliner: LearnEvent | undefined
@@ -8,6 +9,11 @@ interface Props {
 }
 
 const { headliner, others } = Astro.props
+
+const eventHref = (event: LearnEvent): string | undefined =>
+  event.href ? (event.href.startsWith('http') ? event.href : pathWithBase(event.href)) : undefined
+
+const headlinerHref = headliner ? eventHref(headliner) : undefined
 ---
 
 <aside>
@@ -15,24 +21,51 @@ const { headliner, others } = Astro.props
     {
       headliner && (
         <div id="poster-headliner" data-expires={toIsoDate(headliner.endDate ?? headliner.startDate)}>
-          <span class="kicker">Meet us in person</span>
-          <h3>{headliner.title}</h3>
-          <p class="sub">
-            {headliner.description ? `${headliner.description} · ` : ''}
-            {formatEventDate(headliner)} · {headliner.location}
-          </p>
-          {others.length > 0 && (
-            <div class="list">
-              {others.map((event) => (
-                <div class="row" data-expires={toIsoDate(event.endDate ?? event.startDate)}>
-                  <b>{formatEventDate(event)}</b>
-                  <span>
-                    {event.title} · {event.location}
-                  </span>
-                </div>
-              ))}
-            </div>
+          {headlinerHref ? (
+            <a class="headliner-link" href={headlinerHref}>
+              <span class="kicker">Meet us in person</span>
+              <h3>{headliner.title}</h3>
+              <p class="sub">
+                {headliner.description ? `${headliner.description} · ` : ''}
+                {formatEventDate(headliner)} · {headliner.location}
+              </p>
+            </a>
+          ) : (
+            <>
+              <span class="kicker">Meet us in person</span>
+              <h3>{headliner.title}</h3>
+              <p class="sub">
+                {headliner.description ? `${headliner.description} · ` : ''}
+                {formatEventDate(headliner)} · {headliner.location}
+              </p>
+            </>
           )}
+        </div>
+      )
+    }
+    {
+      others.length > 0 && (
+        <div class="list">
+          {others.map((event) => {
+            const href = eventHref(event)
+            const content = (
+              <>
+                <b>{formatEventDate(event)}</b>
+                <span>
+                  {event.title} · {event.location}
+                </span>
+              </>
+            )
+            return href ? (
+              <a class="row" data-expires={toIsoDate(event.endDate ?? event.startDate)} href={href}>
+                {content}
+              </a>
+            ) : (
+              <div class="row" data-expires={toIsoDate(event.endDate ?? event.startDate)}>
+                {content}
+              </div>
+            )
+          })}
         </div>
       )
     }
@@ -114,6 +147,38 @@ const { headliner, others } = Astro.props
     font-size: 0.9375rem;
     color: #10432a;
     margin: 0;
+  }
+
+  /* Clickable events inherit the poster palette; hover shows the same dark ink underline as .cal */
+  .headliner-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .headliner-link:hover h3 {
+    text-decoration: underline;
+    text-decoration-color: #0a1f14;
+    text-underline-offset: 3px;
+  }
+
+  :global([data-theme='light']) .headliner-link:hover h3 {
+    text-decoration-color: var(--sl-color-gray-1);
+  }
+
+  a.row {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a.row:hover span {
+    text-decoration: underline;
+    text-decoration-color: #0a1f14;
+    text-underline-offset: 3px;
+  }
+
+  :global([data-theme='light']) a.row:hover span {
+    text-decoration-color: var(--sl-color-gray-1);
   }
 
   .list {

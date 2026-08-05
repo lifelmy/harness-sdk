@@ -223,9 +223,18 @@ export function buildTypeScriptApiSidebar(docs: DocInfo[], currentSlug: string):
 }
 
 /**
+ * Matches lesson page ids (docs/learning/lesson3-give-your-agent-tools-...)
+ * and captures the lesson number. Anchored so non-lesson pages under
+ * docs/learning/ (e.g. a course index) never match. Shared by the route
+ * middleware, which uses it to decide whether a page gets the course sidebar.
+ */
+export const LESSON_ID_PATTERN = /^docs\/learning\/lesson(\d+)-/
+
+/**
  * Build a flat sidebar for the "Agent Fundamentals with Strands" course.
  * Returns a list with an "← All courses" back-link followed by a group
- * containing the 14 lesson pages sorted in numeric lesson order.
+ * containing the 14 lesson pages sorted in numeric lesson order. When no
+ * lesson pages match, returns only the back-link (no empty group).
  *
  * Pagination must be computed from the lessons-only list (the back-link
  * must NOT appear in the prev/next chain). Use getPrevNextLinks on the
@@ -233,12 +242,26 @@ export function buildTypeScriptApiSidebar(docs: DocInfo[], currentSlug: string):
  */
 export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): SidebarEntry[] {
   const lessonDocs = docs
-    .filter((doc) => doc.id.startsWith('docs/learning/lesson'))
+    .filter((doc) => LESSON_ID_PATTERN.test(doc.id))
     .sort((a, b) => {
-      const numA = parseInt(/lesson(\d+)-/.exec(a.id)?.[1] ?? '0', 10)
-      const numB = parseInt(/lesson(\d+)-/.exec(b.id)?.[1] ?? '0', 10)
+      // The filter guarantees the pattern matches, so exec and its capture group are non-null.
+      const numA = parseInt(LESSON_ID_PATTERN.exec(a.id)![1]!, 10)
+      const numB = parseInt(LESSON_ID_PATTERN.exec(b.id)![1]!, 10)
       return numA - numB
     })
+
+  const backLink: SidebarLink = {
+    type: 'link',
+    label: '← All courses',
+    href: pathWithBase('/community/'),
+    isCurrent: false,
+    badge: undefined,
+    attrs: {},
+  }
+
+  if (lessonDocs.length === 0) {
+    return [backLink]
+  }
 
   const lessonLinks: SidebarLink[] = lessonDocs.map((doc) => ({
     type: 'link',
@@ -255,15 +278,6 @@ export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): Sideba
     entries: lessonLinks,
     collapsed: false,
     badge: undefined,
-  }
-
-  const backLink: SidebarLink = {
-    type: 'link',
-    label: '← All courses',
-    href: pathWithBase('/community/'),
-    isCurrent: false,
-    badge: undefined,
-    attrs: {},
   }
 
   return [backLink, group]

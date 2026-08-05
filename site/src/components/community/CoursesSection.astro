@@ -16,14 +16,17 @@ const statusLabel: Record<Course['status'], string> = {
 }
 ---
 
-{
-  featured && (
-    <section id="courses" class="courses">
-      <div class="sec-head">
-        <h2>Courses</h2>
-        <span class="sec-dek">Structured, hands-on paths. More on the way.</span>
-      </div>
+<!-- The section shell always renders so the hero's #courses anchor resolves
+     even when no course is available yet — the shelf's "More courses on the
+     way" slot carries the empty state. -->
+<section id="courses" class="courses">
+  <div class="sec-head">
+    <h2>Courses</h2>
+    <span class="sec-dek">Structured, hands-on paths. More on the way.</span>
+  </div>
 
+  {
+    featured && (
       <div class="feature">
         <div class="main">
           <span class="kicker">Course № {featured.number} · {statusLabel[featured.status]}</span>
@@ -64,44 +67,48 @@ agent(<span class="s">"What can you do?"</span>)
           </div>
         </div>
       </div>
+    )
+  }
 
-      {featured.lessons && featured.lessons.length > 0 && (
-        <div class="syllabus">
-          <span class="kicker dim">In this course</span>
-          <div class="rows">
-            {featured.lessons.map((lesson) => (
-              <a class="row" href={pathWithBase(lesson.href)}>
-                <span class="n">{String(lesson.number).padStart(2, '0')}</span>
-                {lesson.title}
-                {lesson.duration && <span class="len">{lesson.duration}</span>}
-              </a>
-            ))}
-          </div>
+  {
+    featured?.lessons && featured.lessons.length > 0 && (
+      <div class="syllabus">
+        <span class="kicker dim">In this course</span>
+        <div class="rows">
+          {featured.lessons.map((lesson) => (
+            <a class="row" href={pathWithBase(lesson.href)}>
+              <span class="n">{String(lesson.number).padStart(2, '0')}</span>
+              {lesson.title}
+              {lesson.duration && <span class="len">{lesson.duration}</span>}
+            </a>
+          ))}
         </div>
-      )}
-
-      <div class="shelf">
-        {shelf.length > 0 ? (
-          shelf.map((course) => (
-            <div class="slot">
-              <div class="idx">{course.number}</div>
-              <span class="tag">{statusLabel[course.status]}</span>
-              <h4>{course.title}</h4>
-              <p>{course.description}</p>
-            </div>
-          ))
-        ) : (
-          <div class="slot">
-            <div class="idx">{featured.number + 1}</div>
-            <span class="tag">Coming soon</span>
-            <h4>More courses on the way</h4>
-            <p>Tell us what you want to learn next on Discord.</p>
-          </div>
-        )}
       </div>
-    </section>
-  )
-}
+    )
+  }
+
+  <div class="shelf">
+    {
+      shelf.length > 0 ? (
+        shelf.map((course) => (
+          <div class="slot">
+            <div class="idx">{course.number}</div>
+            <span class="tag">{statusLabel[course.status]}</span>
+            <h4>{course.title}</h4>
+            <p>{course.description}</p>
+          </div>
+        ))
+      ) : (
+        <div class="slot">
+          <div class="idx">{(featured?.number ?? 0) + 1}</div>
+          <span class="tag">Coming soon</span>
+          <h4>More courses on the way</h4>
+          <p>Tell us what you want to learn next on Discord.</p>
+        </div>
+      )
+    }
+  </div>
+</section>
 
 <style>
   .courses {

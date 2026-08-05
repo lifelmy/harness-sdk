@@ -204,6 +204,27 @@ describe('buildCourseSidebar', () => {
     const backLink = sidebar[0] as SidebarLink
     expect(backLink.href).toMatch(/\/community\/$/)
   })
+
+  it('excludes non-lesson pages under docs/learning/', () => {
+    const docs: DocInfo[] = [
+      { id: 'docs/learning/lesson1-some-title', title: 'Lesson 1: Some Title' },
+      { id: 'docs/learning/overview', title: 'Overview' },
+    ]
+    const sidebar = buildCourseSidebar(docs, '')
+
+    const group = sidebar[1] as SidebarGroup
+    expect(group.entries).toHaveLength(1)
+    expect((group.entries[0] as SidebarLink).label).toBe('Lesson 1: Some Title')
+  })
+
+  it('returns only the back-link (no empty group) when zero lessons match', () => {
+    const docs: DocInfo[] = [{ id: 'docs/learning/overview', title: 'Overview' }]
+    const sidebar = buildCourseSidebar(docs, '')
+
+    expect(sidebar).toHaveLength(1)
+    expect(sidebar[0]?.type).toBe('link')
+    expect((sidebar[0] as SidebarLink).label).toBe('← All courses')
+  })
 })
 
 describe('getPrevNextLinks over buildCourseSidebar lessons', () => {

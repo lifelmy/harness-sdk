@@ -7,6 +7,7 @@ import {
 } from '../src/route-middleware'
 import { type NavLink } from '../src/config/navbar'
 import { loadSidebarFromConfig, type StarlightSidebarItem } from '../src/sidebar'
+import { buildCourseSidebar, getPrevNextLinks, type DocInfo } from '../src/dynamic-sidebar'
 
 // Sidebar entry types matching Starlight's runtime structure
 type SidebarLink = { type: 'link'; label: string; href: string; isCurrent: boolean }
@@ -244,6 +245,30 @@ describe('Integration: Full filtering flow', () => {
     allLinks.forEach((link) => {
       expect(link.href.startsWith('/docs/integrations/')).toBe(true)
     })
+  })
+
+  it('lesson pagination prev is the previous lesson, not the All-courses back-link', () => {
+    // Mirrors the middleware's lesson branch: sidebar from buildCourseSidebar,
+    // pagination from the lesson group's entries only.
+    const lessonDocs: DocInfo[] = [
+      { id: 'docs/learning/lesson1-how-agents-really-work', title: 'Lesson 1: How agents really work' },
+      { id: 'docs/learning/lesson2-switching-model-providers', title: 'Lesson 2: Switching model providers' },
+      { id: 'docs/learning/lesson3-give-your-agent-tools-using-mcp', title: 'Lesson 3: Give your agent tools using MCP' },
+    ]
+    const currentSlug = 'docs/learning/lesson2-switching-model-providers'
+    const courseSidebar = buildCourseSidebar(lessonDocs, currentSlug)
+
+    // The sidebar leads with the All-courses back-link
+    expect(courseSidebar[0]?.type).toBe('link')
+    expect((courseSidebar[0] as { label: string }).label).toBe('← All courses')
+
+    const lessonGroup = courseSidebar.find((entry) => entry.type === 'group')
+    const lessonsOnly = lessonGroup?.type === 'group' ? lessonGroup.entries : []
+    const { prev, next } = getPrevNextLinks(lessonsOnly)
+
+    expect(prev?.label).toBe('Lesson 1: How agents really work')
+    expect(prev?.label).not.toBe('← All courses')
+    expect(next?.label).toBe('Lesson 3: Give your agent tools using MCP')
   })
 })
 
