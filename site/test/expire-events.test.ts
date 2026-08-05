@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { JSDOM } from 'jsdom'
 import { expireEvents } from '../src/util/expire-events'
 
