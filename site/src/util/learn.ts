@@ -1,7 +1,7 @@
 import type { Course, LearnEvent } from '../content.config'
 
 /**
- * Pure selection/format helpers for the /learn/ page. All date logic treats
+ * Pure selection/format helpers for the /community/ page. All date logic treats
  * dates as UTC calendar dates (YAML dates parse as UTC midnight) and runs at
  * build time — "today" is always passed in explicitly so behavior is testable.
  */

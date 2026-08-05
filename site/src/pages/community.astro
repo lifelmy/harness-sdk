@@ -77,30 +77,8 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
   </footer>
 
   <script>
-    // Client-side event expiry: remove events whose end (or start) date is past today.
-    // Progressive enhancement — build-time filtering is the primary gate; this is the freshness backstop.
-    const today = new Date().toISOString().slice(0, 10)
-    document.querySelectorAll<HTMLElement>('[data-expires]').forEach((el) => {
-      if (el.dataset.expires! < today) el.remove()
-    })
-    // If the ticker has no event entries left, hide it entirely.
-    const ticker = document.querySelector<HTMLElement>('.ticker')
-    if (ticker && !ticker.querySelector('[data-expires]')) ticker.hidden = true
-    // Poster: drop the other-events list when all its rows expired (avoids a
-    // stray border-top rule), and fall back to evergreen only when nothing
-    // dated is left in the poster — an expired headliner alone must not hide
-    // still-upcoming rows.
-    const poster = document.querySelector<HTMLElement>('.poster')
-    if (poster) {
-      const list = poster.querySelector<HTMLElement>('.list')
-      if (list && !list.querySelector('[data-expires]')) list.remove()
-      if (!poster.querySelector('[data-expires]')) {
-        const evergreen = document.getElementById('poster-evergreen')
-        if (evergreen) evergreen.removeAttribute('hidden')
-        const cal = document.getElementById('poster-cal')
-        if (cal) cal.textContent = 'Join the Discord →'
-      }
-    }
+    import { expireEvents } from '../util/expire-events'
+    expireEvents(document, new Date().toISOString().slice(0, 10))
   </script>
 
   <script>

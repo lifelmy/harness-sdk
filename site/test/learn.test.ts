@@ -9,7 +9,7 @@ import {
   formatEventDate,
   toIsoDate,
 } from '../src/util/learn'
-import { eventSchema } from '../src/content.config'
+import { eventSchema, courseSchema } from '../src/content.config'
 import type { Course, LearnEvent } from '../src/content.config'
 
 const TODAY = new Date('2026-07-21T00:00:00Z')
@@ -207,23 +207,108 @@ describe('formatEventDate', () => {
     })
     expect(formatEventDate(e)).toBe('Nov 30 – Dec 2')
   })
+
+  it('formats a cross-year range with both months (Dec 28 – Jan 3)', () => {
+    const e = makeEvent({
+      startDate: new Date('2026-12-28T00:00:00Z'),
+      endDate: new Date('2027-01-03T00:00:00Z'),
+    })
+    expect(formatEventDate(e)).toBe('Dec 28 – Jan 3')
+  })
+
+  it('does not collapse same-month cross-year range to en-dash form', () => {
+    // Dec 2026 → Dec 2027: same month but different year — must NOT produce 'Dec 1–5'.
+    const e = makeEvent({
+      startDate: new Date('2026-12-01T00:00:00Z'),
+      endDate: new Date('2027-12-05T00:00:00Z'),
+    })
+    const formatted = formatEventDate(e)
+    expect(formatted).not.toBe('Dec 1–5')
+    // Cross-year always renders both month labels with a spaced en-dash.
+    expect(formatted).toBe('Dec 1 – Dec 5')
+  })
 })
 
 describe('eventSchema date validation', () => {
   const base = { title: 'Event', location: 'Somewhere' }
 
   it('accepts a valid date range', () => {
-    const result = eventSchema.safeParse({ ...base, startDate: '2026-12-01', endDate: '2026-12-05' })
+    const result = eventSchema.safeParse({
+      ...base,
+      startDate: '2026-12-01',
+      endDate: '2026-12-05',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('accepts a Date object for startDate', () => {
+    const result = eventSchema.safeParse({
+      ...base,
+      startDate: new Date('2026-12-01T00:00:00Z'),
+    })
     expect(result.success).toBe(true)
   })
 
   it('rejects an endDate before startDate', () => {
-    const result = eventSchema.safeParse({ ...base, startDate: '2026-12-05', endDate: '2026-12-01' })
+    const result = eventSchema.safeParse({
+      ...base,
+      startDate: '2026-12-05',
+      endDate: '2026-12-01',
+    })
     expect(result.success).toBe(false)
   })
 
   it('rejects a numeric startDate', () => {
     const result = eventSchema.safeParse({ ...base, startDate: 20261201 })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a rolled-over calendar date (2026-02-30)', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '2026-02-30' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects an impossible month (2026-13-01)', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '2026-13-01' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a locale-format date (08/04/2026)', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '08/04/2026' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a single-digit month/day (2026-8-4)', () => {
+    const result = eventSchema.safeParse({ ...base, startDate: '2026-8-4' })
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('courseSchema internalHref validation', () => {
+  const base = {
+    title: 'Course',
+    number: 1,
+    status: 'available' as const,
+    description: 'A course',
+  }
+
+  it('accepts a valid site-relative href', () => {
+    const result = courseSchema.safeParse({ ...base, href: '/docs/learning/lesson1-x' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects an https URL', () => {
+    const result = courseSchema.safeParse({ ...base, href: 'https://evil.com' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a protocol-relative URL (//evil.com)', () => {
+    const result = courseSchema.safeParse({ ...base, href: '//evil.com' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a backslash-escaped protocol-relative URL (/\\\\evil.com)', () => {
+    const result = courseSchema.safeParse({ ...base, href: '/\\evil.com' })
     expect(result.success).toBe(false)
   })
 })

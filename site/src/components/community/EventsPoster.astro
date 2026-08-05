@@ -188,6 +188,13 @@ const headlinerHref = headliner ? eventHref(headliner) : undefined
     font-size: 0.875rem;
   }
 
+  /* Applied at runtime when the headliner expired but rows remain. Uses :global
+     because Astro scoping doesn't apply to classes added dynamically by JS. */
+  :global(.list--bare) {
+    border-top: none;
+    margin-top: 0;
+  }
+
   .row {
     display: flex;
     justify-content: space-between;

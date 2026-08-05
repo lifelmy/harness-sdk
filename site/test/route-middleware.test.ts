@@ -4,6 +4,7 @@ import {
   findCurrentNavSection,
   filterSidebarByBasePath,
   applyCollapse,
+  onRequest,
 } from '../src/route-middleware'
 import { type NavLink } from '../src/config/navbar'
 import { loadSidebarFromConfig, type StarlightSidebarItem } from '../src/sidebar'
@@ -442,5 +443,50 @@ describe('filterSidebarByBasePath with base path in URLs', () => {
     expect(result.length).toBe(2)
     expect((result[0] as SidebarLink).href).toBe('/docs/examples/')
     expect((result[1] as SidebarLink).href).toBe('/docs/examples/python/')
+  })
+})
+
+describe('onRequest integration: lesson pagination via real collection', () => {
+  /**
+   * True end-to-end test: call onRequest with a lesson context and assert the
+   * pagination and sidebar written back to starlightRoute. Uses the real docs
+   * collection (populated by global-setup).
+   *
+   * Guards the lessonsOnly branch: feeding courseSidebar directly to
+   * getPrevNextLinks would cause the "← All courses" back-link to appear as
+   * lesson1's prev (it is the immediately preceding entry in the full sidebar).
+   * That mutation passes the mirrored unit test (lesson2 prev is still lesson1
+   * either way) but fails this test, which checks lesson1.
+   */
+  it('lesson1 has no prev — back-link must not appear as prev', async () => {
+    const currentSlug = 'docs/learning/lesson1-how-agents-really-work'
+
+    // Minimal mutable starlightRoute; onRequest mutates .sidebar and .pagination.
+    const starlightRoute: Record<string, unknown> = {
+      id: currentSlug,
+      sidebar: [],
+      hasSidebar: true,
+      pagination: { prev: undefined, next: undefined },
+    }
+
+    const context = {
+      locals: { starlightRoute },
+      url: new URL(`https://example.com/${currentSlug}/`),
+    }
+
+    const noopNext = async (): Promise<void> => {}
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await onRequest(context as any, noopNext)
+
+    const sidebar = starlightRoute.sidebar as SidebarEntry[]
+    expect(sidebar[0]?.type).toBe('link')
+    expect((sidebar[0] as SidebarLink).label).toBe('← All courses')
+
+    const pagination = starlightRoute.pagination as { prev?: SidebarLink; next?: SidebarLink }
+    // Lesson 1 is first — no previous lesson. The "← All courses" back-link
+    // must NOT bleed into pagination even if courseSidebar is passed whole.
+    expect(pagination.prev).toBeUndefined()
+    expect(pagination.next?.label).toBe('Lesson 2: Switching Model Providers')
   })
 })

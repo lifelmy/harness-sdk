@@ -159,7 +159,12 @@ const blogSchema = z.object({
 })
 
 // Course links are always site-internal, so a full external URL is a schema error.
-const internalHref = z.string().startsWith('/', 'course hrefs must be site-relative (start with /)')
+// The regex rejects protocol-relative URLs like //evil.com and /\evil.com
+// that startsWith('/') would accept.
+const internalHref = z.string().regex(
+  /^\/(?![/\\])/,
+  'course hrefs must be site-relative (start with a single /)',
+)
 
 export const courseSchema = z.object({
   title: z.string(),
@@ -184,10 +189,24 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>
 
 // Event dates arrive as Date objects (unquoted YAML dates) or ISO strings
-// (quoted YAML). Restricting the input to those two forms rejects YAML
-// numbers, which bare z.coerce.date() would accept as epoch milliseconds;
-// malformed strings still fail the Date validity check after coercion.
-const eventDate = z.union([z.date(), z.string()]).pipe(z.coerce.date())
+// (quoted YAML, must be YYYY-MM-DD). The string branch rejects bare numbers,
+// locale formats like MM/DD/YYYY, and single-digit month/day. After coercion
+// a round-trip check rejects rolled-over calendar dates ('2026-02-30' survives
+// the regex but coerces to a different ISO date).
+const eventDate = z
+  .union([
+    z.date(),
+    z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'event dates must be YYYY-MM-DD')
+      .superRefine((s, ctx) => {
+        const coerced = new Date(s)
+        if (isNaN(coerced.getTime()) || coerced.toISOString().slice(0, 10) !== s) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: `invalid calendar date: ${s}` })
+        }
+      }),
+  ])
+  .pipe(z.coerce.date())
 
 export const eventSchema = z
   .object({

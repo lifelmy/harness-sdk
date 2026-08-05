@@ -78,8 +78,8 @@ safely and effectively.
 
 The goal is to let agents handle more on their own while you maintain control over the
 boundaries. You can run deterministic code where you need predictable behavior, add
-validation layers to verify outcomes, and when the stakes are high, you can interrupt a
-running agent and bring a human into the loop.
+validation layers to verify outcomes, and when the stakes are high, you can use interrupts
+to pause the agent and route the decision to a human.
 
 ### Introducing the Strands Agents SDK
 We'll be exploring how to build agent harnesses using the Strands agents SDK, which is an
@@ -143,7 +143,7 @@ And now we can give the agent a task by passing in a user query or prompt just l
 offerings. Write a short competitive positioning summary and save it to report.md." Now we
 can go ahead and give this a run.
 
-### Observing Self-Healing & Human-in-the-Loop Operations
+### Observing Self-Healing & Interrupt-Gated Operations
 The agent kicked off, and we can see it using its tools like HTTP request and
 query_product_database to look up the products that it's comparing.
 
@@ -155,7 +155,7 @@ different path.
 
 Then later, we can see that it continues to gather information, and then it goes to write
 the file. Here it's stopping to ask me, the user, for permission: "Can I proceed with
-writing this file?" So, this has some built-in human-in-the-loop capabilities with the
+writing this file?" So, this has some built-in interrupt-gated capabilities with the
 file write tool. I'll go ahead and say "yes" to allow that. Then it will write the file to
 a local directory, which will contain the entire report.
 

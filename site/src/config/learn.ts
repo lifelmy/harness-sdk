@@ -1,5 +1,5 @@
 /**
- * Editorial configuration for the /learn/ page.
+ * Editorial configuration for the /community/ page.
  *
  * Deep dives are hand-curated picks — few enough that a config array beats a
  * content collection. Promote to a collection if this list grows past ~6.

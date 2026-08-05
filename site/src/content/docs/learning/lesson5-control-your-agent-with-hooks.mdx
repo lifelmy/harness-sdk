@@ -42,14 +42,14 @@ hooks can listen to the same event, so you can stack behaviors. You can have one
 logging, another for validation, and another for approval gates without them stepping on
 each other or interfering.
 
-Human in the loop is one of the most common reasons to use hooks. Let's say you're
-building an agent that runs locally on someone's machine, and one of the things it can do
-is manipulate files. What you might want is a hook that pauses the agent before any file
+Interrupts are one of the most common reasons to use hooks. Let's say you're building an
+agent that runs locally on someone's machine, and one of the things it can do is
+manipulate files. What you might want is a hook that pauses the agent before any file
 deletion happens and asks the user for approval. The user can see what's about to be
 deleted, approve or deny the action, and the agent either continues or cancels based on
 that response.
 
-### Coding a Human-in-the-Loop File Deletion Gate
+### Coding an Interrupt-Gated File Deletion
 
 Let's look at some code to do this. For the agent itself, we have several tools for file
 management, including a delete file tool. Then we have a hook defined here. This is a hook

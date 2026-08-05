@@ -217,6 +217,19 @@ describe('buildCourseSidebar', () => {
     expect((group.entries[0] as SidebarLink).label).toBe('Lesson 1: Some Title')
   })
 
+  it('excludes a lesson-prefixed non-numbered page (docs/learning/lesson-overview)', () => {
+    // 'lesson-overview' starts with 'lesson' but has no digit — LESSON_ID_PATTERN must not match.
+    const docs: DocInfo[] = [
+      { id: 'docs/learning/lesson1-some-title', title: 'Lesson 1: Some Title' },
+      { id: 'docs/learning/lesson-overview', title: 'Lesson Overview' },
+    ]
+    const sidebar = buildCourseSidebar(docs, '')
+
+    const group = sidebar[1] as SidebarGroup
+    expect(group.entries).toHaveLength(1)
+    expect((group.entries[0] as SidebarLink).label).toBe('Lesson 1: Some Title')
+  })
+
   it('returns only the back-link (no empty group) when zero lessons match', () => {
     const docs: DocInfo[] = [{ id: 'docs/learning/overview', title: 'Overview' }]
     const sidebar = buildCourseSidebar(docs, '')
