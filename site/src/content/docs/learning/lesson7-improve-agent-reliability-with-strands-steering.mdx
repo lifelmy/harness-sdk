@@ -1,7 +1,6 @@
 ---
 title: "Lesson 7: Improve Agent Reliability with Strands Steering"
 description: "System prompts set the agent's general personality and rules, but they're blunt. You can't easily say 'only for this next tool call, format the output as JSON' or 'when the user mentions billing, always check their account status first' without bloating the prompt with conditionals the model has to parse every single turn."
-community: true
 redirectFrom:
   - docs/community/learning/lesson7-improve-agent-reliability-with-strands-steering
 ---
@@ -90,7 +89,7 @@ than to large, static prompts filled with instructions that they saw several tur
 Now let's look at the second kind of steering, which is model steering. This is useful for
 situations where the rules are difficult to express as deterministic code.
 
-We have built a tone guardrail handler, which extends the `LlmSteeringHandler` base class.
+We have built a tone guardrail handler, which extends the `LLMSteeringHandler` base class.
 Instead of deterministic logic, this handler spins up a second agent that acts as a judge.
 Every time the customer service agent generates a response, the steering agent evaluates
 its communication policies defined in the steering prompt.
@@ -158,3 +157,5 @@ But there's another problem we still haven't addressed: For long-running tasks o
 conversations, your agent is going to hit the context window limit and throw an error.
 
 In the next lesson, we'll tackle that problem with conversation managers.
+
+*Learn more: [Steering (Plugins)](/docs/user-guide/concepts/plugins/steering/)*

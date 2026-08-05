@@ -1,13 +1,12 @@
 ---
 title: "Lesson 2: Switching Model Providers"
 description: "This covers model providers: how Strands abstracts the underlying LLM so your agent logic stays the same regardless of which model you're calling."
-community: true
 redirectFrom:
   - docs/community/learning/lesson2-switching-model-providers
 ---
 
-<YouTube id="ZpXWGjISMs8" title="Lesson 2: Switching Model Providers" />
-*[Watch on YouTube](https://www.youtube.com/watch?v=ZpXWGjISMs8&list=PLDzwjhH-4yhU)*
+<YouTube id="NAEX4ORLkbQ" title="Lesson 2: Switching Model Providers" />
+*[Watch on YouTube](https://www.youtube.com/watch?v=NAEX4ORLkbQ&list=PLDzwjhH-4yhU&index=2)*
 
 *Code for this lesson can be found
 [**here**](https://github.com/aws-samples/sample-building-with-strands-course/tree/main/samples/02-model-providers).*
@@ -39,7 +38,7 @@ it to the agent, and everything else stays the same.
 Let's look at how it works. We'll start with the default provider, Amazon Bedrock.
 
 When you create an agent with no model arguments, Strands uses Bedrock with Claude Sonnet
-4 in `us-west-2`. In production, you usually want to be explicit about what model you're
+4.6 in `us-west-2`. In production, you usually want to be explicit about what model you're
 using and how it's configured. So instead, we import `BedrockModel`.
 
 Then we create an instance of our model and pass in a specific model ID like
@@ -80,3 +79,5 @@ use case.
 
 In the next video, we'll look more at tools and Model Context Protocol, or MCP, which is
 one of the main ways agents connect to external systems and capabilities.
+
+*Learn more: [Model Providers](/docs/user-guide/concepts/model-providers/)*

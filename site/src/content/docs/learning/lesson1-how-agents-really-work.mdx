@@ -1,7 +1,6 @@
 ---
 title: "Lesson 1: How Agents Really Work"
 description: "A ground-up look at the agent loop: how a model, a set of tools, and a running context combine to let an agent reason, act, and observe until a task is done."
-community: true
 redirectFrom:
   - docs/community/learning/lesson1-how-agents-really-work
 ---
@@ -89,11 +88,13 @@ control it end-to-end. It has components for tools, context engineering, lifecyc
 plugins, memory, session management, evaluations, observability, and more. You compose
 them together into whatever system your use case calls for.
 
-But Strands also ships with preconfigured defaults that can give you a capable agent out
-of the box, including built-in tools for file operations like shell, search, and web
-access, automatic context management that compresses proactively, and sub-agent
-delegation. You can start with those defaults and then customize further, or build from
-scratch using the primitives. We'll do both in this course.
+Strands does not add any tools by default—you choose which tools your agent gets. The
+default conversation manager is `SlidingWindowConversationManager`, which keeps the most
+recent messages and truncates older history. Proactive context compression is opt-in via
+`context_manager="auto"`. The community tools package (`strands-agents-tools`) provides
+ready-made tools for file operations, shell, search, web access, and more that you can
+add to your agent. You can start with those and customize further, or build from scratch
+using the primitives. We'll do both in this course.
 
 Strands itself came out of production systems at AWS. Teams building agents kept running
 into the same problem: The abstractions and rigid orchestration layers in existing
@@ -109,8 +110,8 @@ So now let's take our very simple agent and add some tools. In this example, we 
 creating a market research agent that helps a company compare internal product listings to
 their competitors.
 
-Here at the top, we import agent and tool from strands, along with some built-in tools
-from the community tools package like HTTP request and file write.
+Here at the top, we import agent and tool from strands, along with some community tools
+like HTTP request and file write.
 
 Then we define a custom tool. Custom tools let your agent run deterministic functionality
 directly when it needs it. This could be calling an API, performing business logic, doing
@@ -133,7 +134,7 @@ sent along with every request to the model. In this case, we are saying: "You ar
 product research analyst," and providing details on how to handle tasks.
 
 Then we create an agent by creating a new instance of the agent class, passing in the
-built-in tools like HTTP request and file write, as well as our custom tool
+community tools like HTTP request and file write, as well as our custom tool
 query_product_database, and then also passing in the system prompt.
 
 And now we can give the agent a task by passing in a user query or prompt just like this:
@@ -198,3 +199,5 @@ community tools package. Also, by default, Strands uses Amazon Bedrock as the mo
 provider. So, if you already have AWS credentials configured, then you're ready to go. But
 Strands is model-provider agnostic. You can also use providers like OpenAI, Anthropic, or
 Ollama for local models.
+
+*Learn more: [Agent Loop](/docs/user-guide/concepts/agents/agent-loop/)*

@@ -1,7 +1,6 @@
 ---
 title: "Lesson 9: Persistent Memory with Session Managers"
 description: "Without persistence, every conversation starts from zero. The agent has no memory of prior interactions, no accumulated knowledge about the user, no awareness of decisions made yesterday. Session managers handle the storage and retrieval of conversation state so continuity works automatically."
-community: true
 redirectFrom:
   - docs/community/learning/lesson9-persistent-memory-with-session-managers
 ---
@@ -108,7 +107,7 @@ You import it, create the instance passing in the session ID, bucket name, optio
 prefix, and the AWS region, and then you pass that to your agent. When you use it, it
 saves the same session structure we saw locally, but now stored in S3 instead.
 
-Later in the course, we will explore **Amazon Bedrock Agent Core Memory**. This is
+Later in the course, we will explore **Amazon Bedrock AgentCore Memory**. This is
 especially interesting because it gives you more than just short-term persistence. It also
 supports long-term memory patterns where it automatically extracts information from the
 raw conversation history that can be retrieved by the agent when needed, such as:
@@ -138,3 +137,5 @@ into your agent, independent of raw conversation history storage.
 Up next, we'll tackle multi-agent systems. We'll start with one of the simplest
 orchestration patterns: wrapping one agent as a tool for another, using the "agent as a
 tool" pattern.
+
+*Learn more: [Session Management](/docs/user-guide/concepts/agents/session-management/)*

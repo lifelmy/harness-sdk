@@ -1,7 +1,6 @@
 ---
 title: "Lesson 3: Give Your Agent Tools Using MCP"
 description: "This chapter covers MCP and how it changes the way you think about equipping your agent with capabilities."
-community: true
 redirectFrom:
   - docs/community/learning/lesson3-give-your-agent-tools-using-mcp
 ---
@@ -18,7 +17,7 @@ It's common to give agents many different tools from multiple sources, and agent
 tools as needed to solve whatever task is in front of them. In Strands, there are multiple
 ways to give an agent access to tools.
 
-You've already seen how to use some of the built-in vended tools and turn Python functions
+You've already seen how to use some of the community tools and turn Python functions
 into tools using the `tool` decorator. Another pattern is MCP.
 
 MCP, or Model Context Protocol, is an open standard that gives agents a consistent way to
@@ -89,7 +88,7 @@ MCP servers and connect them to Strands in exactly the same way.
 So that's tools with MCP. Before we move on to the next lesson, there's something I want
 you to understand about tools.
 
-When you're using built-in tools or community-built tools or building your own, it's good
+When you're using community tools or building your own, it's good
 to understand that tools execute with the permissions of the host process. That means if
 you give your agent unrestricted access to the shell tool, you've effectively given it
 access to your entire machine. An agent that can run `curl` can also read your cloud
@@ -113,7 +112,7 @@ Here's the mental model for tools:
 
 * Your harness gives the agent access to **custom tools** for project-specific logic and
   integrations.
-* **Community or vended built-in tools** for common capabilities.
+* **Community tools** for common capabilities.
 * **MCP servers** for connecting to external systems.
 
 All of these can coexist within the same agent's tool list.
@@ -126,3 +125,5 @@ does with those tools. If it decides to delete a file or send an email, it just 
 
 We'll fix that with **hooks**, which let you intercept the agent loop, inspect what's
 about to happen, and you can even ask a human before anything destructive goes through.
+
+*Learn more: [Model Context Protocol (MCP) Tools](/docs/user-guide/concepts/tools/mcp-tools/)*

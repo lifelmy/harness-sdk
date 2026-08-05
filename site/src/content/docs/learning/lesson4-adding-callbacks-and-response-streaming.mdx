@@ -1,7 +1,6 @@
 ---
 title: "Lesson 4: Adding Callbacks & Response Streaming"
 description: "This chapter is about making the agent's work visible while it's happening, not just dumping a final answer after 15 seconds of silence."
-community: true
 redirectFrom:
   - docs/community/learning/lesson4-adding-callbacks-and-response-streaming
 ---
@@ -34,8 +33,7 @@ is just a function that accepts arguments.
 
 This is a custom one that buffers text and only shows it when a complete message is
 generated. This pattern is useful when you want tighter control over how responses are
-presented to users. To use it, you can just pass it to the agent through the callback
-parameter. You can also set the callback to be none, and then nothing prints when you run
+presented to users. To use it, you can just pass it to the agent through the `callback_handler` parameter. You can also set the callback to be none, and then nothing prints when you run
 it. The agent runs, then you get the result back as a variable, and you can do whatever
 you want with that, like print it out.
 
@@ -78,3 +76,5 @@ Now you can control how output reaches the user, but you still can't control wha
 agent does before it produces that output.
 
 That's hooks, and that's what's coming up in the next lesson.
+
+*Learn more: [Callback Handlers](/docs/user-guide/concepts/streaming/callback-handlers/)*

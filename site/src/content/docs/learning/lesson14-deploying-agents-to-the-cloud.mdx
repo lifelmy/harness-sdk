@@ -1,7 +1,6 @@
 ---
 title: "Lesson 14: Deploying Agents to the Cloud"
 description: "We'll deploy an agent to AWS using Amazon Bedrock AgentCore. AgentCore is a collection of components for building, deploying and operating agents in production. The main components we will focus on in this video is AgentCore Runtime and AgentCore Memory."
-community: true
 redirectFrom:
   - docs/community/learning/lesson14-deploying-agents-to-the-cloud
 ---
@@ -18,23 +17,23 @@ So far, everything we've built has been running on a local machine. Now, we are 
 deploy it to the cloud.
 
 You can package a Strands agent into a container and run it anywhere. In this guide, we
-will deploy it to AWS using **Amazon Bedrock Agentcore**.
+will deploy it to AWS using **Amazon Bedrock AgentCore**.
 
-### What is Amazon Bedrock Agentcore?
+### What is Amazon Bedrock AgentCore?
 
-Agentcore is a collection of components designed for building, deploying, and operating AI
+AgentCore is a collection of components designed for building, deploying, and operating AI
 agents in production. It includes capabilities like runtime, memory, gateways,
 observability, identity, and evaluations. You can use these components together or
 independently.
 
 For cloud deployment, we focus on three main pieces:
 
-1. **Agentcore Runtime:** The hosting environment for your agent code. It runs agents
+1. **AgentCore Runtime:** The hosting environment for your agent code. It runs agents
    inside isolated microVMs so that long-running and multi-agent workflows can maintain
    isolated state across requests.
-2. **Agentcore Memory:** A managed persistent storage and long-term memory retrieval
+2. **AgentCore Memory:** A managed persistent storage and long-term memory retrieval
    layer.
-3. **Agentcore Observability:** Automated tracing and logging of agent execution.
+3. **AgentCore Observability:** Automated tracing and logging of agent execution.
 
 ### Preparing Your Code for Cloud Deployment
 
@@ -43,7 +42,7 @@ modifications:
 
 #### 1. Importing the Bedrock App Wrapper
 
-At the top of your code, import the Bedrock Agentcore app and instantiate it:
+At the top of your code, import the Bedrock AgentCore app and instantiate it:
 
 ```python
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
@@ -80,7 +79,7 @@ if __name__ == "__main__":
 
 ```
 
-#### 4. Switching to Agentcore Memory
+#### 4. Switching to AgentCore Memory
 
 In the function where you instantiate your agent, construct the `AgentCoreMemoryConfig`
 and pass it into the `AgentCoreMemorySessionManager`. The `session_id` and `actor_id` live
@@ -117,7 +116,7 @@ session manager implementation when instantiating the agent.
 
 ### Deploying the Agent with the CLI
 
-To deploy, you will use the Agentcore Command Line Interface (CLI):
+To deploy, you will use the AgentCore Command Line Interface (CLI):
 
 #### Step 1: Install the CLI & Initialize the Project
 
@@ -163,7 +162,7 @@ agentcore deploy
 ```
 
 On your first run, this command will take a couple of minutes while AWS provisions the
-underlying infrastructure and deploys the agent to the Bedrock Agentcore Runtime.
+underlying infrastructure and deploys the agent to the Bedrock AgentCore Runtime.
 
 ### Interacting with the Deployed Agent
 
@@ -182,7 +181,7 @@ customer ID?"
 
 #### Turn 2: Provide Context
 
-Because session history is preserved in Agentcore Memory, you can send subsequent requests
+Because session history is preserved in AgentCore Memory, you can send subsequent requests
 using the same session ID:
 
 ```bash
@@ -199,10 +198,10 @@ multiple distinct invocations.
 
 ### Visualizing Agent Execution: Observability Traces
 
-By including OpenTelemetry (OTel) dependencies in your project, Agentcore automatically
+By including OpenTelemetry (OTel) dependencies in your project, AgentCore automatically
 instruments your code.
 
-If you navigate to the **Agentcore Console** and open your agent's dashboard, you can
+If you navigate to the **AgentCore Console** and open your agent's dashboard, you can
 access the Gen AI Observability dashboard. This view allows you to inspect execution
 details:
 
@@ -219,7 +218,7 @@ details:
 ### Production Considerations
 
 A deployed agent itself is only one part of an overall production architecture. While
-Agentcore Runtime handles the authentication gate automatically (using IAM or OAuth), a
+AgentCore Runtime handles the authentication gate automatically (using IAM or OAuth), a
 real-world system still requires surrounding infrastructure:
 
 * API gateways
@@ -235,3 +234,5 @@ form a complete, production-ready AI agent harness.
 
 All the code from this course is available in the companion GitHub repository. You are now
 ready to compose and scale these systems for your own production use cases!
+
+*Learn more: [Deploying Strands Agents to Amazon Bedrock AgentCore Runtime](/docs/user-guide/deploy/deploy_to_bedrock_agentcore/)*
