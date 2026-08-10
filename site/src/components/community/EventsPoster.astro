@@ -149,17 +149,30 @@ const headlinerHref = headliner ? eventHref(headliner) : undefined
     margin: 0;
   }
 
-  /* Clickable events inherit the poster palette; hover shows the same dark ink underline as .cal */
+  /* Clickable events inherit the poster palette; hover stays dark-ink to prevent
+     green-on-green collision from the global a:hover rule. */
   .headliner-link {
     display: block;
     color: inherit;
     text-decoration: none;
   }
 
+  .headliner-link:hover,
+  .headliner-link:hover h3,
+  .headliner-link:hover .sub {
+    color: #0a1f14;
+  }
+
   .headliner-link:hover h3 {
     text-decoration: underline;
     text-decoration-color: #0a1f14;
     text-underline-offset: 3px;
+  }
+
+  :global([data-theme='light']) .headliner-link:hover,
+  :global([data-theme='light']) .headliner-link:hover h3,
+  :global([data-theme='light']) .headliner-link:hover .sub {
+    color: var(--sl-color-gray-1);
   }
 
   :global([data-theme='light']) .headliner-link:hover h3 {
@@ -171,10 +184,22 @@ const headlinerHref = headliner ? eventHref(headliner) : undefined
     text-decoration: none;
   }
 
+  a.row:hover,
+  a.row:hover b,
+  a.row:hover span {
+    color: #0a1f14;
+  }
+
   a.row:hover span {
     text-decoration: underline;
     text-decoration-color: #0a1f14;
     text-underline-offset: 3px;
+  }
+
+  :global([data-theme='light']) a.row:hover,
+  :global([data-theme='light']) a.row:hover b,
+  :global([data-theme='light']) a.row:hover span {
+    color: var(--sl-color-gray-1);
   }
 
   :global([data-theme='light']) a.row:hover span {

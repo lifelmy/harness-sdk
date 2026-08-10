@@ -192,12 +192,12 @@ describe('formatEventDate', () => {
     expect(formatEventDate(e)).toBe('Jan 20')
   })
 
-  it('formats a same-month range with an en dash', () => {
+  it('formats a same-month range with a spaced en dash', () => {
     const e = makeEvent({
       startDate: new Date('2026-12-01T00:00:00Z'),
       endDate: new Date('2026-12-05T00:00:00Z'),
     })
-    expect(formatEventDate(e)).toBe('Dec 1–5')
+    expect(formatEventDate(e)).toBe('Dec 1 – 5')
   })
 
   it('formats a cross-month range with both months', () => {
@@ -216,14 +216,14 @@ describe('formatEventDate', () => {
     expect(formatEventDate(e)).toBe('Dec 28 – Jan 3')
   })
 
-  it('does not collapse same-month cross-year range to en-dash form', () => {
-    // Dec 2026 → Dec 2027: same month but different year — must NOT produce 'Dec 1–5'.
+  it('does not collapse same-month cross-year range to short form', () => {
+    // Dec 2026 → Dec 2027: same month but different year — must NOT produce 'Dec 1 – 5'.
     const e = makeEvent({
       startDate: new Date('2026-12-01T00:00:00Z'),
       endDate: new Date('2027-12-05T00:00:00Z'),
     })
     const formatted = formatEventDate(e)
-    expect(formatted).not.toBe('Dec 1–5')
+    expect(formatted).not.toBe('Dec 1 – 5')
     // Cross-year always renders both month labels with a spaced en-dash.
     expect(formatted).toBe('Dec 1 – Dec 5')
   })

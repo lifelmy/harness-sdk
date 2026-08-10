@@ -53,7 +53,7 @@ export function toIsoDate(d: Date): string {
 
 const MONTH = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' })
 
-/** "Jan 20", "Dec 1–5" (same month), or "Nov 30 – Dec 2" (cross-month). */
+/** "Jan 20", "Oct 20 – 21" (same month), or "Nov 30 – Dec 2" (cross-month). */
 export function formatEventDate(event: LearnEvent): string {
   const start = `${MONTH.format(event.startDate)} ${event.startDate.getUTCDate()}`
   if (!event.endDate || toIsoDate(event.endDate) === toIsoDate(event.startDate)) {
@@ -63,6 +63,6 @@ export function formatEventDate(event: LearnEvent): string {
     event.startDate.getUTCMonth() === event.endDate.getUTCMonth() &&
     event.startDate.getUTCFullYear() === event.endDate.getUTCFullYear()
   return sameMonth
-    ? `${start}–${event.endDate.getUTCDate()}`
+    ? `${start} – ${event.endDate.getUTCDate()}`
     : `${start} – ${MONTH.format(event.endDate)} ${event.endDate.getUTCDate()}`
 }
