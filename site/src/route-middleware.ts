@@ -170,7 +170,9 @@ export const onRequest = defineRouteMiddleware(async (context) => {
   // and does not rely on filename conventions.
   if (currentSlug.startsWith('docs/learning/')) {
     const courses = await getCollection('courses')
-    const currentHref = pathWithBase(`/${currentSlug}/`)
+    // Course YAML hrefs are site-relative (no deploy base prefix), so compare
+    // against the raw slug path rather than pathWithBase.
+    const currentHref = `/${currentSlug}/`
 
     const matchedCourse = courses
       .map((entry) => entry.data)
