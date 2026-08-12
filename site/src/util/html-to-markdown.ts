@@ -23,6 +23,16 @@ export interface HtmlToMarkdownOptions {
   linkReferenceStyle?: 'full' | 'collapsed' | 'shortcut'
 }
 
+const YOUTUBE_HOSTS = new Set(['youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com'])
+
+function isYouTubeHost(href: string): boolean {
+  try {
+    return YOUTUBE_HOSTS.has(new URL(href).hostname)
+  } catch {
+    return false
+  }
+}
+
 /**
  * Creates a configured TurndownService instance for HTML to Markdown conversion.
  * Returns the service so you can add custom rules before converting.
@@ -70,10 +80,11 @@ export function createTurndownService(options: HtmlToMarkdownOptions = {}): Turn
         const el = node as Element
         const className = el.getAttribute?.('class') || ''
         if (className.includes('lty-playbtn')) return true
-        // Bare anchor with no text that links to a YouTube URL (lite-youtube fallback link)
+        // Bare anchor with no text that links to a YouTube URL (lite-youtube fallback link).
+        // Hostname is parsed rather than substring-matched so lookalike hosts don't count.
         const href = el.getAttribute?.('href') || ''
         const text = el.textContent?.trim() || ''
-        if (href.includes('youtube.com') && text.toLowerCase() === 'play') return true
+        if (text.toLowerCase() === 'play' && isYouTubeHost(href)) return true
       }
       return false
     },
