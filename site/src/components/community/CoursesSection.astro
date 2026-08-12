@@ -2,8 +2,19 @@
 import type { Course } from '../../content.config'
 import { pathWithBase } from '../../util/links'
 
+// Enriched lesson: number derived from array position, title resolved from docs collection.
+export interface EnrichedLesson {
+  number: number
+  title: string
+  href: string
+  duration?: string
+}
+
+// Course with enriched lessons for display.
+export type EnrichedCourse = Omit<Course, 'lessons'> & { lessons?: EnrichedLesson[] }
+
 interface Props {
-  featured: Course | undefined
+  featured: EnrichedCourse | undefined
   shelf: Course[]
 }
 

@@ -146,16 +146,17 @@ describe('buildPythonApiSidebar with real collection', () => {
 })
 
 describe('buildCourseSidebar', () => {
-  function makeLessonDocs(nums: number[]): DocInfo[] {
-    return nums.map((n) => ({
-      id: `docs/learning/lesson${n}-some-title`,
-      title: `Lesson ${n}: Some Title`,
-    }))
+  const COURSE = { title: 'Agent Fundamentals with Strands', lessonIds: [] as string[] }
+
+  function makeDocs(ids: string[]): DocInfo[] {
+    return ids.map((id) => ({ id, title: id.split('/').pop()! }))
   }
 
   it('returns back-link as first entry followed by a group', () => {
-    const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
+    const ids = ['docs/learning/alpha', 'docs/learning/beta', 'docs/learning/gamma']
+    const docs = makeDocs(ids)
+    const course = { ...COURSE, lessonIds: ids }
+    const sidebar = buildCourseSidebar(docs, ids[0]!, course)
 
     expect(sidebar).toHaveLength(2)
     expect(sidebar[0]?.type).toBe('link')
@@ -163,26 +164,36 @@ describe('buildCourseSidebar', () => {
     expect(sidebar[1]?.type).toBe('group')
   })
 
-  it('sorts lessons numerically so lesson10 follows lesson9, not lesson1', () => {
-    // Provide in filesystem order (lexicographic), expect numeric sort
-    const docs = makeLessonDocs([1, 10, 2, 9, 11])
-    const sidebar = buildCourseSidebar(docs, '')
+  it('respects array order — lesson 10 after lesson 9 even if passed out of order in docs', () => {
+    // Docs provided in non-numeric order; lessonIds defines the order.
+    const ids = [
+      'docs/learning/lesson-1',
+      'docs/learning/lesson-2',
+      'docs/learning/lesson-9',
+      'docs/learning/lesson-10',
+      'docs/learning/lesson-11',
+    ]
+    const docs: DocInfo[] = [
+      { id: 'docs/learning/lesson-10', title: 'Lesson 10' },
+      { id: 'docs/learning/lesson-1', title: 'Lesson 1' },
+      { id: 'docs/learning/lesson-11', title: 'Lesson 11' },
+      { id: 'docs/learning/lesson-9', title: 'Lesson 9' },
+      { id: 'docs/learning/lesson-2', title: 'Lesson 2' },
+    ]
+    const course = { ...COURSE, lessonIds: ids }
+    const sidebar = buildCourseSidebar(docs, '', course)
 
     const group = sidebar[1] as SidebarGroup
     const labels = group.entries.map((e) => e.label)
-    expect(labels).toEqual([
-      'Lesson 1: Some Title',
-      'Lesson 2: Some Title',
-      'Lesson 9: Some Title',
-      'Lesson 10: Some Title',
-      'Lesson 11: Some Title',
-    ])
+    expect(labels).toEqual(['Lesson 1', 'Lesson 2', 'Lesson 9', 'Lesson 10', 'Lesson 11'])
   })
 
   it('marks the current lesson as isCurrent', () => {
-    const docs = makeLessonDocs([1, 2, 3])
-    const currentSlug = 'docs/learning/lesson2-some-title'
-    const sidebar = buildCourseSidebar(docs, currentSlug)
+    const ids = ['docs/learning/alpha', 'docs/learning/beta', 'docs/learning/gamma']
+    const docs = makeDocs(ids)
+    const course = { ...COURSE, lessonIds: ids }
+    const currentSlug = 'docs/learning/beta'
+    const sidebar = buildCourseSidebar(docs, currentSlug, course)
 
     const group = sidebar[1] as SidebarGroup
     const links = group.entries as SidebarLink[]
@@ -192,65 +203,65 @@ describe('buildCourseSidebar', () => {
   })
 
   it('back-link is never marked as isCurrent', () => {
-    const docs = makeLessonDocs([1])
-    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
+    const ids = ['docs/learning/alpha']
+    const docs = makeDocs(ids)
+    const course = { ...COURSE, lessonIds: ids }
+    const sidebar = buildCourseSidebar(docs, ids[0]!, course)
 
     const backLink = sidebar[0] as SidebarLink
     expect(backLink.isCurrent).toBe(false)
   })
 
   it('back-link points to /community/', () => {
-    const sidebar = buildCourseSidebar([], '')
+    const sidebar = buildCourseSidebar([], '', { ...COURSE, lessonIds: [] })
     const backLink = sidebar[0] as SidebarLink
     expect(backLink.href).toMatch(/\/community\/$/)
   })
 
-  it('excludes non-lesson pages under docs/learning/', () => {
+  it('excludes ids not in lessonIds (non-course pages under docs/learning/)', () => {
     const docs: DocInfo[] = [
-      { id: 'docs/learning/lesson1-some-title', title: 'Lesson 1: Some Title' },
+      { id: 'docs/learning/alpha', title: 'Alpha' },
       { id: 'docs/learning/overview', title: 'Overview' },
     ]
-    const sidebar = buildCourseSidebar(docs, '')
+    const course = { ...COURSE, lessonIds: ['docs/learning/alpha'] }
+    const sidebar = buildCourseSidebar(docs, '', course)
 
     const group = sidebar[1] as SidebarGroup
     expect(group.entries).toHaveLength(1)
-    expect((group.entries[0] as SidebarLink).label).toBe('Lesson 1: Some Title')
+    expect((group.entries[0] as SidebarLink).label).toBe('Alpha')
   })
 
-  it('excludes a lesson-prefixed non-numbered page (docs/learning/lesson-overview)', () => {
-    // 'lesson-overview' starts with 'lesson' but has no digit — LESSON_ID_PATTERN must not match.
-    const docs: DocInfo[] = [
-      { id: 'docs/learning/lesson1-some-title', title: 'Lesson 1: Some Title' },
-      { id: 'docs/learning/lesson-overview', title: 'Lesson Overview' },
-    ]
-    const sidebar = buildCourseSidebar(docs, '')
-
-    const group = sidebar[1] as SidebarGroup
-    expect(group.entries).toHaveLength(1)
-    expect((group.entries[0] as SidebarLink).label).toBe('Lesson 1: Some Title')
-  })
-
-  it('returns only the back-link (no empty group) when zero lessons match', () => {
+  it('returns only the back-link (no empty group) when zero lessonIds match', () => {
     const docs: DocInfo[] = [{ id: 'docs/learning/overview', title: 'Overview' }]
-    const sidebar = buildCourseSidebar(docs, '')
+    const sidebar = buildCourseSidebar(docs, '', { ...COURSE, lessonIds: [] })
 
     expect(sidebar).toHaveLength(1)
     expect(sidebar[0]?.type).toBe('link')
     expect((sidebar[0] as SidebarLink).label).toBe('← All courses')
   })
+
+  it('uses course.title as the group label', () => {
+    const ids = ['docs/learning/alpha']
+    const docs = makeDocs(ids)
+    const course = { title: 'My Custom Course', lessonIds: ids }
+    const sidebar = buildCourseSidebar(docs, '', course)
+
+    const group = sidebar[1] as SidebarGroup
+    expect(group.label).toBe('My Custom Course')
+  })
 })
 
 describe('getPrevNextLinks over buildCourseSidebar lessons', () => {
-  function makeLessonDocs(nums: number[]): DocInfo[] {
-    return nums.map((n) => ({
-      id: `docs/learning/lesson${n}-some-title`,
-      title: `Lesson ${n}: Some Title`,
-    }))
-  }
+  const ids = ['docs/learning/alpha', 'docs/learning/beta', 'docs/learning/gamma']
+  const docs: DocInfo[] = [
+    { id: 'docs/learning/alpha', title: 'Alpha' },
+    { id: 'docs/learning/beta', title: 'Beta' },
+    { id: 'docs/learning/gamma', title: 'Gamma' },
+  ]
+  const course = { title: 'Test Course', lessonIds: ids }
 
-  it('lesson1 has no prev and next is lesson2', () => {
-    const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson1-some-title')
+  it('first lesson has no prev and next is the second lesson', () => {
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/alpha', course)
 
     // Pagination must be computed from lessons-only (the group's entries),
     // not the full sidebar which includes the "← All courses" back-link.
@@ -258,18 +269,17 @@ describe('getPrevNextLinks over buildCourseSidebar lessons', () => {
     const { prev, next } = getPrevNextLinks(group.entries)
 
     expect(prev).toBeUndefined()
-    expect(next?.label).toBe('Lesson 2: Some Title')
+    expect(next?.label).toBe('Beta')
   })
 
-  it('lesson2 has prev lesson1 and next lesson3', () => {
-    const docs = makeLessonDocs([1, 2, 3])
-    const sidebar = buildCourseSidebar(docs, 'docs/learning/lesson2-some-title')
+  it('second lesson has prev first and next third', () => {
+    const sidebar = buildCourseSidebar(docs, 'docs/learning/beta', course)
 
     const group = sidebar[1] as SidebarGroup
     const { prev, next } = getPrevNextLinks(group.entries)
 
-    expect(prev?.label).toBe('Lesson 1: Some Title')
-    expect(next?.label).toBe('Lesson 3: Some Title')
+    expect(prev?.label).toBe('Alpha')
+    expect(next?.label).toBe('Gamma')
   })
 })
 

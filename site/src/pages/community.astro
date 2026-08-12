@@ -14,7 +14,7 @@ import LandingLayout from '../layouts/LandingLayout.astro'
 import Copyright from '../components/Copyright.astro'
 import CommunityHero from '../components/community/CommunityHero.astro'
 import EventsTicker from '../components/community/EventsTicker.astro'
-import CoursesSection from '../components/community/CoursesSection.astro'
+import CoursesSection, { type EnrichedLesson } from '../components/community/CoursesSection.astro'
 import DeepDivesSection from '../components/community/DeepDivesSection.astro'
 import EventsPoster from '../components/community/EventsPoster.astro'
 import BlogSection from '../components/community/BlogSection.astro'
@@ -29,9 +29,37 @@ const courses = (await getCollection('courses')).map((entry) => entry.data)
 const events = (await getCollection('events')).map((entry) => entry.data)
 const posts = (await getPublishedPosts()).slice(0, 3)
 
+// Build a map from doc href → title for resolving lesson titles from the docs collection.
+// Trailing-slash normalised: /docs/learning/how-agents-really-work/ → title.
+const docs = await getCollection('docs')
+const titleByHref = new Map<string, string>()
+for (const doc of docs) {
+  if (doc.data.title) {
+    titleByHref.set(`/${doc.id}/`, doc.data.title as string)
+  }
+}
+
+// Strip the 'Lesson N: ' prefix so the syllabus can display its own numerals.
+function stripLessonPrefix(title: string): string {
+  return title.replace(/^Lesson \d+:\s*/, '')
+}
+
 const today = new Date()
 const featured = featuredCourse(courses)
 const shelf = shelfCourses(courses, featured)
+
+// Enrich featured course lessons: derive number from array position, resolve titles from docs.
+const enrichedFeatured = featured
+  ? {
+      ...featured,
+      lessons: featured.lessons?.map((lesson, i): EnrichedLesson => ({
+        number: i + 1,
+        title: stripLessonPrefix(titleByHref.get(lesson.href) ?? lesson.href),
+        href: lesson.href,
+      })),
+    }
+  : undefined
+
 const ticker = tickerEvents(events, today)
 const headliner = posterEvent(events, today)
 const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
@@ -53,7 +81,7 @@ const otherEvents = upcomingEvents(events, today).filter((e) => e !== headliner)
     </CommunityHero>
 
     <div class="wrap">
-      <CoursesSection featured={featured} shelf={shelf} />
+      <CoursesSection featured={enrichedFeatured} shelf={shelf} />
 
       <section id="deep-dives" class="spread">
         <DeepDivesSection dives={deepDives} suggestTopicHref={suggestTopicHref} />

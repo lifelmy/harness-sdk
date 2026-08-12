@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { getCollection } from 'astro:content'
 import {
   upcomingEvents,
   posterEvent,
@@ -310,5 +311,26 @@ describe('courseSchema internalHref validation', () => {
   it('rejects a backslash-escaped protocol-relative URL (/\\\\evil.com)', () => {
     const result = courseSchema.safeParse({ ...base, href: '/\\evil.com' })
     expect(result.success).toBe(false)
+  })
+})
+
+describe('course lesson hrefs resolve to docs collection entries', () => {
+  it('every lessons[].href in every courses/*.yaml resolves to a docs collection entry', async () => {
+    const courses = await getCollection('courses')
+    const docs = await getCollection('docs')
+
+    // Build a set of valid hrefs: /docs/learning/how-agents-really-work/ etc.
+    const validHrefs = new Set(docs.map((doc) => `/${doc.id}/`))
+
+    const stale: string[] = []
+    for (const course of courses) {
+      for (const lesson of course.data.lessons ?? []) {
+        if (!validHrefs.has(lesson.href)) {
+          stale.push(`${course.id}: ${lesson.href}`)
+        }
+      }
+    }
+
+    expect(stale, `Stale lesson hrefs found:\n${stale.join('\n')}`).toHaveLength(0)
   })
 })

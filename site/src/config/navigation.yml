@@ -312,22 +312,38 @@ sidebar:
               - docs/contribute/contributing/documentation
               - docs/contribute/contributing/feature-proposals
               - docs/contribute/contributing/extensions
+      # This group feeds llms.txt's lesson listing (src/pages/llms.txt.ts extractLinks).
+      # The visual sidebar for lesson pages is built by route-middleware instead.
       - label: Learning
         items:
-          - docs/learning/lesson1-how-agents-really-work
-          - docs/learning/lesson2-switching-model-providers
-          - docs/learning/lesson3-give-your-agent-tools-using-mcp
-          - docs/learning/lesson4-adding-callbacks-and-response-streaming
-          - docs/learning/lesson5-control-your-agent-with-hooks
-          - docs/learning/lesson6-agent-plugins-and-skills
-          - docs/learning/lesson7-improve-agent-reliability-with-strands-steering
-          - docs/learning/lesson8-context-engineering-and-conversation-management
-          - docs/learning/lesson9-persistent-memory-with-session-managers
-          - docs/learning/lesson10-multi-agent-patterns-agents-as-tools
-          - docs/learning/lesson11-multi-agent-patterns-graph-workflows
-          - docs/learning/lesson12-multi-agent-patterns-agent-swarms
-          - docs/learning/lesson13-evaluating-agents
-          - docs/learning/lesson14-deploying-agents-to-the-cloud
+          - label: "Lesson 1: How Agents Really Work"
+            slug: docs/learning/how-agents-really-work
+          - label: "Lesson 2: Switching Model Providers"
+            slug: docs/learning/switching-model-providers
+          - label: "Lesson 3: Give Your Agent Tools Using MCP"
+            slug: docs/learning/give-your-agent-tools-using-mcp
+          - label: "Lesson 4: Adding Callbacks & Response Streaming"
+            slug: docs/learning/adding-callbacks-and-response-streaming
+          - label: "Lesson 5: Control Your Agent With Hooks"
+            slug: docs/learning/control-your-agent-with-hooks
+          - label: "Lesson 6: Agent Plugins & Skills"
+            slug: docs/learning/agent-plugins-and-skills
+          - label: "Lesson 7: Improve Agent Reliability With Strands Steering"
+            slug: docs/learning/improve-agent-reliability-with-strands-steering
+          - label: "Lesson 8: Context Engineering & Conversation Management"
+            slug: docs/learning/context-engineering-and-conversation-management
+          - label: "Lesson 9: Persistent Memory With Session Managers"
+            slug: docs/learning/persistent-memory-with-session-managers
+          - label: "Lesson 10: Multi-Agent Patterns: Agents as Tools"
+            slug: docs/learning/multi-agent-patterns-agents-as-tools
+          - label: "Lesson 11: Multi-Agent Patterns: Graph Workflows"
+            slug: docs/learning/multi-agent-patterns-graph-workflows
+          - label: "Lesson 12: Multi-Agent Patterns: Agent Swarms"
+            slug: docs/learning/multi-agent-patterns-agent-swarms
+          - label: "Lesson 13: Evaluating Agents"
+            slug: docs/learning/evaluating-agents
+          - label: "Lesson 14: Deploying Agents to the Cloud"
+            slug: docs/learning/deploying-agents-to-the-cloud
       - label: Labs
         items:
           - docs/labs

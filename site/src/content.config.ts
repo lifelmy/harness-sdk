@@ -175,13 +175,12 @@ export const courseSchema = z.object({
   // Entry URL for the course (first lesson or course index)
   href: internalHref,
   syllabusHref: internalHref.optional(),
+  // Ordered lesson hrefs. Array position is the source of truth for lesson order.
+  // Titles are resolved from the docs collection at render time so they can't drift.
   lessons: z
     .array(
       z.object({
-        number: z.number().int().positive(),
-        title: z.string(),
         href: internalHref,
-        duration: z.string().optional(),
       })
     )
     .optional(),

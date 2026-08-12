@@ -223,31 +223,38 @@ export function buildTypeScriptApiSidebar(docs: DocInfo[], currentSlug: string):
 }
 
 /**
- * Matches lesson page ids (docs/learning/lesson3-give-your-agent-tools-...)
- * and captures the lesson number. Anchored so non-lesson pages under
- * docs/learning/ (e.g. a course index) never match. Shared by the route
- * middleware, which uses it to decide whether a page gets the course sidebar.
- */
-export const LESSON_ID_PATTERN = /^docs\/learning\/lesson(\d+)-/
-
-/**
- * Build a flat sidebar for the "Agent Fundamentals with Strands" course.
+ * Build a flat sidebar for a course.
  * Returns a list with an "← All courses" back-link followed by a group
- * containing the 14 lesson pages sorted in numeric lesson order. When no
+ * containing the lesson pages in the order given by course.lessonIds. When no
  * lesson pages match, returns only the back-link (no empty group).
  *
  * Pagination must be computed from the lessons-only list (the back-link
  * must NOT appear in the prev/next chain). Use getPrevNextLinks on the
  * group's entries directly rather than on the full sidebar returned here.
+ *
+ * @param docs - DocInfo entries from the docs collection
+ * @param currentSlug - The current page's doc id
+ * @param course - Course metadata: title (group label) and lessonIds (ordered docs ids)
  */
-export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): SidebarEntry[] {
-  const lessonDocs = docs
-    .filter((doc) => LESSON_ID_PATTERN.test(doc.id))
-    .sort((a, b) => {
-      // The filter guarantees the pattern matches, so exec and its capture group are non-null.
-      const numA = parseInt(LESSON_ID_PATTERN.exec(a.id)![1]!, 10)
-      const numB = parseInt(LESSON_ID_PATTERN.exec(b.id)![1]!, 10)
-      return numA - numB
+export function buildCourseSidebar(
+  docs: DocInfo[],
+  currentSlug: string,
+  course: { title: string; lessonIds: string[] },
+): SidebarEntry[] {
+  const docById = new Map(docs.map((d) => [d.id, d]))
+
+  const lessonLinks: SidebarLink[] = course.lessonIds
+    .filter((id) => docById.has(id))
+    .map((id) => {
+      const doc = docById.get(id)!
+      return {
+        type: 'link',
+        label: doc.title,
+        href: pathWithBase(`/${doc.id}/`),
+        isCurrent: currentSlug === doc.id,
+        badge: undefined,
+        attrs: {},
+      }
     })
 
   const backLink: SidebarLink = {
@@ -259,22 +266,13 @@ export function buildCourseSidebar(docs: DocInfo[], currentSlug: string): Sideba
     attrs: {},
   }
 
-  if (lessonDocs.length === 0) {
+  if (lessonLinks.length === 0) {
     return [backLink]
   }
 
-  const lessonLinks: SidebarLink[] = lessonDocs.map((doc) => ({
-    type: 'link',
-    label: doc.title,
-    href: pathWithBase(`/${doc.id}/`),
-    isCurrent: currentSlug === doc.id,
-    badge: undefined,
-    attrs: {},
-  }))
-
   const group: SidebarGroup = {
     type: 'group',
-    label: 'Agent Fundamentals with Strands',
+    label: course.title,
     entries: lessonLinks,
     collapsed: false,
     badge: undefined,

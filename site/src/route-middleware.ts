@@ -1,6 +1,6 @@
 import { defineRouteMiddleware, type StarlightRouteData } from '@astrojs/starlight/route-data'
 import { getCollection } from 'astro:content'
-import { buildPythonApiSidebar, buildTypeScriptApiSidebar, buildCourseSidebar, getPrevNextLinks, LESSON_ID_PATTERN, type DocInfo } from './dynamic-sidebar'
+import { buildPythonApiSidebar, buildTypeScriptApiSidebar, buildCourseSidebar, getPrevNextLinks, type DocInfo } from './dynamic-sidebar'
 import { pathWithBase } from './util/links'
 import { navLinks, type NavLink } from './config/navbar'
 
@@ -84,6 +84,18 @@ export function applyCollapse(items: SidebarEntry[], depth: number = 0): Sidebar
 }
 
 /**
+ * Load all docs as DocInfo entries for sidebar construction.
+ */
+async function loadDocInfos(): Promise<DocInfo[]> {
+  const docs = await getCollection('docs')
+  return docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
+    id: doc.id,
+    title: doc.data.title as string,
+    category: doc.data.category as string | undefined,
+  }))
+}
+
+/**
  * Build a map of href -> page title from the docs collection.
  * Used to override sidebar labels with actual page titles in prev/next navigation.
  */
@@ -128,12 +140,7 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 
   // Check if we're on an API page (Python or TypeScript)
   if (currentSlug.startsWith('docs/api/python') || currentSlug.startsWith('docs/api/typescript')) {
-    const docs = await getCollection('docs')
-    const docInfos: DocInfo[] = docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
-      id: doc.id,
-      title: doc.data.title as string,
-      category: doc.data.category as string | undefined,
-    }))
+    const docInfos = await loadDocInfos()
 
     const isPython = currentSlug.startsWith('docs/api/python')
     const apiSidebar = isPython
@@ -158,28 +165,40 @@ export const onRequest = defineRouteMiddleware(async (context) => {
     return
   }
 
-  // Check if we're on a lesson page within the learning course. Only lesson
-  // pages get the course sidebar — other pages under docs/learning/ (e.g. a
-  // future course index) fall through to the normal community-section sidebar.
-  if (LESSON_ID_PATTERN.test(currentSlug)) {
-    const docs = await getCollection('docs')
-    const docInfos: DocInfo[] = docs.map((doc: { id: string; data: { title: unknown; category?: unknown } }) => ({
-      id: doc.id,
-      title: doc.data.title as string,
-      category: doc.data.category as string | undefined,
-    }))
+  // Check if the current page belongs to a course. Load all courses and find
+  // which one (if any) includes this slug's href. This is multi-course-correct
+  // and does not rely on filename conventions.
+  if (currentSlug.startsWith('docs/learning/')) {
+    const courses = await getCollection('courses')
+    const currentHref = pathWithBase(`/${currentSlug}/`)
 
-    const courseSidebar = buildCourseSidebar(docInfos, currentSlug)
+    const matchedCourse = courses
+      .map((entry) => entry.data)
+      .find((course) => course.lessons?.some((lesson) => lesson.href === currentHref))
 
-    // Compute prev/next from lessons only — the "← All courses" back-link
-    // must NOT be part of the lesson prev/next chain.
-    const lessonGroup = courseSidebar.find((entry) => entry.type === 'group')
-    const lessonsOnly: SidebarEntry[] = lessonGroup?.type === 'group' ? lessonGroup.entries : []
-    const titlesByHref = await buildTitlesByHref()
+    if (matchedCourse) {
+      const docInfos = await loadDocInfos()
 
-    starlightRoute.sidebar = courseSidebar
-    starlightRoute.pagination = getPrevNextLinks(lessonsOnly, titlesByHref)
-    return
+      // Derive ordered lesson ids from hrefs: strip base, leading/trailing slashes.
+      const lessonIds = (matchedCourse.lessons ?? []).map((lesson) =>
+        lesson.href.replace(/^\/|\/$/g, ''),
+      )
+
+      const courseSidebar = buildCourseSidebar(docInfos, currentSlug, {
+        title: matchedCourse.title,
+        lessonIds,
+      })
+
+      // Compute prev/next from lessons only — the "← All courses" back-link
+      // must NOT be part of the lesson prev/next chain.
+      const lessonGroup = courseSidebar.find((entry) => entry.type === 'group')
+      const lessonsOnly: SidebarEntry[] = lessonGroup?.type === 'group' ? lessonGroup.entries : []
+      const titlesByHref = await buildTitlesByHref()
+
+      starlightRoute.sidebar = courseSidebar
+      starlightRoute.pagination = getPrevNextLinks(lessonsOnly, titlesByHref)
+      return
+    }
   }
 
   // Find which nav section the current page belongs to

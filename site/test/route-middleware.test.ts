@@ -251,13 +251,19 @@ describe('Integration: Full filtering flow', () => {
   it('lesson pagination prev is the previous lesson, not the All-courses back-link', () => {
     // Mirrors the middleware's lesson branch: sidebar from buildCourseSidebar,
     // pagination from the lesson group's entries only.
-    const lessonDocs: DocInfo[] = [
-      { id: 'docs/learning/lesson1-how-agents-really-work', title: 'Lesson 1: How agents really work' },
-      { id: 'docs/learning/lesson2-switching-model-providers', title: 'Lesson 2: Switching model providers' },
-      { id: 'docs/learning/lesson3-give-your-agent-tools-using-mcp', title: 'Lesson 3: Give your agent tools using MCP' },
+    const lessonIds = [
+      'docs/learning/how-agents-really-work',
+      'docs/learning/switching-model-providers',
+      'docs/learning/give-your-agent-tools-using-mcp',
     ]
-    const currentSlug = 'docs/learning/lesson2-switching-model-providers'
-    const courseSidebar = buildCourseSidebar(lessonDocs, currentSlug)
+    const lessonDocs: DocInfo[] = [
+      { id: 'docs/learning/how-agents-really-work', title: 'Lesson 1: How Agents Really Work' },
+      { id: 'docs/learning/switching-model-providers', title: 'Lesson 2: Switching Model Providers' },
+      { id: 'docs/learning/give-your-agent-tools-using-mcp', title: 'Lesson 3: Give Your Agent Tools Using MCP' },
+    ]
+    const currentSlug = 'docs/learning/switching-model-providers'
+    const course = { title: 'Agent Fundamentals with Strands', lessonIds }
+    const courseSidebar = buildCourseSidebar(lessonDocs, currentSlug, course)
 
     // The sidebar leads with the All-courses back-link
     expect(courseSidebar[0]?.type).toBe('link')
@@ -267,9 +273,9 @@ describe('Integration: Full filtering flow', () => {
     const lessonsOnly = lessonGroup?.type === 'group' ? lessonGroup.entries : []
     const { prev, next } = getPrevNextLinks(lessonsOnly)
 
-    expect(prev?.label).toBe('Lesson 1: How agents really work')
+    expect(prev?.label).toBe('Lesson 1: How Agents Really Work')
     expect(prev?.label).not.toBe('← All courses')
-    expect(next?.label).toBe('Lesson 3: Give your agent tools using MCP')
+    expect(next?.label).toBe('Lesson 3: Give Your Agent Tools Using MCP')
   })
 })
 
@@ -459,7 +465,7 @@ describe('onRequest integration: lesson pagination via real collection', () => {
    * either way) but fails this test, which checks lesson1.
    */
   it('lesson1 has no prev — back-link must not appear as prev', async () => {
-    const currentSlug = 'docs/learning/lesson1-how-agents-really-work'
+    const currentSlug = 'docs/learning/how-agents-really-work'
 
     // Minimal mutable starlightRoute; onRequest mutates .sidebar and .pagination.
     const starlightRoute: Record<string, unknown> = {
