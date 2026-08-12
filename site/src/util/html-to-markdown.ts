@@ -60,6 +60,26 @@ export function createTurndownService(options: HtmlToMarkdownOptions = {}): Turn
     replacement: () => '',
   })
 
+  // Remove lite-youtube custom elements and their inner Play anchor so per-page
+  // .md and llms-full.txt don't emit bare '[Play](url)' lines.
+  service.addRule('removeLiteYouTube', {
+    filter: (node) => {
+      if (node.nodeName === 'LITE-YOUTUBE') return true
+      // Also remove the inner Play anchor that lite-youtube injects
+      if (node.nodeName === 'A') {
+        const el = node as Element
+        const className = el.getAttribute?.('class') || ''
+        if (className.includes('lty-playbtn')) return true
+        // Bare anchor with no text that links to a YouTube URL (lite-youtube fallback link)
+        const href = el.getAttribute?.('href') || ''
+        const text = el.textContent?.trim() || ''
+        if (href.includes('youtube.com') && text.toLowerCase() === 'play') return true
+      }
+      return false
+    },
+    replacement: () => '',
+  })
+
   // Remove empty anchor links (e.g., <a href="#section"><svg>...</svg></a> anchor icons)
   // These are typically section anchor links with only icons, no text
   service.addRule('removeAnchorLinks', {
