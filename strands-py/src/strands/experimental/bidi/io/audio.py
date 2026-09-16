@@ -13,12 +13,11 @@ requires pywebrtc-audio (pip install strands-agents[bidi-aec]).
 import asyncio
 import base64
 import logging
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, Any
 
 import pyaudio
 from typing_extensions import Unpack
 
-from ....types.media import AudioBlock
 from .._audio.buffer import AudioBuffer
 from ..models.configs import AudioStreamConfig
 from ..models.model import AudioCapable
@@ -28,6 +27,8 @@ from ..types.events import (
     BidiOutputEvent,
 )
 from ..types.io import BidiInput, BidiOutput
+from ..types.media import AudioDelta
+from .configs import BidiAudioIOConfig, BidiAudioProcessorConfig
 from .transcript import _BidiTranscriptOutput
 
 if TYPE_CHECKING:
@@ -35,32 +36,6 @@ if TYPE_CHECKING:
     from ..agent.agent import BidiAgent
 
 logger = logging.getLogger(__name__)
-
-
-class BidiAudioProcessorConfig(TypedDict, total=False):
-    """Configure microphone audio processing.
-
-    Attributes:
-        echo_cancellation: Cancel the agent's own speaker audio from the mic input.
-        stream_delay_ms: Playback-to-capture delay hint in milliseconds for AEC.
-            A value of 0 lets AEC3 auto-estimate the delay. Only set a non-zero value if echo cancellation is
-            measurably failing on hardware with large or fixed playback-to-capture latency, such as Bluetooth.
-    """
-
-    echo_cancellation: bool
-    stream_delay_ms: int
-
-
-class BidiAudioIOConfig(TypedDict, total=False):
-    """Configure bidirectional audio input and output."""
-
-    audio_processor: BidiAudioProcessorConfig | bool | None
-    input_buffer_size: int | None
-    input_device_index: int | None
-    input_frames_per_buffer: int
-    output_buffer_size: int | None
-    output_device_index: int | None
-    output_frames_per_buffer: int
 
 
 class _BidiAudioInput(BidiInput):
@@ -158,14 +133,14 @@ class _BidiAudioInput(BidiInput):
 
         logger.debug("audio input stream stopped")
 
-    async def __call__(self) -> AudioBlock:
+    async def __call__(self) -> AudioDelta:
         """Read audio from input stream, applying echo cancellation if enabled."""
         data = await asyncio.to_thread(self._buffer.get)
 
         if self._audio_processor is not None:
             data = await asyncio.to_thread(self._audio_processor.process, data)
 
-        return AudioBlock(format=self._audio_config["format"], source={"bytes": data})
+        return AudioDelta(format=self._audio_config["format"], source={"bytes": data})
 
     def _callback(
         self,
@@ -345,8 +320,7 @@ class BidiAudioIO:
 
     Example:
         ```python
-        from strands.experimental.bidi import BidiAudioProcessorConfig
-        from strands.experimental.bidi.io import BidiAudioIO
+        from strands.experimental.bidi.io import BidiAudioIO, BidiAudioProcessorConfig
 
         # Plain mic/speaker, no processing (a headset is recommended to avoid echo):
         audio_io = BidiAudioIO()

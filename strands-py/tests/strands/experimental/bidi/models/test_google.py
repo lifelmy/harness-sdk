@@ -16,10 +16,11 @@ import unittest.mock
 import pytest
 from google.genai import types as genai_types
 
-from strands.experimental.bidi.agent import loop as loop_module
-from strands.experimental.bidi.models.google import GoogleGeminiLiveAudioConfig, GoogleGeminiLiveModel, _TurnState
-from strands.experimental.bidi.models.model import BidiModelTimeoutError
-from strands.experimental.bidi.types.events import (
+import strands.experimental.bidi.agent.loop as loop_module
+from strands.experimental.bidi.models import BidiModelTimeoutError, GoogleGeminiLiveAudioConfig, GoogleGeminiLiveModel
+from strands.experimental.bidi.models.google import _TurnState
+from strands.experimental.bidi.types import (
+    AudioDelta,
     BidiAudioStreamEvent,
     BidiConnectionStartEvent,
     BidiInterruptionEvent,
@@ -30,7 +31,7 @@ from strands.experimental.bidi.types.events import (
     BidiUsageEvent,
 )
 from strands.types.content import TextBlock
-from strands.types.media import AudioBlock, ImageBlock
+from strands.types.media import ImageBlock
 from strands.types.tools import ToolResultBlock
 
 
@@ -509,8 +510,8 @@ async def test_proactive_reconnect_end_to_end_through_agent(mock_genai_client, m
     through Gemini's own restart() before the deadline, resuming the session via its handle. No
     live network calls are made.
     """
-    from strands.experimental.bidi.agent.agent import BidiAgent
-    from strands.experimental.bidi.types.events import BidiConnectionWarningEvent
+    from strands.experimental.bidi.agent import BidiAgent
+    from strands.experimental.bidi.types import BidiConnectionWarningEvent
 
     mock_client, mock_live_session, _ = mock_genai_client
 
@@ -658,7 +659,7 @@ async def test_send_all_content_types(mock_genai_client, model):
 
     # Test audio input
     mock_live_session.send_realtime_input.reset_mock()
-    await model.send(AudioBlock(format="pcm", source={"bytes": b"audio_bytes"}))
+    await model.send(AudioDelta(format="pcm", source={"bytes": b"audio_bytes"}))
     mock_live_session.send_realtime_input.assert_called_once()
 
     # Test image input
@@ -1285,7 +1286,7 @@ async def test_send_audio_uses_resolved_input_rate(mock_genai_client, api_key, r
     _, session, _ = mock_genai_client
     model = GoogleGeminiLiveModel(client_args={"api_key": api_key}, audio={"input": {"sample_rate": rate}})
     await model.start()
-    await model.send(AudioBlock(format="pcm", source={"bytes": b"audio"}))
+    await model.send(AudioDelta(format="pcm", source={"bytes": b"audio"}))
     session.send_realtime_input.assert_awaited_once_with(
         audio=genai_types.Blob(data=b"audio", mime_type=f"audio/pcm;rate={rate}")
     )
