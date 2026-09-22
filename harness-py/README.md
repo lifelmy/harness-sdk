@@ -56,7 +56,7 @@ agent("Find the slowest test in this repo and explain why it's slow")
 ```python
 create_harness(
     model="bedrock/global.anthropic.claude-opus-5",  # "provider/name", a bare Bedrock id, or a Model instance
-    effort="high",                          # "auto" | "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max"
+    effort="auto",                          # "auto" | "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max"
     instructions=None,                      # domain text appended to the system prompt
     tools=None,                             # your tools, added alongside the built-ins
     mcp_servers=None,                       # MCP servers: a mcpServers JSON path or the mapping itself
@@ -138,8 +138,8 @@ and it's used as-is. Reasoning effort is mapped to whatever each provider expect
 for every provider:
 
 ```python
-create_harness(effort="high")     # the default; minimal | low | medium | high | xhigh | max, as the provider offers them
-create_harness(effort="auto")     # the provider's recommended level (high where supported)
+create_harness(effort="high")     # minimal | low | medium | high | xhigh | max, as the provider offers them
+create_harness(effort="auto")     # the provider's recommended level (high where supported), the default
 create_harness(effort="off")      # no reasoning
 ```
 
@@ -306,12 +306,12 @@ model provider has its own search (OpenAI, Google, GPT-5/GPT-6 models on `bedroc
 Bedrock Web Search, and Anthropic in Python; TypeScript Anthropic support follows in a coming
 `@strands-agents/sdk` release) the harness turns that on and there is no extra service involved. Elsewhere (Amazon Bedrock
 Converse, other Mantle models, a `Model` instance) `web_search` is off by default with a logged
-warning, and naming it explicitly raises. To search there anyway, opt into the Exa fallback with
+warning, and naming it explicitly raises. To search there anyway, opt into Exa with
 `{"web_search": "exa"}`: the model gets a `web_search` tool backed by Exa's hosted search. It is
-keyless to start; `EXA_API_KEY` in the environment lifts the rate limit. On a model with native
-search the same setting keeps using the provider's search. Bedrock Web Search also needs the
-`bedrock-websearch` IAM actions (in `AmazonBedrockFullAccess`); without them the request succeeds but
-each search fails.
+keyless to start; `EXA_API_KEY` in the environment lifts the rate limit. `"exa"` is honoured on
+every model, so it also replaces the provider's own search where there is one. Bedrock Web Search
+also needs the `bedrock-websearch` IAM actions (in `AmazonBedrockFullAccess`); without them the
+request succeeds but each search fails.
 
 > [!WARNING]
 > Web search through Exa sends every search query the model writes to Exa (exa.ai), a third-party
