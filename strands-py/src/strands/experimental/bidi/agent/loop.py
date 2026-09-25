@@ -31,7 +31,7 @@ from ..hooks.events import (
     BidiResponseStopEvent as BidiResponseStopHookEvent,
 )
 from ..models import ConnectionTimeoutError, Restartable
-from ..types.content import BidiContentBlock, BidiContentDelta, BidiTranscriptMetadata
+from ..types.content import BidiContentBlock, BidiContentDelta, BidiToolMetadata, BidiTranscriptMetadata
 from ..types.events import (
     BidiAudioDeltaEvent,
     BidiBargeInEvent,
@@ -602,7 +602,6 @@ class _AgentLoop:
                         _telemetry.end_response_span(
                             self._tracer,
                             response_span,
-                            stop_reason="barge_in",
                             time_to_first_audio_ms=time_to_first_audio_ms,
                         )
                     response_span = _telemetry.start_response_span(
@@ -643,6 +642,26 @@ class _AgentLoop:
                         }
                     )
 
+                elif isinstance(event, ToolUseStreamEvent):
+                    tool_use = event["current_tool_use"]
+                    dispatch: ToolResult = {
+                        "toolUseId": tool_use["toolUseId"],
+                        "status": "success",
+                        "content": [{"text": "Tool call started. Its result will follow in a separate tool exchange."}],
+                    }
+                    await self._agent._append_messages(
+                        {"role": "assistant", "content": [{"toolUse": tool_use}]},
+                        {
+                            "role": "user",
+                            "content": [{"toolResult": dispatch}],
+                            "metadata": {
+                                "custom": {
+                                    "bidi": BidiToolMetadata(kind="tool_dispatch", tool_use_id=tool_use["toolUseId"])
+                                }
+                            },
+                        },
+                    )
+
                 elif isinstance(event, BidiBargeInEvent):
                     if self._session_span:
                         _telemetry.add_barge_in_event(self._session_span, event["reason"])
@@ -657,7 +676,6 @@ class _AgentLoop:
                         _telemetry.end_response_span(
                             self._tracer,
                             response_span,
-                            stop_reason=event.stop_reason,
                             time_to_first_audio_ms=time_to_first_audio_ms,
                         )
                         response_span = None
@@ -667,7 +685,7 @@ class _AgentLoop:
                     self._awaiting_response = False
                     self._update_turn_state()
                     await self._agent.hooks.invoke_callbacks_async(
-                        BidiResponseStopHookEvent(self._agent, event.response_id, event.stop_reason)
+                        BidiResponseStopHookEvent(self._agent, event.response_id)
                     )
 
                 elif isinstance(event, BidiUsageEvent):
@@ -680,8 +698,7 @@ class _AgentLoop:
                     return
 
                 if isinstance(event, ToolUseStreamEvent):
-                    tool_use = event["current_tool_use"]
-                    self._task_pool.create(self._run_tool(tool_use, generation))
+                    self._task_pool.create(self._run_tool(event["current_tool_use"], generation))
 
         except Exception as error:
             model_error = error
@@ -702,11 +719,9 @@ class _AgentLoop:
                     strict=False,
                 )
             if response_span:
-                stop_reason = "error" if model_error else "incomplete"
                 _telemetry.end_response_span(
                     self._tracer,
                     response_span,
-                    stop_reason=stop_reason,
                     time_to_first_audio_ms=time_to_first_audio_ms,
                     error=model_error,
                 )
@@ -756,8 +771,17 @@ class _AgentLoop:
             tool_result_event = cast(ToolResultEvent, tool_event)
             tool_result = tool_result_event.tool_result
 
-            tool_use_message: Message = {"role": "assistant", "content": [{"toolUse": tool_use}]}
-            tool_result_message: Message = {"role": "user", "content": [{"toolResult": tool_result}]}
+            tool_use_message: Message = {
+                "role": "assistant",
+                "content": [{"toolUse": tool_use}],
+            }
+            tool_result_message: Message = {
+                "role": "user",
+                "content": [{"toolResult": tool_result}],
+                "metadata": {
+                    "custom": {"bidi": BidiToolMetadata(kind="tool_result", tool_use_id=tool_use["toolUseId"])}
+                },
+            }
             await self._agent._append_messages(tool_use_message, tool_result_message)
 
             await self._event_queue.put(ToolResultMessageEvent(tool_result_message))
