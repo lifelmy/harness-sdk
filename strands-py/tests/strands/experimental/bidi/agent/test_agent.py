@@ -2,7 +2,6 @@
 
 import asyncio
 import sys
-import threading
 import unittest.mock
 from contextlib import nullcontext
 from uuid import uuid4
@@ -18,6 +17,7 @@ from strands.experimental.bidi.types import (
     BidiConnectionStartEvent,
     BidiConnectionStopEvent,
     BidiMessage,
+    BidiToolUseBlocksEvent,
     BidiTranscriptDeltaEvent,
     BidiTranscriptStartEvent,
     InputStream,
@@ -139,6 +139,7 @@ def test_bidi_agent_init_with_various_configurations():
     assert agent.model == mock_model
     assert agent.system_prompt is None
     assert agent.system_prompt_content is None
+    assert agent._session_manager is None
     assert not agent._started
     assert agent.model._connection_id is None
 
@@ -268,7 +269,13 @@ def test_bidi_agent_init_with_unsupported_model():
         BidiAgent(model=object())
 
 
-def test_bidi_agent_session_id_without_session_manager(mock_model):
+@pytest.mark.parametrize("argument", ["session_manager", "unknown_option"])
+def test_bidi_agent_init_rejects_unknown_arguments(mock_model, argument):
+    with pytest.raises(TypeError, match=f"unexpected keyword argument '{argument}'"):
+        BidiAgent(model=mock_model, **{argument: object()})
+
+
+def test_bidi_agent_session_id(mock_model):
     """Test the generated session identifier remains stable."""
     agent = BidiAgent(model=mock_model)
 
@@ -277,16 +284,6 @@ def test_bidi_agent_session_id_without_session_manager(mock_model):
 
     assert first == second
     assert len(first) == 8
-
-
-def test_bidi_agent_session_id_delegates_to_session_manager(mock_model):
-    """Test the session manager's persistent identifier is exposed."""
-    session_manager = unittest.mock.Mock()
-    session_manager.session_id = "test-session"
-
-    agent = BidiAgent(model=mock_model, session_manager=session_manager)
-
-    assert agent.session_id == "test-session"
 
 
 def test_bidi_agent_storage_defaults_to_none(mock_model):
@@ -316,12 +313,40 @@ def test_bidi_agent_sandbox_defaults_to_host_environment(mock_model):
     assert agent.sandbox is agent.sandbox
 
 
-def test_bidi_agent_cancel_signal_is_never_set(mock_model):
+def test_cancel_sets_signal(mock_model):
     agent = BidiAgent(model=mock_model)
+    signal = agent.cancel_signal
 
-    assert isinstance(agent.cancel_signal, threading.Event)
-    assert not agent.cancel_signal.is_set()
-    assert agent.cancel_signal is agent.cancel_signal
+    assert not signal.is_set()
+
+    agent.cancel()
+    agent.cancel()
+
+    assert signal.is_set()
+
+
+@pytest.mark.asyncio
+async def test_run_cancel_cleans_up_and_allows_reuse(mock_model):
+    @tool(context=True)
+    def end_conversation(tool_context: ToolContext[LocalAgent]) -> str:
+        """End the conversation."""
+        tool_context.agent.cancel()
+        return "Ending conversation"
+
+    mock_model.set_events(
+        [BidiToolUseBlocksEvent([{"toolUseId": "end", "name": end_conversation.tool_name, "input": {}}])]
+    )
+    agent = BidiAgent(model=mock_model, tools=[end_conversation])
+
+    for _ in range(2):
+        input_ = unittest.mock.AsyncMock(spec=InputStream, side_effect=asyncio.Queue().get)
+        output = unittest.mock.AsyncMock(spec=OutputStream)
+        await asyncio.wait_for(agent.run(inputs=[input_], outputs=[output]), 2)
+
+        input_.stop.assert_awaited_once()
+        output.stop.assert_awaited_once()
+        assert not agent.cancel_signal.is_set()
+        assert not mock_model._started
 
 
 def test_bidi_agent_tool_context_receives_cancel_signal(mock_model):
