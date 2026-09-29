@@ -76,7 +76,6 @@ from .loop import _AgentLoop
 
 if TYPE_CHECKING:
     from ...._context_manager.context_manager import ContextManager
-    from ....session.session_manager import SessionManager
     from ....telemetry.metrics import EventLoopMetrics
 
 logger = logging.getLogger(__name__)
@@ -107,10 +106,8 @@ class BidiAgent(LocalAgent):
         description: str | None = None,
         hooks: list[HookProvider] | None = None,
         state: AgentState | dict | None = None,
-        session_manager: "SessionManager[LocalAgent] | None" = None,
         tool_executor: ToolExecutor | None = None,
         storage: Storage | None = None,
-        **kwargs: Any,
     ):
         """Initialize bidirectional agent.
 
@@ -127,16 +124,13 @@ class BidiAgent(LocalAgent):
             description: Description of what the Agent does.
             hooks: Optional list of hook providers to register for lifecycle events.
             state: Stateful information for the agent. Can be either an AgentState object, or a json serializable dict.
-            session_manager: Manager for handling agent sessions including conversation history and state.
-                If provided, enables session-based persistence and state management.
             tool_executor: Definition of tool execution strategy (e.g., sequential, concurrent, etc.).
             storage: Default storage backend for agent subsystems.
                 When provided, subsystems that do not have their own explicit storage
-                (e.g., SessionManager) resolve from this value. Each subsystem
+                resolve from this value. Each subsystem
                 auto-namespaces under its own prefix to avoid key collisions.
                 Storage specified directly on a subsystem always takes precedence over
                 this agent-level default. Defaults to None.
-            **kwargs: Additional configuration for future extensibility.
 
         Raises:
             ValueError: If model configuration is invalid or state is invalid type.
@@ -159,7 +153,6 @@ class BidiAgent(LocalAgent):
         self.messages = messages if messages is not None else []
         self._storage: Storage | None = storage
         self._sandbox: Sandbox = NotASandboxLocalEnvironment()
-        # Never set yet: bidirectional agents do not act on a cancellation signal.
         self._cancel_signal = threading.Event()
 
         # Agent identification
@@ -206,13 +199,8 @@ class BidiAgent(LocalAgent):
             for hook in hooks:
                 self.hooks.add_hook(hook)
 
-        # Initialize session management functionality
-        self._session_manager = session_manager
-        if self._session_manager:
-            self._session_id: str = getattr(self._session_manager, "session_id", None) or uuid.uuid4().hex[:8]
-            self.hooks.add_hook(self._session_manager)
-        else:
-            self._session_id = uuid.uuid4().hex[:8]
+        self._session_manager = None
+        self._session_id = uuid.uuid4().hex[:8]
 
         self._loop = _AgentLoop(self)
 
@@ -300,9 +288,20 @@ class BidiAgent(LocalAgent):
     def event_loop_metrics(self, value: "EventLoopMetrics") -> None:
         raise NotImplementedError("event_loop_metrics is not supported by bidirectional agents yet")
 
+    def cancel(self) -> None:
+        """Request cancellation of the current conversation.
+
+        This method is thread-safe and idempotent. Cancellation takes effect
+        only after a tool group completes.
+        """
+        self._cancel_signal.set()
+
     @property
     def cancel_signal(self) -> threading.Event:
-        """The cancellation signal; never set yet, because bidirectional agents do not act on it."""
+        """The cancellation signal for the current conversation.
+
+        Treat as read-only; call ``cancel()`` to request cancellation.
+        """
         return self._cancel_signal
 
     def add_hook(
@@ -456,7 +455,10 @@ class BidiAgent(LocalAgent):
         closes the connection to the model provider.
         """
         self._started = False
-        await self._loop.stop()
+        try:
+            await self._loop.stop()
+        finally:
+            self._cancel_signal.clear()
 
     def take_snapshot(
         self,
