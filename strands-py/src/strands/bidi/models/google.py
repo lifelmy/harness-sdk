@@ -2,14 +2,6 @@
 
 Implements the BidiModel interface for Google's Gemini Live API using the
 official Google GenAI SDK for simplified and robust WebSocket communication.
-
-Key improvements over custom WebSocket implementation:
-
-- Uses official google-genai SDK with native Live API support
-- Simplified session management with client.aio.live.connect()
-- Built-in tool integration and event handling
-- Automatic WebSocket connection management and error handling
-- Native support for audio/text streaming and barge-in
 """
 
 import base64
@@ -50,7 +42,7 @@ from ..types.events import (
     BidiTranscriptStartEvent,
     BidiTranscriptStopEvent,
     BidiUsageEvent,
-    ModalityUsage,
+    TokenDetails,
 )
 from ..types.media import AudioDelta
 from .configs import (
@@ -159,12 +151,9 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
         self._config = ModelConfig(**model_config)
         self._config["params"] = dict(self._config.get("params") or {})
 
-        # Gemini caps a single connection at ~10 min; reconnect before that, resuming the same
+        # Gemini caps a single connection at ~10 min; restart before that, resuming the same
         # session via its handle. The GoAway message remains the reactive backstop.
         self._config["connection"] = ConnectionConfig(**{"restart_after_s": 540, **self._config.get("connection", {})})
-        # Gemini reports per-response token deltas, not cumulative session totals.
-        self.usage_is_cumulative = False
-
         self._resolve_audio_config(audio)
         self._voice = voice
 
@@ -240,7 +229,7 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
             raise RuntimeError("model already started | call stop before starting again")
 
         # A fresh start (no handle) drops any handle from a prior session; otherwise the next
-        # proactive reconnect would resume that conversation into this one. Resume paths pass the
+        # proactive restart would resume that conversation into this one. Resume paths pass the
         # handle explicitly and keep it.
         if "live_session_handle" not in kwargs:
             self._live_session_handle = None
@@ -300,7 +289,7 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
 
         yield BidiConnectionStartEvent(connection_id=self._connection_id, model=self._config["model_id"])
 
-        # Bind session and turn state to this reader so that after a reconnect swaps
+        # Bind session and turn state to this reader so that after a restart swaps
         # self._live_session, a still-draining reader keeps its own closing session and turn state
         # rather than mutating the connection that replaced it.
         session = self._live_session
@@ -463,7 +452,7 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
         events: list[BidiOutputEvent] = []
 
         if server_content.interrupted:
-            events.append(BidiBargeInEvent(reason="user_speech"))
+            events.append(BidiBargeInEvent())
 
         input_transcript = server_content.input_transcription
         if input_transcript and input_transcript.text:
@@ -519,38 +508,31 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
         Returns:
             Usage event carrying token counts and per-modality details.
         """
-        modality_details: list[dict[str, Any]] = []
-
-        if usage.prompt_tokens_details:
-            for detail in usage.prompt_tokens_details:
-                if detail.modality and detail.token_count:
-                    modality_details.append(
-                        {
-                            "modality": str(detail.modality).lower(),
-                            "input_tokens": detail.token_count,
-                            "output_tokens": 0,
-                        }
-                    )
-
-        if usage.response_tokens_details:
-            for detail in usage.response_tokens_details:
-                if detail.modality and detail.token_count:
-                    # Find or create modality entry
-                    modality_str = str(detail.modality).lower()
-                    existing = next((m for m in modality_details if m["modality"] == modality_str), None)
-                    if existing:
-                        existing["output_tokens"] = detail.token_count
-                    else:
-                        modality_details.append(
-                            {"modality": modality_str, "input_tokens": 0, "output_tokens": detail.token_count}
-                        )
+        input_details = self._modality_token_counts(usage.prompt_tokens_details or [])
+        output_details = self._modality_token_counts(usage.response_tokens_details or [])
+        if usage.cached_content_token_count is not None:
+            input_details["cache_read"] = usage.cached_content_token_count
+        if usage.thoughts_token_count is not None:
+            output_details["reasoning"] = usage.thoughts_token_count
 
         return BidiUsageEvent(
             input_tokens=usage.prompt_token_count or 0,
             output_tokens=usage.response_token_count or 0,
             total_tokens=usage.total_token_count or 0,
-            modality_details=cast(list[ModalityUsage], modality_details) if modality_details else None,
-            cache_read_input_tokens=usage.cached_content_token_count if usage.cached_content_token_count else None,
+            input_token_details=input_details or None,
+            output_token_details=output_details or None,
+        )
+
+    @staticmethod
+    def _modality_token_counts(details: list[genai_types.ModalityTokenCount]) -> TokenDetails:
+        names = {"TEXT": "text", "AUDIO": "audio", "IMAGE": "image", "VIDEO": "video"}
+        return cast(
+            TokenDetails,
+            {
+                names[detail.modality]: detail.token_count
+                for detail in details
+                if detail.modality is not None and detail.modality in names and detail.token_count is not None
+            },
         )
 
     async def send(
@@ -752,8 +734,8 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
             "output_audio_transcription": {},
             "input_audio_transcription": {},
             # Sliding-window context compression removes the ~15-min audio-only session cap, so a
-            # session resumed across proactive reconnects can continue indefinitely rather than
-            # dying at the cap (gemini_session.md).
+            # session resumed across proactive restarts can continue indefinitely rather than
+            # dying at the cap.
             "context_window_compression": {"sliding_window": {}},
         }
 
@@ -761,7 +743,7 @@ class GoogleGeminiLiveModel(BidiModel, AudioCapable):
         config_dict["session_resumption"] = {"handle": live_session_handle}
 
         # Enables send_client_content for initial history seeding before realtime mode.
-        # Not supported on Vertex AI; HistoryConfig requires google-genai>=1.67 (floor bump tracked separately).
+        # Not supported on Vertex AI.
         has_messages = kwargs.get("has_messages", False)
         if has_messages and getattr(self._client, "vertexai", False) is not True:
             config_dict["history_config"] = {"initial_history_in_client_content": True}
