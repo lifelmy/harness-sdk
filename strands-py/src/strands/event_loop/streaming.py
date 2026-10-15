@@ -337,7 +337,8 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
         content.append({"toolUse": tool_use})
         state["current_tool_use"] = {}
 
-    elif text:
+    # Text, reasoning, and redacted blocks accumulate independently of the tool-use branch.
+    if text:
         if citations_content:
             citations_block: CitationsContentBlock = {"citations": citations_content, "content": [{"text": text}]}
             content.append({"citationsContent": citations_block})
@@ -346,7 +347,7 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
             content.append({"text": text})
         state["text"] = ""
 
-    elif reasoning_text or "signature" in state:
+    if reasoning_text or "signature" in state:
         content_block: ContentBlock = {
             "reasoningContent": {
                 "reasoningText": {
@@ -361,7 +362,7 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
 
         content.append(content_block)
         state["reasoningText"] = ""
-    elif redacted_content:
+    if redacted_content:
         content.append({"reasoningContent": {"redactedContent": redacted_content}})
         state["redactedContent"] = b""
 
