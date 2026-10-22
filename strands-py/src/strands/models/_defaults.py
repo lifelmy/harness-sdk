@@ -121,6 +121,10 @@ _CONTEXT_WINDOW_LIMITS: dict[str, int] = {
     "google.gemma-4-31b": 256_000,
     "google.gemma-4-26b-a4b": 256_000,
     "google.gemma-4-e2b": 128_000,
+    # Bedrock xAI
+    "xai.grok-4.7": 524_288,
+    "xai.grok-4.6": 500_000,
+    "xai.grok-4.3": 1_000_000,
     # OpenAI
     "chat-latest": 272_000,  # rolling alias for the current ChatGPT model: input budget (400k - 128k out); may change
     "gpt-6-astra": 1_050_000,
@@ -175,6 +179,8 @@ _CONTEXT_WINDOW_LIMITS: dict[str, int] = {
     "gemini-3.1-pro-preview": 1_048_576,
     "gemini-3.1-flash-lite-preview": 1_048_576,
     # Mistral
+    "codestral-2508": 256_000,
+    "codestral-latest": 256_000,
     "mistral-large-4-0": 1_048_576,
     "mistral-large-4": 1_048_576,
     "mistral-medium-3-5": 262_144,
@@ -190,7 +196,8 @@ _CONTEXT_WINDOW_LIMITS: dict[str, int] = {
     "mistral-large-3": 262_144,
     "mistral-medium-latest": 262_144,
     "mistral-medium-2505": 131_072,
-    "mistral-small-latest": 131_072,
+    "mistral-small-latest": 262_144,
+    "mistral-small-2603": 262_144,
     "mistral-small-3-2-2506": 131_072,
 }
 
