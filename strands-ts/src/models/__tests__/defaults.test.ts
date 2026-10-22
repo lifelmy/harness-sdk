@@ -20,7 +20,19 @@ describe('getContextWindowLimit', () => {
     expect(getContextWindowLimit('zai.glm-5.3')).toBe(1_000_000)
     expect(getContextWindowLimit('us.zai.glm-5.3')).toBe(1_000_000)
     expect(getContextWindowLimit('global.zai.glm-5.3')).toBe(1_000_000)
+    // Bedrock Mistral
+    expect(getContextWindowLimit('mistral.mistral-large-3-675b-instruct')).toBe(256_000)
+    expect(getContextWindowLimit('mistral.ministral-3-14b-instruct')).toBe(128_000)
+    expect(getContextWindowLimit('mistral.ministral-3-8b-instruct')).toBe(128_000)
+    expect(getContextWindowLimit('mistral.ministral-3-3b-instruct')).toBe(128_000)
+    expect(getContextWindowLimit('mistral.magistral-small-2509')).toBe(128_000)
+    expect(getContextWindowLimit('mistral.pixtral-large-2502-v1:0')).toBe(128_000)
+    expect(getContextWindowLimit('mistral.mistral-small-2402-v1:0')).toBe(32_000)
+    expect(getContextWindowLimit('mistral.mistral-large-2402-v1:0')).toBe(32_000)
+    expect(getContextWindowLimit('us.mistral.mistral-large-3-675b-instruct')).toBe(256_000)
+    expect(getContextWindowLimit('global.mistral.mistral-large-3-675b-instruct')).toBe(256_000)
     // OpenAI
+    expect(getContextWindowLimit('chat-latest')).toBe(272_000)
     expect(getContextWindowLimit('gpt-6-astra')).toBe(1_050_000)
     expect(getContextWindowLimit('gpt-6.1-sol')).toBe(1_050_000)
     expect(getContextWindowLimit('gpt-6-sol')).toBe(1_050_000)
@@ -32,6 +44,7 @@ describe('getContextWindowLimit', () => {
     expect(getContextWindowLimit('gpt-oss-120b')).toBe(131_072)
     expect(getContextWindowLimit('gpt-oss-20b')).toBe(131_072)
     // Gemini
+    expect(getContextWindowLimit('gemini-4-argon')).toBe(1_048_576)
     expect(getContextWindowLimit('gemini-3.8-flash')).toBe(1_048_576)
     expect(getContextWindowLimit('gemini-3.7-flash')).toBe(1_048_576)
     expect(getContextWindowLimit('gemini-2.5-flash')).toBe(1_048_576)
