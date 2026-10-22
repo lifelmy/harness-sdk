@@ -70,6 +70,12 @@ class TestGetContextWindowLimit:
         assert get_context_window_limit("us.mistral.mistral-large-3-675b-instruct") == 256_000
         assert get_context_window_limit("global.mistral.mistral-large-3-675b-instruct") == 256_000
 
+    def test_known_bedrock_gemma(self):
+        assert get_context_window_limit("google.gemma-4-31b") == 256_000
+        assert get_context_window_limit("google.gemma-4-26b-a4b") == 256_000
+        assert get_context_window_limit("google.gemma-4-e2b") == 128_000
+        assert get_context_window_limit("us.google.gemma-4-31b") == 256_000
+
     def test_known_openai(self):
         assert get_context_window_limit("chat-latest") == 272_000
         assert get_context_window_limit("gpt-6-astra") == 1_050_000
@@ -98,6 +104,12 @@ class TestGetContextWindowLimit:
         assert get_context_window_limit("mistral-medium-3-5") == 262_144
         assert get_context_window_limit("mistral-medium-3") == 262_144
         assert get_context_window_limit("mistral-medium-latest") == 262_144
+        assert get_context_window_limit("ministral-14b-2512") == 262_144
+        assert get_context_window_limit("ministral-14b-latest") == 262_144
+        assert get_context_window_limit("ministral-8b-2512") == 262_144
+        assert get_context_window_limit("ministral-8b-latest") == 262_144
+        assert get_context_window_limit("ministral-3b-2512") == 131_072
+        assert get_context_window_limit("ministral-3b-latest") == 131_072
 
     def test_strips_bedrock_cross_region_prefix(self):
         assert get_context_window_limit("us.anthropic.claude-sonnet-4-6") == 1_000_000
